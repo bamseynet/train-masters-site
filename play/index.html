@@ -1465,8 +1465,12 @@ const WHISTLES={
   mn:{notes:[76,80,83],mix:[1,0.8,0.6],len:0.9,att:0.06},   /* a higher, sharper Southern chime */
   f9:{notes:[60,63],mix:[1,0.9],len:1.2,att:0.16},   /* a low, hooter-like BR standard whistle */
   terrier:{notes:[93,98],mix:[1,0.35],len:0.38,att:0.02},   /* a shrill little Victorian whistle */
+  rocket:{notes:[91,98],mix:[1,0.45],len:0.42,att:0.03},   /* Rocket (E2): a bright, cheeky little toot (the 1829 engine had none; its replicas do) */
   giant:{notes:[55,59,62,67],mix:[1,0.8,0.7,0.5],len:1.5,att:0.15},
   c08:{horn:true,notes:[67,62],step:0.3,len:0.3,vol:0.13,lp:1300},   /* Class 08: a short, mellow two-tone, quieter than the mainline horns */
+  rscot:{notes:[66,70,73],mix:[1,0.85,0.55],len:1.05,att:0.11},   /* Royal Scot: a deep, mellow LMS hooter */
+  brit:{notes:[62,66,69],mix:[1,0.85,0.55],len:1.15,att:0.13},   /* Britannia: a deep, chunky BR standard chime, rounder than the 9F's hooter */
+  a1pc:{notes:[68,72,75],mix:[1,0.75,0.5],len:1.05,att:0.09},   /* Peppercorn A1: a bright, full LNER three-note chime, higher than the Britannia's */
   c37:{horn:true,notes:[69,64],step:0.38,len:0.36},
   c55:{horn:true,notes:[71,66],step:0.34,len:0.32},
   c47:{horn:true,notes:[76,70],step:0.4,len:0.42},   /* Heritage Class 47: a bright high-low two-tone */
@@ -2546,6 +2550,11 @@ const TRAIN_TYPES={
     consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#1f6b45',lining:'#f0cf3a',chimney:'#151515',dome:'#1f6b45',smokebox:'#1f6b45',coachLo:'#2b6a43',coachHi:'#2b6a43',roof:'#4b4a48',roof2:'#3d3c3a',wheel:'#1f6b45'}},
   terrier:{name:'Terrier 0-6-0 tank',short:'Terrier',group:'Steam',era:'1872',desc:'Tiny Victorian tank engine with a copper-capped chimney: cheap, nimble and loved on branch lines for over a century',cost:30000,speed:1.8,steam:true,run:350,fare:6,goods:false,heritage:true,pro:true,
     consist:['engT','coach','coach','coach'],liv:{body:'#c99a2e',lining:'#3a3f22',chimney:'#c99a2e',dome:'#d4a73a',smokebox:'#1d1d1d',coachLo:'#5d3320',coachHi:'#5d3320',roof:'#55524e',roof2:'#4a4744',wheel:'#c99a2e'}},
+  /* E2 (21 Nov 2026): Rocket, sold on its own (ENGINE_SKUS.rocket), not Pro and not Heritage; hero model near the camera.
+     One carriage place for the engine and one for its barrel tender, three early coaches in yellow and brown.
+     chimney: the white chimney, firebox: the copper firebox, barrel: the tender's water barrel */
+  rocket:{name:'Rocket 0-2-2',short:'Rocket',group:'Steam',era:'1829',desc:'Stephenson’s famous little engine of 1829: one pair of big driving wheels, a tall white chimney, steeply sloping cylinders and a barrel of water on its tender. Slow, cheap and charming',cost:14000,speed:1.25,steam:true,run:160,fare:5.5,goods:false,hero:true,
+    consist:['engT','tender','coach','coach','coach'],liv:{body:'#e3b52c',lining:'#161616',chimney:'#efece4',dome:'#e3b52c',smokebox:'#1d1d1d',firebox:'#9b5a34',barrel:'#c9952e',coachLo:'#6b4226',coachHi:'#d9a92e',roof:'#3b3530',roof2:'#3b3530',wheel:'#e2b83a'}},
   f8:{name:'8F Heavy Freight 2-8-0',short:'8F',group:'Freight',era:'1935',desc:'Strong, slow freight engine built in huge numbers for the war effort',cost:60000,speed:1.7,steam:true,run:700,fare:5,goods:true,
     consist:['loco','tender','open','open','van','open','tankw','open','van','open'],liv:{body:'#171717',lining:'#171717',chimney:'#171717',dome:'#171717',wheel:'#171717'}},
   giant:{name:'Giant Articulated 4-8-8-4',short:'Giant',group:'Freight',era:'1941',desc:'America’s mighty articulated freight monster — the longest steam engines ever built',cost:150000,speed:1.9,steam:true,run:1600,fare:5.5,goods:true,
@@ -2560,6 +2569,19 @@ const TRAIN_TYPES={
      of the wasp stripes */
   c08:{name:'Class 08 Shunter',short:'Class 08',group:'Diesel',era:'1953',desc:'Britain’s most common diesel shunter: a little 0-6-0 with a long bonnet and a tall cab, slow but strong, happiest on short goods trips',cost:16000,speed:1.0,steam:false,run:200,fare:4.5,goods:true,hero:true,
     consist:['engT','open','van','open','tankw','van'],liv:{body:'#24502f',lining:'#24502f',ends:'#f2c230',roof:'#1f4529',wheel:'#1b1b1b'}},
+  /* E2 (21 Nov 2026): the Royal Scot 4-6-0, sold on its own (ENGINE_SKUS.rscot), not Pro and not Heritage; hero model near
+     the camera (HERO_SPEC.rscot). Two carriage places and a tender, like the Duchess; an express a little below the Duchess,
+     LMS crimson lake with maroon coaches */
+  rscot:{name:'Royal Scot 4-6-0',short:'Royal Scot',group:'Steam',era:'1927',desc:'LMS three-cylinder express in crimson lake, rebuilt with a taper boiler and curved smoke deflectors: big 6 ft 9 in wheels for the fast runs to Scotland',cost:104000,speed:4.5,steam:true,run:1030,fare:8.6,goods:false,hero:true,
+    consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#7d1b26',lining:'#d6a845',chimney:'#151515',dome:'#7d1b26',smokebox:'#1b1b1b',coachLo:'#6a1a21',coachHi:'#6a1a21',roof:'#4a4644',roof2:'#3e3b39',wheel:'#7d1b26'}},
+  /* E2 (21 Nov 2026): the second engine sold on its own (ENGINE_SKUS.brit), not Pro and not Heritage; hero model near the
+     camera. Two carriage places (engF, engR) and a tender, BR maroon coaches; lining: the orange of the orange-and-black lining */
+  brit:{name:'Britannia 4-6-2',short:'Britannia',group:'Steam',era:'1951',desc:'The BR Standard express Pacific: big smoke deflectors with hand holds, wheels bare under a high running board, in Brunswick green with orange-and-black lining',cost:108000,speed:4.5,steam:true,run:1020,fare:8.6,goods:false,hero:true,
+    consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#1f4d2f',lining:'#e8892e',chimney:'#151515',dome:'#1f4d2f',smokebox:'#1a1a1a',coachLo:'#72232b',coachHi:'#72232b',roof:'#4a4644',roof2:'#3e3b39',wheel:'#1f4d2f'}},
+  /* E2 (21 Nov 2026): a single-purchase engine (ENGINE_SKUS.a1pc), not Pro and not Heritage; hero model near the camera.
+     Two carriage places (engF, engR) and a tender, BR crimson-and-cream coaches; lining: the white of the black-and-white lining */
+  a1pc:{name:'Peppercorn A1 4-6-2',short:'Peppercorn A1',group:'Steam',era:'1948',desc:'The last LNER-design express Pacific: three cylinders, 6 ft 8 in driving wheels, a double chimney and big smoke deflectors, in apple green with black-and-white lining',cost:112000,speed:4.65,steam:true,run:1080,fare:8.7,goods:false,hero:true,
+    consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#5d8f3a',lining:'#f1efe6',chimney:'#151515',dome:'#5d8f3a',smokebox:'#1a1a1a',coachLo:'#8a1f2e',coachHi:'#e6d9b8',roof:'#4a4644',roof2:'#3e3b39',wheel:'#5d8f3a'}},
   c37:{name:'Class 37 “Tractor”',short:'Class 37',group:'Diesel',era:'1960',desc:'Growling English Electric workhorse — freight, branch lines, anything',cost:70000,speed:3.0,steam:false,run:800,fare:5.5,goods:true,
     consist:['diesel','open','van','open','tankw','open','van','open'],liv:{body:'#2e5f8a',ends:'#f2c230',roof:'#3b4a58',stripe:null,wheel:'#222'}},
   c55:{name:'Class 55 “Deltic”',short:'Class 55',group:'Diesel',era:'1961',desc:'Twin-engined, 3,300 hp thoroughbred — the legend of the East Coast expresses',cost:140000,speed:5.0,steam:false,run:1500,fare:9.5,goods:false,
@@ -4222,6 +4244,31 @@ const HERIT_2D={
     box('#d9d2c0',-0.4,-0.09,-0.185,0.185,0.04); box('rgba(0,0,0,0.12)',-0.4,-0.09,0.09,0.185,0.04);   /* cab roof */
     box('#161616',-0.39,-0.405,-0.12,0.12); },
 };
+/* Rocket (E2) from above: the yellow boiler with black bands, the white chimney on its little smokebox, the copper
+   firebox, the sloping cylinders and connecting rods outside the big driving wheels, the wooden buffer beam; the tender's
+   frame, its water barrel with black hoops and the coal box at the front */
+HERIT_2D.rocket=(part,box,dt,poly,L)=>{ const b=L.body, hi='rgba(255,255,255,0.22)', lo='rgba(0,0,0,0.22)', K='#161616', WOOD='#6e4a2c', WH=L.chimney||'#efece4', FB=L.firebox||'#9b5a34', BAR=L.barrel||'#c9952e', W=L.wheel||'#e2b83a';
+  if(part==='tender'){ box(b,-0.36,0.36,-0.233,-0.21); box(b,-0.36,0.36,0.21,0.233); box(b,-0.36,-0.33,-0.235,0.235); box(b,0.33,0.36,-0.235,0.235);
+    box(WOOD,-0.33,0.33,-0.21,0.21); for(let q=-3;q<=3;q++) box('rgba(0,0,0,0.18)',-0.33,0.33,q*0.06-0.002,q*0.06+0.002);
+    box('rgba(0,0,0,0.25)',-0.28,0.13,-0.11,0.1,0.06); box(BAR,-0.29,0.12,-0.104,0.104,0.06); box(hi,-0.27,0.1,-0.06,-0.02,0.02); box(lo,-0.27,0.1,0.05,0.1,0.02);
+    for(const f of [0.04,0.3,0.7,0.96]){ const x=-0.29+0.41*f; box(K,x-0.006,x+0.006,-0.1,0.1); } dt(K,-0.085,0,0.022);
+    box(WOOD,0.16,0.33,-0.19,0.19); box('#191919',0.172,0.318,-0.178,0.178); for(let q=0;q<8;q++) dt(q%2?'#2b2b2b':'#232323',0.19+((q*37)%12)/100,(((q*53)%100)/100-0.5)*0.3,0.025);
+    dt(K,0.33,0.2,0.016); return; }
+  box('#1b1b1b',-0.37,0.32,-0.145,0.145,0.01);                                                        /* frames */
+  for(const s of [-1,1]){ box(W,0.08,0.26,s>0?0.175:-0.205,s>0?0.205:-0.175,0.012); box(K,0.08,0.26,s>0?0.2:-0.205,s>0?0.205:-0.2);   /* driving wheels */
+    box(W,-0.245,-0.155,s>0?0.175:-0.205,s>0?0.205:-0.175,0.008);
+    box('#2a2a2a',-0.14,0.02,s>0?0.2:-0.22,s>0?0.22:-0.2); box(b,-0.16,-0.04,s>0?0.208:-0.245,s>0?0.245:-0.208,0.01); box(K,-0.045,-0.035,s>0?0.205:-0.245,s>0?0.245:-0.205);   /* cylinders, guides */
+    box('#c9ccc8',-0.03,0.2,s>0?0.226:-0.238,s>0?0.238:-0.226);                                        /* connecting rod */
+    box('#202020',-0.05,0.2,s>0?0.05:-0.08,s>0?0.08:-0.05); }                                            /* exhaust pipes */
+  box(WOOD,0.32,0.35,-0.21,0.21); for(const s of [-1,1]) dt('#3a2a1e',0.375,s*0.13,0.028);           /* buffer beam, leather buffers */
+  box(b,-0.155,0.2,-0.085,0.085,0.02); box(hi,-0.15,0.19,-0.05,-0.012); box(lo,-0.15,0.19,0.045,0.085);   /* the boiler */
+  for(const x of [-0.147,-0.07,0.02,0.11,0.192]) box(K,x-0.006,x+0.006,-0.088,0.088);
+  box('#1d1d1d',0.2,0.258,-0.08,0.08,0.03);                                                          /* smokebox */
+  box(FB,-0.331,-0.155,-0.1,0.1,0.03); box('rgba(255,255,255,0.15)',-0.32,-0.165,-0.05,-0.01); box('rgba(0,0,0,0.18)',-0.32,-0.165,0.05,0.1);   /* firebox */
+  box(WOOD,-0.39,-0.331,-0.15,0.15);                                                                  /* footplate */
+  dt('#cfa53e',-0.12,0,0.02); dt('#cfa53e',-0.2,0,0.01); box('#cfa53e',-0.2,-0.12,-0.004,0.004);       /* safety valve */
+  dt('rgba(0,0,0,0.3)',0.235,0.01,0.05); dt(WH,0.228,0,0.05); dt('#ffffff',0.222,-0.01,0.03); dt(WH,0.228,0,0.04); dt('#0b0b0b',0.228,0,0.03);   /* the tall white chimney */
+};
 /* Class 08 (E2) from above: the low bonnet with its fan grille and exhaust, the tall cab with its curved roof at the back,
    walkways and handrails, wasp stripes at both ends, red buffer beams */
 HERIT_2D.c08=(part,box,dt,poly,L)=>{ const b=L.body, ROOF=L.roof||'#1f4529', hi='rgba(255,255,255,0.18)', lo='rgba(0,0,0,0.25)', Y=L.ends||'#f2c230';
@@ -4235,6 +4282,63 @@ HERIT_2D.c08=(part,box,dt,poly,L)=>{ const b=L.body, ROOF=L.roof||'#1f4529', hi=
   box(ROOF,-0.372,-0.108,-0.208,0.208,0.04); box(hi,-0.36,-0.12,-0.1,-0.03); box(lo,-0.36,-0.12,0.1,0.208);   /* the cab roof */
   for(let i=0;i<10;i++){ const z0=-0.2+i*0.04; box(i%2?'#1a1a1a':Y,-0.386,-0.372,z0,z0+0.04); }        /* wasp stripes, cab back */
   for(const z of [-0.03,0.03]) dt('#3a3a3a',-0.25,z,0.012); };                                         /* horns */
+/* Royal Scot (E2) from above: high running board with lined valances, curved-top smoke deflectors beside the smokebox, the
+   short double chimney, a taper boiler with lined bands and the top feed, a Belpaire firebox with safety valves, the cab
+   roof, outside cylinders and rods; the Fowler-style tender with its coal rails and the tank top behind the coal */
+HERIT_2D.rscot=(part,box,dt,poly,L)=>{ const b=L.body, ln=L.lining||'#d6a845', hi='rgba(255,255,255,0.16)', lo='rgba(0,0,0,0.24)', dark='#1b1b1b';
+  if(part==='tender'){ box(b,-0.385,0.36,-0.21,0.21,0.03); box(lo,-0.385,0.36,0.15,0.21,0.02); box(hi,-0.385,0.36,-0.17,-0.13);
+    box('#121212',-0.13,0.345,-0.19,0.19,0.03); for(let q=0;q<9;q++) dt(q%2?'#2b2b2b':'#222',-0.09+((q*37)%40)/100,(((q*53)%100)/100-0.5)*0.3,0.034);   /* the coal */
+    for(const s of [-1,1]) box('#3a3a3a',-0.13,0.35,s>0?0.193:-0.205,s>0?0.205:-0.193);   /* coal rails */
+    box('rgba(255,255,255,0.1)',-0.37,-0.15,-0.17,0.17,0.02); dt('#2c2c2c',-0.29,0,0.035); dt('#555',-0.29,0,0.018);   /* tank top, water filler */
+    box('#b3262b',-0.405,-0.385,-0.2,0.2); return; }
+  for(const s of [-1,1]){ box(b,0.44,0.6,s>0?0.2:-0.24,s>0?0.24:-0.2,0.01); box('#b9bcbf',-0.5,0.4,s>0?0.222:-0.23,s>0?0.23:-0.222); }   /* cylinders, rods */
+  box(dark,-0.83,0.8,-0.215,0.215,0.02);                                                  /* running board */
+  box(ln,-0.83,0.57,-0.215,-0.209); box(ln,-0.83,0.57,0.209,0.215);                       /* lined valances */
+  box(b,0.57,0.795,-0.215,-0.205,0.004); box(b,0.57,0.795,0.205,0.215,0.004);             /* smoke deflectors */
+  box(b,-0.21,0.56,-0.128,0.128,0.03); box(hi,-0.21,0.56,-0.05,0.0); box(lo,-0.21,0.56,0.07,0.128);   /* taper boiler */
+  for(const x of [0.44,0.25,0.06,-0.12]) box(ln,x-0.006,x+0.006,-0.126,0.126);
+  dt(b,0.36,0,0.034); dt(hi,0.355,-0.01,0.015);                                           /* top feed */
+  box(L.smokebox||'#1b1b1b',0.555,0.795,-0.128,0.128,0.03); box('rgba(255,255,255,0.08)',0.555,0.79,-0.06,-0.02);
+  box('#0c0c0c',0.615,0.735,-0.036,0.036,0.034); box('#1e1e1e',0.628,0.722,-0.022,0.022,0.02);   /* double chimney */
+  box(b,-0.52,-0.2,-0.145,0.145,0.02); box(hi,-0.52,-0.2,-0.06,-0.005); box(ln,-0.515,-0.205,-0.145,-0.139); box(ln,-0.515,-0.205,0.139,0.145);   /* Belpaire firebox */
+  dt('#c9a23a',-0.29,0,0.016); dt('#c9a23a',-0.33,0,0.016); dt('#c9a23a',-0.47,0.04,0.011);   /* safety valves, whistle */
+  box('#2b2928',-0.84,-0.5,-0.215,0.215,0.03); box('rgba(255,255,255,0.12)',-0.83,-0.51,-0.08,-0.03); box('#141414',-0.71,-0.63,-0.05,0.05);   /* cab roof, ventilator */
+  box('#b3262b',0.8,0.83,-0.21,0.21); for(const z of [-0.13,0.13]){ dt('#2a2a2a',0.865,z,0.035); dt('#ece6d6',0.815,z,0.02); }   /* buffer beam, buffers, lamps */
+};
+/* Britannia (E2) from above: the running board, big smoke deflectors beside the smokebox, the tapered boiler with its
+   lined bands, dome and single chimney, the round-topped firebox, the cab roof; the BR1 tender's high coal space */
+HERIT_2D.brit=(part,box,dt,poly,L)=>{ const b=L.body, ln=L.lining||'#e8892e', hi='rgba(255,255,255,0.17)', lo='rgba(0,0,0,0.26)';
+  if(part==='tender'){ box(b,-0.385,0.36,-0.212,0.212,0.03); box(ln,-0.37,0.345,-0.206,-0.2); box(ln,-0.37,0.345,0.2,0.206);
+    box(b,-0.23,0.345,-0.16,0.16,0.02); box('#121212',-0.21,0.33,-0.14,0.14,0.03); for(let q=0;q<8;q++) dt(q%2?'#2d2d2d':'#202020',-0.15+((q*37)%46)/100,(((q*53)%100)/100-0.5)*0.22,0.032);
+    box('rgba(255,255,255,0.1)',-0.37,-0.24,-0.18,0.18,0.02); dt('#2c2c2c',-0.31,0,0.035); box('#b3262b',-0.40,-0.38,-0.2,0.2); return; }
+  box('#191919',-0.84,0.81,-0.215,0.215,0.02); box('#b3262b',0.8,0.83,-0.21,0.21); dt('#2a2a2a',0.865,-0.13,0.035); dt('#2a2a2a',0.865,0.13,0.035);
+  box(b,0.565,0.787,-0.212,-0.202); box(b,0.565,0.787,0.202,0.212);                    /* the big smoke deflectors */
+  box(b,-0.2,0.565,-0.14,0.14,0.04); box(hi,-0.2,0.565,-0.06,-0.01); box(lo,-0.2,0.565,0.07,0.14);
+  for(const x of [0.44,0.25,0.06,-0.12]){ box(ln,x-0.008,x+0.008,-0.138,0.138); box('#0d0d0d',x-0.004,x+0.004,-0.138,0.138); }
+  box(b,-0.52,-0.2,-0.156,0.156,0.04); box(hi,-0.52,-0.2,-0.06,-0.01); box(lo,-0.52,-0.2,0.08,0.156);   /* firebox */
+  box(L.smokebox||'#1d1d1d',0.56,0.79,-0.142,0.142,0.04); box('rgba(255,255,255,0.08)',0.56,0.79,-0.06,-0.02);
+  dt('#0a0a0a',0.672,0,0.039); dt('#222',0.672,0,0.026); dt(b,0.1,0,0.046); dt(hi,0.095,-0.012,0.02); box('#333',0.31,0.37,-0.025,0.025,0.01);
+  dt('#9aa0a4',-0.27,0,0.013); dt('#9aa0a4',-0.32,0,0.013); dt('#c9a23a',-0.47,0.06,0.012);
+  box('#2b2928',-0.875,-0.475,-0.22,0.22,0.03); box('rgba(255,255,255,0.12)',-0.865,-0.485,-0.08,-0.03);
+  box('#151515',0.38,0.42,-0.2,-0.17); box('#151515',0.38,0.42,0.17,0.2); };
+/* Peppercorn A1 (E2) from above: the running board, big smoke deflectors beside the smokebox, the long boiler with its
+   black-and-white lined bands, the banjo dome and the double chimney, the wide round-topped firebox, the cab roof; the
+   straight-sided tender with its coal space at the front */
+HERIT_2D.a1pc=(part,box,dt,poly,L)=>{ const b=L.body, ln=L.lining||'#f1efe6', hi='rgba(255,255,255,0.17)', lo='rgba(0,0,0,0.26)';
+  if(part==='tender'){ box(b,-0.385,0.36,-0.212,0.212,0.03); box(ln,-0.37,0.345,-0.206,-0.2); box(ln,-0.37,0.345,0.2,0.206);
+    box('#121212',-0.08,0.33,-0.18,0.18,0.03); for(let q=0;q<8;q++) dt(q%2?'#2d2d2d':'#202020',-0.04+((q*37)%34)/100,(((q*53)%100)/100-0.5)*0.28,0.032);
+    box('rgba(255,255,255,0.1)',-0.37,-0.1,-0.18,0.18,0.02); dt('#2c2c2c',-0.28,0,0.035); box('#b3262b',-0.40,-0.38,-0.2,0.2); return; }
+  box('#191919',-0.84,0.81,-0.215,0.215,0.02); box('#b3262b',0.8,0.83,-0.21,0.21); dt('#2a2a2a',0.865,-0.13,0.035); dt('#2a2a2a',0.865,0.13,0.035);
+  box(b,0.565,0.79,-0.212,-0.202); box(b,0.565,0.79,0.202,0.212);                    /* the big smoke deflectors */
+  box(b,-0.2,0.565,-0.142,0.142,0.04); box(hi,-0.2,0.565,-0.06,-0.01); box(lo,-0.2,0.565,0.07,0.142);
+  for(const x of [0.44,0.25,0.06,-0.12]){ box(ln,x-0.008,x+0.008,-0.14,0.14); box('#0d0d0d',x-0.004,x+0.004,-0.14,0.14); }
+  box(b,-0.52,-0.2,-0.158,0.158,0.04); box(hi,-0.52,-0.2,-0.06,-0.01); box(lo,-0.52,-0.2,0.08,0.158);   /* firebox */
+  box(L.smokebox||'#1d1d1d',0.56,0.79,-0.142,0.142,0.04); box('rgba(255,255,255,0.08)',0.56,0.79,-0.06,-0.02);
+  box('#0a0a0a',0.64,0.72,-0.036,0.036,0.034); box('#222',0.65,0.71,-0.022,0.022,0.02);   /* the double chimney */
+  box(b,-0.08,0.12,-0.048,0.048,0.045); box(hi,-0.07,0.11,-0.03,-0.008,0.01);             /* the banjo dome */
+  dt('#9aa0a4',-0.27,0,0.013); dt('#9aa0a4',-0.32,0,0.013); dt('#c9a23a',-0.47,0.06,0.012);
+  box('#2b2928',-0.875,-0.475,-0.22,0.22,0.03); box('rgba(255,255,255,0.12)',-0.865,-0.485,-0.08,-0.03);
+  box('#151515',0.38,0.42,-0.2,-0.17); box('#151515',0.38,0.42,0.17,0.2); };
 function heritage2Dx(t,kind,len,L,fill,dot,F){
   const k=len/0.78, two=kind==='engF'||kind==='engR', o=kind==='engF'?-0.44:kind==='engR'?0.44:0, X=x=>(x+o)*k, Y=z=>z*k;
   const box=(c,x0,x1,z0,z1,r=0)=>fill(c,X(x0),Y(z0),(x1-x0)*k,(z1-z0)*k,r*k), dt=(c,x,z,r)=>{ if(r>0) dot(c,X(x),Y(z),r*k); };
@@ -4339,7 +4443,7 @@ function drawCar2D(t,kind,i,len,wid){
       break; }
     case 'engF': case 'engR': case 'engT': heritage2D(t,kind,len,L,fill,dot); break;
     case 'tender': case 'tender2':
-      if(ty.heritage){ heritage2D(t,kind,len,L,fill,dot); break; }
+      if(ty.heritage||HERIT_2D[t.type]){ heritage2D(t,kind,len,L,fill,dot); break; }   /* (and a store engine with its own picture: the Britannia) */
       fill(L.body,-hl,-hw,len,wid,wid*0.12);
       fill('#141414',-hl+len*0.1,-hw*0.75,len*(kind==='tender2'?0.8:0.62),wid*0.75,wid*0.2);
       for(let k=0;k<7;k++) dot('#2a2a2a',-hl+len*(0.15+((k*37)%60)/100),(((k*53)%100)/100-0.5)*wid*0.7,wid*0.12);   /* coal lumps inside the tender */
@@ -5652,12 +5756,15 @@ window.tmStoreMessage=m=>toast(String(m||''));
    Vega: postMessage {type:'tm-store',action:'buy'|'restore'|'check',sku,skus}. Wrapper back to the game:
    tmOwned([skus]) (everything the store says is owned, after a check or restore), tmUnlocked(sku) (a new purchase),
    tmRevoked(sku) (refunded or cancelled), tmPrices({sku:'£0.99',...}). Pro's own callbacks are unchanged. */
-const ENGINE_SKUS={c08:{sku:'trainmasters.engine.c08'}};   /* 21 Nov 2026: the Amazon item is approved, so the Class 08 is on sale (was soon:true in 1.4). A new engine starts with soon:true until its store item exists */   /* soon: not on sale yet (21 Nov 2026, Peter: ship 1.4 with the Class 08 hidden until its store item exists); hidden from the works list unless already owned. Set soon:false (or delete it) to put it on sale */
+const ENGINE_SKUS={c08:{sku:'trainmasters.engine.c08'}, brit:{sku:'trainmasters.engine.brit'}};   /* 21 Nov 2026: the Amazon item is approved, so the Class 08 is on sale (was soon:true in 1.4). A new engine starts with soon:true until its store item exists */   /* soon: not on sale yet (21 Nov 2026, Peter: ship 1.4 with the Class 08 hidden until its store item exists); hidden from the works list unless already owned. Set soon:false (or delete it) to put it on sale */
+ENGINE_SKUS.rscot={sku:'trainmasters.engine.rscot'};   /* Royal Scot (E2, 21 Nov 2026): its Amazon item is approved, so it is on sale */
+ENGINE_SKUS.a1pc={sku:'trainmasters.engine.a1pc'};   /* its Amazon item is approved (21 Nov 2026): on sale */   /* Peppercorn A1 (E2, 21 Nov 2026): not on sale until its Amazon item is approved */
 function allSkus(){ return [PRO_SKU,...Object.values(ENGINE_SKUS).filter(e=>!e.soon).map(e=>e.sku)]; }
 function engineForSku(sku){ return Object.keys(ENGINE_SKUS).find(k=>ENGINE_SKUS[k].sku===sku)||null; }
 /* true when this player cannot buy more of a train type: Heritage without Pro, or a store engine not bought */
 function typeLocked(k){ const ty=TRAIN_TYPES[k]; if(!ty) return false; if(ty.pro&&!isPro()) return true; return engineLocked(k); }
 function engineLocked(k){ const e=ENGINE_SKUS[k]; return !!e&&!EngineStore.owns(e.sku); }
+ENGINE_SKUS.rocket={sku:'trainmasters.engine.rocket'};   /* Rocket (E2, 21 Nov 2026): its Amazon item is approved, so it is on sale */
 const EngineStore={
   _own:null, _price:null,
   _load(key){ try{ return JSON.parse(localStorage.getItem(key)||'null'); }catch(_){ return null; } },
@@ -5742,7 +5849,7 @@ const GETIT_LINK=`<a href="${AMAZON_URL.uk}" target="_blank" rel="noopener" oncl
 function openGetIt(k,back){ const ty=k&&TRAIN_TYPES[k], pic=ty?EnginePic.get(k):'';
   const pro='🏡 Countryside life · 🚂 Drive it yourself · 🏛️ the Heritage Collection engines · 🏗️ Sandbox · 🗺️ Map editor · 🎯 Scenarios · ⏯️ Replays and 📷 photo mode';
   const text=ty?`${pic?`<img class="engpic" src="${pic}" alt="">`:''}<b>${ty.era}</b> · ${ty.desc}<br><br>This engine is in the Fire TV and Fire tablet version of Train Masters, where you can add it to all your railways.`
-    :`<b>Pro and extra engines are in the Fire TV and Fire tablet version.</b><br>This free browser version has the whole railway to build and run. On Fire TV and Fire tablets you can also have:<br>${pro}<br>and extra engines, one at a time, like the Class 08 shunter.`;
+    :`<b>Pro and extra engines are in the Fire TV and Fire tablet version.</b><br>This free browser version has the whole railway to build and run. On Fire TV and Fire tablets you can also have:<br>${pro}<br>and a growing line of famous engines, one at a time, like the Royal Scot, the Britannia and Stephenson’s Rocket.`;
   const done=back||(()=>{});
   openModal({title:ty?ty.name:'Train Masters on Fire TV',text,items:[
     {label:'Get Train Masters on Amazon',detail:'Amazon.co.uk · opens in a new tab',fn:()=>{ openAmazon(AMAZON_URL.uk); done(); }},
@@ -8398,6 +8505,17 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       for(const d of [-1,1]){ bx(d*0.36-0.015,d*0.36+0.015,0.2,0,0.09,0.36,RED); for(const s of [-1,1]) cx(d>0?0.375:-0.425,d>0?0.425:-0.375,0.2,s*0.12,0.022,DK,6); }
       wh([0.195,0,-0.195],0.087,C(L.wheel)); },
   };
+  /* Rocket far away: frames, boiler and smokebox, the tall white chimney, the copper firebox, the sloping cylinders (as
+     blocks), its two pairs of wheels; the tender's frame, barrel and coal box */
+  HERO_FAR.rocket=(K,part)=>{ const {bx,cx,up,wh,C,body,L}=K, DK=C('#1d1d1d'), FR=C('#161616'), WH=C(L.chimney||'#efece4'), FB=C(L.firebox||'#9b5a34'), WOOD=C('#6e4a2c'), BAR=C(L.barrel||'#c9952e'), WHL=C(L.wheel||'#e2b83a');
+    if(part==='tender'){ for(const s of [-1,1]) bx(-0.34,0.34,0.175,s*0.222,0.05,0.022,body); bx(-0.33,0.33,0.206,0,0.014,0.42,WOOD);
+      cx(-0.29,0.12,0.32,0,0.098,BAR,10); bx(0.165,0.325,0.245,0,0.065,0.38,WOOD); bx(0.17,0.32,0.27,0,0.02,0.34,C('#191919')); wh([0.17,-0.17],0.06,WHL); return; }
+    bx(-0.37,0.32,0.15,0,0.04,0.28,FR); bx(0.32,0.35,0.16,0,0.065,0.42,WOOD);
+    cx(-0.155,0.2,0.27,0,0.085,body,10); cx(0.2,0.258,0.264,0,0.08,DK,10);
+    up(0.228,0.35,0,0.05,0.06,WH,8); up(0.228,0.52,0,0.037,0.28,WH,8);
+    bx(-0.331,-0.155,0.25,0,0.2,0.2,FB); bx(-0.39,-0.33,0.165,0,0.01,0.3,WOOD);
+    for(const s of [-1,1]){ bx(-0.16,-0.06,0.33,s*0.235,0.07,0.06,body); bx(-0.06,0.08,0.24,s*0.235,0.05,0.02,DK); bx(-0.02,0.17,0.17,s*0.24,0.014,0.01,C('#9a9a9a')); }
+    wh([0.17],0.1,WHL); wh([-0.2],0.052,WHL); };
   /* Class 08 far away: deck, bonnet, cab and roof, wasp-striped ends, buffers, rods and six wheels */
   HERO_FAR.c08=(K)=>{ const {bx,cx,wh,C,body,L}=K, DK=C('#1d1d1d'), FR=C('#161616'), WIN=C('#26303a'), ROD=C('#9a9a9a'), RED=C('#b3262b'), Y=C(L.ends||'#f2c230'), ROOF=C(L.roof||'#1f4529');
     bx(-0.33,0.33,0.135,0,0.11,0.26,FR); bx(-0.375,0.37,0.205,0,0.016,0.42,DK);
@@ -8407,6 +8525,41 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     for(const s of [-1,1]){ bx(-0.33,-0.14,0.47,s*0.206,0.09,0.004,WIN); bx(-0.23,0.19,0.095,s*0.226,0.016,0.008,ROD); }
     for(const d of [-1,1]){ bx(d*0.375-0.015,d*0.375+0.015,0.165,0,0.1,0.42,RED); for(const s of [-1,1]) cx(d>0?0.39:-0.45,d>0?0.45:-0.39,0.165,s*0.13,0.026,DK,6); }
     wh([0.17,-0.02,-0.21],0.085,C(L.wheel)); };
+  /* Royal Scot far away: running board and its drop, boiler, smokebox, firebox, cab and roof, deflectors, cylinders, rods,
+     the coupled wheels and the bogie; the tender with its coal rails */
+  HERO_FAR.rscot=(K,part)=>{ const {bx,cx,up,wh,C,body,L}=K, DK=C('#222'), ln=C(L.lining||'#d6a845'), SMK=C(L.smokebox||'#1b1b1b'), WIN=C('#26303a'), ROD=C('#9a9a9a'), RED=C('#b3262b'), ROOF=C('#2b2928'), COAL=C('#181818');
+    if(part==='tender'){ bx(-0.38,0.36,0.355,0,0.27,0.41,body); bx(-0.35,0.33,0.47,0,0.006,0.416,ln); bx(-0.12,0.35,0.505,0,0.05,0.36,COAL);
+      for(const s of [-1,1]) bx(-0.12,0.35,0.545,s*0.204,0.05,0.008,DK);
+      bx(-0.38,0.36,0.19,0,0.05,0.42,DK); wh([-0.26,0,0.26],0.082,DK); bx(-0.41,-0.38,0.215,0,0.1,0.42,RED); return; }
+    bx(-0.83,0.57,0.33,0,0.016,0.43,DK); bx(0.57,0.8,0.25,0,0.016,0.43,DK); bx(0.8,0.83,0.215,0,0.1,0.42,RED); bx(-0.8,0.8,0.21,0,0.1,0.3,DK);
+    cx(-0.21,0.56,0.455,0,0.13,body,12); cx(0.555,0.79,0.455,0,0.128,SMK,12); bx(-0.52,-0.2,0.47,0,0.27,0.29,body);
+    up(0.675,0.6,0,0.042,0.045,C('#151515')); up(0.36,0.585,0,0.035,0.02,body);
+    bx(-0.79,-0.52,0.49,0,0.3,0.42,body); bx(-0.85,-0.5,0.655,0,0.02,0.44,ROOF);
+    for(const s of [-1,1]){ bx(0.57,0.795,0.42,s*0.212,0.24,0.006,body); bx(-0.74,-0.56,0.565,s*0.211,0.09,0.004,WIN); bx(-0.5,0.26,0.16,s*0.224,0.018,0.012,ROD);
+      cx(0.44,0.6,0.19,s*0.24,0.052,body,8); cx(0.83,0.88,0.215,s*0.13,0.025,DK,6); bx(-0.83,0.57,0.312,s*0.217,0.016,0.004,ln); }
+    wh([0.2,-0.12,-0.44],0.15,C(L.wheel)); wh([0.68,0.5],0.062,DK); };
+  /* Britannia far away (E2): high running board, tapered boiler, smokebox and chimney, big deflectors, round-topped
+     firebox, cab and roof, cylinders, rods and wheels; the BR1 tender with its high coal space */
+  HERO_FAR.brit=(K,part)=>{ const {bx,cx,up,wh,C,body,L}=K, DK=C('#222'), SMK=C(L.smokebox||'#1d1d1d'), WIN=C('#26303a'), ROD=C('#9a9a9a'), RED=C('#b3262b'), ROOF=C('#2b2928'), LN=C(L.lining||'#e8892e');
+    if(part==='tender'){ bx(-0.385,0.36,0.36,0,0.28,0.42,body); bx(-0.37,0.345,0.47,0,0.008,0.424,LN); bx(-0.22,0.34,0.57,0,0.13,0.31,body); bx(-0.21,0.33,0.64,0,0.02,0.28,C('#151515'));
+      bx(-0.38,0.36,0.19,0,0.05,0.42,DK); wh([-0.26,0,0.26],0.08,body); bx(-0.41,-0.38,0.215,0,0.1,0.42,RED); return; }
+    bx(-0.84,0.6,0.338,0,0.016,0.43,DK); bx(0.6,0.81,0.262,0,0.016,0.43,DK); bx(0.8,0.83,0.215,0,0.1,0.42,RED);
+    cx(-0.2,0.56,0.475,0,0.142,body,10); cx(0.56,0.79,0.475,0,0.139,SMK,10); cx(-0.52,-0.2,0.475,0,0.153,body,10); bx(-0.52,-0.2,0.4,0,0.13,0.32,body);
+    up(0.672,0.64,0,0.037,0.05,C('#151515')); up(0.1,0.615,0,0.045,0.03,body);
+    bx(-0.78,-0.53,0.47,0,0.33,0.42,body); bx(-0.875,-0.475,0.655,0,0.02,0.44,ROOF); bx(-0.8,0.8,0.2,0,0.08,0.3,DK);
+    for(const s of [-1,1]){ bx(0.565,0.787,0.44,s*0.207,0.34,0.006,body); bx(-0.74,-0.56,0.565,s*0.211,0.1,0.004,WIN); bx(-0.42,0.33,0.15,s*0.222,0.018,0.012,ROD); cx(0.38,0.54,0.2,s*0.24,0.05,body,8); cx(0.83,0.88,0.215,s*0.13,0.025,DK,6); }
+    wh([0.27,-0.045,-0.36],0.137,body); wh([0.66,0.5],0.064,DK); wh([-0.62],0.074,DK); };
+  /* Peppercorn A1 far away (E2): high running board, long boiler, smokebox and double chimney, big deflectors, banjo
+     dome, round-topped firebox, cab and roof, cylinders, rods and wheels; the straight-sided tender */
+  HERO_FAR.a1pc=(K,part)=>{ const {bx,cx,up,wh,C,body,L}=K, DK=C('#222'), SMK=C(L.smokebox||'#1d1d1d'), WIN=C('#26303a'), ROD=C('#9a9a9a'), RED=C('#b3262b'), ROOF=C('#2b2928'), LN=C(L.lining||'#f1efe6');
+    if(part==='tender'){ bx(-0.385,0.36,0.385,0,0.33,0.42,body); bx(-0.37,0.345,0.52,0,0.008,0.424,LN); bx(-0.08,0.33,0.56,0,0.03,0.36,C('#151515'));
+      bx(-0.38,0.36,0.19,0,0.05,0.42,DK); wh([-0.26,0,0.26],0.085,body); bx(-0.41,-0.38,0.215,0,0.1,0.42,RED); return; }
+    bx(-0.84,0.6,0.335,0,0.016,0.43,DK); bx(0.6,0.81,0.262,0,0.016,0.43,DK); bx(0.8,0.83,0.215,0,0.1,0.42,RED);
+    cx(-0.2,0.56,0.48,0,0.145,body,10); cx(0.56,0.79,0.48,0,0.146,SMK,10); cx(-0.52,-0.2,0.48,0,0.153,body,10); bx(-0.52,-0.2,0.405,0,0.13,0.32,body);
+    bx(0.645,0.715,0.655,0,0.05,0.07,C('#151515')); bx(-0.07,0.13,0.63,0,0.03,0.09,body);
+    bx(-0.79,-0.54,0.48,0,0.32,0.42,body); bx(-0.875,-0.475,0.655,0,0.02,0.44,ROOF); bx(-0.8,0.8,0.2,0,0.08,0.3,DK);
+    for(const s of [-1,1]){ bx(0.565,0.79,0.45,s*0.207,0.33,0.006,body); bx(-0.74,-0.56,0.565,s*0.211,0.1,0.004,WIN); bx(-0.43,0.33,0.15,s*0.222,0.018,0.012,ROD); cx(0.38,0.54,0.2,s*0.24,0.05,body,8); cx(0.83,0.88,0.215,s*0.13,0.025,DK,6); }
+    wh([0.27,-0.05,-0.37],0.148,body); wh([0.66,0.5],0.065,DK); wh([-0.62],0.077,DK); };
   function heroFarSteam(G,t,kind){
     const L=liveryOf(t), C=h=>new THREE.Color(h), half=kind==='engF'?1:kind==='engR'?-1:0, o=half>0?-0.44:half<0?0.44:0;
     const keep=x=>!half||(half>0?x>=0:x<0), cut=(a,b)=>half>0?[Math.max(a,0),b]:half<0?[a,Math.min(b,0)]:[a,b];
@@ -8674,10 +8827,27 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       wz:0.19, rc:0.04, yc:0.175, lcr:0.4, K:[-0.035,0.205], V:[0.4,0.235], Le:0.13, build:(L,sp)=>heroF9(L,sp)},
     terrier:{rD:0.089, dx:[0.2,0,-0.2], main:1, small:[], places:1, tender:false, gear:'none',
       wz:0.19, rc:0.04, yc:0.1, lcr:0.3, build:(L,sp)=>heroTerrier(L,sp)},
+    /* Rocket (E2): one pair of 4'8" driving wheels, trailing wheels under the firebox, a four-wheeled tender; the
+       cylinders lean back and up at cyl (radians) from the driving axle, the crosshead on that line (its own pose) */
+    rocket:{rD:0.1, dx:[0.17], main:0, small:[[-0.2,0.052,'e'],[0.17,0.06,'t'],[-0.17,0.06,'t']], places:1, wz:0.19, rc:0.034, lcr:0.2, cyl:38*Math.PI/180,
+      build:(L,sp)=>heroRocket(L,sp), pose:(t,CP,o)=>heroRocketPose(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), tender:heroTris(e.ten), wheels:2*heroTris(e.drvR)+6*heroTris(e.whlR), rods:6*heroTris(e.box)+4*heroTris(e.pin)})},
     /* Class 08 (E2): 4'6" wheels, its motor geared to the axles inside the frames, so outside only the coupling rods
        show (posed like the Terrier's) */
     c08:{rD:0.085, dx:[0.17,-0.02,-0.21], main:1, small:[], places:1, tender:false, gear:'none',
       wz:0.19, rc:0.034, yc:0.1, lcr:0.3, build:(L,sp)=>heroC08(L,sp)},
+    /* Royal Scot (E2): 6'9" coupled wheels, a leading bogie and no trailing truck (the cab overhangs the last coupled axle);
+       the outside cylinders over the bogie drive the middle axle; outside Walschaerts gear; a six-wheeled tender */
+    rscot:{rD:0.15, dx:[0.2,-0.12,-0.44], main:1, small:[[0.68,0.062,'e'],[0.5,0.062,'e'],[0.26,0.082,'t'],[0,0.082,'t'],[-0.26,0.082,'t']],
+      wz:0.19, rc:0.05, yc:0.19, lcr:0.47, K:[0.04,0.215], V:[0.4,0.25], Le:0.152, build:(L,sp)=>heroRoyalScot(L,sp)},
+    /* Britannia (E2): 6'2" driving wheels, 3' bogie and 3'3.5" trailing and tender wheels, two outside cylinders with
+       Walschaerts gear (the return crank on the centre axle) */
+    brit:{rD:0.137, dx:[0.27,-0.045,-0.36], main:1, small:[[0.66,0.064,'e'],[0.5,0.064,'e'],[-0.62,0.074,'e'],[0.26,0.08,'t'],[0,0.08,'t'],[-0.26,0.08,'t']],
+      wz:0.19, rc:0.047, yc:0.2, lcr:0.33, K:[0.1,0.225], V:[0.355,0.255], Le:0.15, build:(L,sp)=>heroBrit(L,sp)},
+    /* Peppercorn A1 (E2): 6'8" driving wheels, 3'2" bogie, 3'8" trailing and 4'2" tender wheels; three cylinders, the
+       outside pair with Walschaerts gear driving the centre axle (the inside one is hidden between the frames) */
+    a1pc:{rD:0.148, dx:[0.27,-0.05,-0.37], main:1, small:[[0.66,0.065,'e'],[0.5,0.065,'e'],[-0.62,0.077,'e'],[0.26,0.085,'t'],[0,0.085,'t'],[-0.26,0.085,'t']],
+      wz:0.19, rc:0.05, yc:0.2, lcr:0.34, K:[0.1,0.22], V:[0.355,0.25], Le:0.15, build:(L,sp)=>heroA1pc(L,sp)},
     /* bogie and frame engines (step 2b) take two carriage places (cars), no tender, and pose their own parts (pose). c47: rD wheel radius,
        bog bogie centres (+-), wb half wheelbase, ax axles on each bogie. croc: frames at +-fx with axles ax round them (fh half span),
        pony axles at +-px (radius rP), jackshaft at frame-local (jx, jy) on the front frame (mirrored on the rear), crank radius rc,
@@ -9230,6 +9400,139 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       drvR:heroWheel(sp.rD,1,{...wc,th:0.03,seg:18,spokes:12,hub:0.28,weight:true,crank:sp.rc}), drvL:heroWheel(sp.rD,-1,{...wc,th:0.03,seg:18,spokes:12,hub:0.28,weight:true,crank:sp.rc}),
       whlR:heroWheel(1,1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3}), whlL:heroWheel(1,-1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3})};
   }
+  /* ---- Rocket 0-2-2 (1829, E2): Stephenson's famous little engine, as restored and replicated. One pair of big
+     wooden-spoked driving wheels at the front, small trailing wheels under the copper firebox, a yellow boiler barrel with
+     black bands, the tall white chimney on a little smokebox at the front, two cylinders steeply inclined at the back on
+     each side (on mounting plates against the boiler, their exhaust pipes running forward to the chimney), no cab (the
+     crew stood in the open); a four-wheeled tender with a big water barrel and a coal box. The connecting rods, crossheads
+     and piston rods are posed by heroRocketPose. About 3,500 triangles with wheels and rods. ---- */
+  const ROCKET_YB=0.27, ROCKET_RB=0.085;   /* boiler centre height and radius */
+  /* a point on the cylinder line (from the driving axle, back and up at angle sp.cyl): sv along it, o across it (up-forward) */
+  const heroRocketLine=(sp,sv,o=0)=>{ const c=Math.cos(sp.cyl), s=Math.sin(sp.cyl), ay=sp.rD+0.01; return [sp.dx[0]-c*sv+s*o, ay+s*sv+c*o]; };
+  function heroRocket(L,sp){
+    const c=heroCols(L), {C,body,BLK,DK,FR,STEEL,BRASS,COPPER,COAL,COAL2}=c, line=C(L.lining||'#161616'), WH=C(L.chimney||'#efece4'), WHd=WH.clone().multiplyScalar(0.82),
+      FB=C(L.firebox||'#9b5a34'), FBd=FB.clone().multiplyScalar(0.86), WOOD=C('#6e4a2c'), WOODd=C('#553823'), LEA=C('#3a2a1e'), BAR=C(L.barrel||'#c9952e'), BARd=BAR.clone().multiplyScalar(0.75), SOOT=C('#0a0a0a');
+    const G=new Geo(), k=heroKitSteam(G), {B,coneX,discX,rod3,plateZ,LZ}=k, YB=ROCKET_YB, RB=ROCKET_RB, X0=-0.155, X1=0.2, xd=sp.dx[0], xt=sp.small[0][0], ad=sp.rD+0.01, at=sp.small[0][1]+0.01;
+    const coneY=(G,x,z,y0,y1,r0,r1,col,seg=12)=>{ const kk=(r0-r1)/(y1-y0), l=Math.hypot(1,kk), N=a=>[Math.cos(a)/l,kk/l,Math.sin(a)/l], P=(y,r,a)=>[x+Math.cos(a)*r,y,z+Math.sin(a)*r];
+      for(let i=0;i<seg;i++){ const a0=i/seg*TAU, a1=(i+1)/seg*TAU; G.quad(P(y0,r0,a0),P(y0,r0,a1),P(y1,r1,a1),P(y1,r1,a0),col,N((a0+a1)/2),[N(a0),N(a1),N(a1),N(a0)]); } };
+    /* a cylinder between two points in an upright plane (z fixed), with end caps */
+    const cylXY=(p,q,z,r,col,seg=10,caps=true)=>{ const dx=q[0]-p[0], dy=q[1]-p[1], l=Math.hypot(dx,dy)||1, ux=dx/l, uy=dy/l, e1=[-uy,ux,0], N=a=>[e1[0]*Math.cos(a),e1[1]*Math.cos(a),Math.sin(a)], P=(o,a)=>[o[0]+e1[0]*Math.cos(a)*r,o[1]+e1[1]*Math.cos(a)*r,z+Math.sin(a)*r];
+      for(let i=0;i<seg;i++){ const a0=i/seg*TAU, a1=(i+1)/seg*TAU; G.quad(P(p,a0),P(p,a1),P(q,a1),P(q,a0),col,N((a0+a1)/2),[N(a0),N(a1),N(a1),N(a0)]);
+        if(caps){ G.tri([p[0],p[1],z],P(p,a0),P(p,a1),col,[-ux,-uy,0]); G.tri([q[0],q[1],z],P(q,a0),P(q,a1),col,[ux,uy,0]); } } };
+    /* ---- frames, axleboxes and springs, the wooden buffer beam with leather buffers, the drawbar to the tender ---- */
+    heroBoth(s=>{ B(-0.03,0.15,s*0.13,0.7,0.04,0.016,FR);
+      B(xd,ad,s*0.13,0.05,0.05,0.024,DK); for(const dd of [-0.034,0.034]) B(xd+dd,0.12,s*0.13,0.01,0.06,0.02,FR);
+      for(let q=0;q<3;q++) B(xd,0.178+q*0.009,s*0.13,0.14-q*0.04,0.008,0.02,DK); for(const dd of [-0.07,0.07]) rod3([xd+dd,0.178,s*0.13],[xd+dd*0.9,0.155,s*0.13],0.006,DK);
+      B(xt,at+0.012,s*0.13,0.045,0.045,0.022,DK); B(xt,0.115,s*0.13,0.06,0.05,0.012,FR);
+      for(let q=0;q<2;q++) B(xt,0.176+q*0.009,s*0.13,0.1-q*0.035,0.008,0.018,DK);
+      B(xd+0.115,0.07,s*0.17,0.014,0.05,0.026,DK); });   /* a guard iron in front of each driving wheel */
+    B(0.335,0.16,0,0.03,0.065,0.42,WOOD); B(0.351,0.16,0,0.003,0.05,0.4,WOODd);
+    heroBoth(s=>{ G.cyl(0.366,0.16,s*0.13,0.02,0.03,'x',LEA,8); G.cyl(0.383,0.16,s*0.13,0.022,0.006,'x',WOODd,8); });
+    B(-0.37,0.15,0,0.025,0.05,0.3,WOOD); B(-0.39,0.14,0,0.03,0.016,0.03,BLK);
+    B(0.07,0.15,0,0.03,0.03,0.26,FR); B(-0.31,0.15,0,0.03,0.03,0.26,FR);   /* frame stretchers */
+    /* ---- the boiler barrel with its black bands, a small smokebox at the front with its door, the tall white chimney ---- */
+    coneX(X0,X1,YB,0,RB,RB,body,18);
+    for(const x of [X0+0.008,-0.07,0.02,0.11,X1-0.008]) coneX(x-0.006,x+0.006,YB,0,RB+0.003,RB+0.003,line,18);
+    coneX(X1,0.258,YB-0.006,0,RB*0.94,RB*0.94,DK,16); discX(0.258,YB-0.006,0,RB*0.94,1,DK,16);
+    discX(0.2595,YB-0.02,0,0.045,1,C('#262626'),12); B(0.262,YB-0.02,0,0.004,0.008,0.05,STEEL); B(0.262,YB+0.03,0,0.006,0.01,0.012,STEEL);
+    const xc=0.228, ytop=0.66;
+    coneY(G,xc,0,YB+0.05,YB+0.115,0.062,0.038,WH,14); coneY(G,xc,0,YB+0.115,ytop,0.038,0.035,WH,14);
+    coneY(G,xc,0,ytop-0.02,ytop,0.041,0.043,WHd,14); coneY(G,xc,0,YB+0.15,YB+0.16,0.04,0.04,WHd,14);   /* the cap and a joint ring */
+    G.cyl(xc,ytop-0.004,0,0.034,0.006,'y',SOOT,10);
+    /* chimney stays to the frame front corners */
+    heroBoth(s=>rod3([xc,0.47,s*0.03],[0.33,0.2,s*0.18],0.006,BLK));
+    /* ---- the copper-coloured firebox at the back with its rounded top, door, water pipes, gauge glass and regulator ---- */
+    B(-0.243,0.237,0,0.176,0.17,0.2,FB); G.arc(-0.243,0.32,0,0.176,0.2,0.032,0.02,FB,6);
+    heroBoth(s=>{ for(const y of [0.18,0.24,0.3]) LZ(-0.243,y,s*0.1003,0.17,0.004,s,FBd); for(const x of [-0.32,-0.166]) LZ(x,0.237,s*0.1004,0.004,0.16,s,FBd);
+      rod3([-0.2,0.17,s*0.1],[-0.1,0.2,s*0.07],0.012,COPPER); rod3([-0.3,0.17,s*0.1],[-0.33,0.12,s*0.12],0.008,COPPER); });
+    B(-0.333,0.22,0,0.006,0.07,0.08,BLK); B(-0.338,0.22,0.02,0.006,0.008,0.02,STEEL); B(-0.334,0.2,0,0.004,0.02,0.05,C('#ff7a26'));
+    rod3([-0.336,0.27,-0.06],[-0.336,0.33,-0.06],0.008,BRASS); rod3([-0.33,0.335,0.04],[-0.37,0.38,0.05],0.006,STEEL);
+    /* safety valve with its spring balance on the boiler top, near the back; a whistle-less little manhole cover */
+    G.cyl(-0.12,YB+RB+0.012,0,0.018,0.03,'y',BRASS,8); G.dome(-0.12,YB+RB+0.027,0,0.018,BRASS,8,2);
+    rod3([-0.12,YB+RB+0.04,0],[-0.2,YB+RB+0.035,0],0.005,BRASS); G.cyl(-0.2,YB+RB+0.012,0,0.008,0.04,'y',BRASS,6);
+    G.cyl(0.08,YB+RB+0.004,0,0.022,0.01,'y',DK,10);
+    /* ---- the cylinders, steeply inclined at the back: on mounting plates braced to the boiler, guide bars below them,
+       black end covers; exhaust pipes forward along the boiler into the smokebox ---- */
+    const Lp=(sv,o)=>heroRocketLine(sp,sv,o);
+    heroBoth(s=>{ const z=s*0.235;
+      const plate=[Lp(0.13,-0.035),Lp(0.41,-0.045),Lp(0.41,0.045),Lp(0.13,0.035)];
+      plateZ(plate,s*0.21,0.01,FR);
+      for(const sv of [0.2,0.34]){ const p=Lp(sv,0); B(p[0],p[1],s*0.15,0.03,0.022,0.12,FR); }
+      cylXY(Lp(0.28,0),Lp(0.4,0),z,0.026,body,12);
+      cylXY(Lp(0.272,0),Lp(0.284,0),z,0.03,BLK,12); cylXY(Lp(0.396,0),Lp(0.41,0),z,0.03,BLK,12);
+      cylXY(Lp(0.262,0),Lp(0.272,0),z,0.014,STEEL,8);                                            /* gland */
+      B(...Lp(0.34,0.034),z,0.03,0.018,0.034,BLK);                                                  /* valve chest on top */
+      for(const o of [-0.02,0.02]){ const p=Lp(0.13,o), q=Lp(0.272,o); rod3([p[0],p[1],z],[q[0],q[1],z],0.007,STEEL); }
+      { const p=Lp(0.13,0); rod3([p[0],p[1],z],[p[0]+0.02,0.17,s*0.14],0.01,FR); }                    /* guide yoke to the frame */
+      const e=Lp(0.38,0.045); rod3([e[0],e[1],z],[-0.05,0.34,s*0.075],0.014,DK); rod3([-0.05,0.34,s*0.075],[0.205,0.325,s*0.05],0.014,DK); });
+    /* a little footplate at the back where the crew stood */
+    B(-0.36,0.165,0,0.06,0.01,0.3,WOOD); for(const z of [-0.08,0,0.08]) B(-0.36,0.171,z,0.058,0.002,0.003,WOODd);
+    /* ---- the tender: a four-wheeled wooden wagon (outside frames painted like the engine), a big water barrel on two
+       cradles, the coal box at the front, a hand brake, the leather hose to the engine; buffers at the back ---- */
+    const T=new Geo(), kT=heroKitSteam(T), XT=sp.small[1][0], tAt=sp.small[1][1]+0.01;
+    heroBoth(s=>{ kT.B(0,0.175,s*0.222,0.68,0.05,0.022,body); kT.LZ(0,0.175,s*0.2335,0.66,0.004,s,line);
+      for(const x of [XT,-XT]){ kT.B(x,tAt,s*0.222,0.045,0.04,0.024,DK); for(const dd of [-0.03,0.03]) kT.rod3([x+dd,0.15,s*0.222],[x+dd*0.6,tAt-0.01,s*0.222],0.008,DK);
+        for(let q=0;q<2;q++) kT.B(x,0.143-q*0.008,s*0.222,0.12-q*0.04,0.007,0.018,DK); } });
+    for(const d of [1,-1]) kT.B(d*0.345,0.175,0,0.03,0.05,0.47,body);
+    kT.B(0,0.206,0,0.66,0.014,0.42,WOOD); for(let q=-3;q<=3;q++) kT.B(0,0.2135,q*0.06,0.64,0.002,0.004,WOODd);
+    const xb0=-0.29, xb1=0.12, xbm=(xb0+xb1)/2, yb=0.32, rb0=0.088, rb1=0.104;
+    for(const x of [xb0+0.07,xb1-0.07]){ kT.B(x,0.235,0,0.035,0.045,0.3,WOOD); }
+    kT.coneX(xb0,xbm,yb,0,rb0,rb1,BAR,16); kT.coneX(xbm,xb1,yb,0,rb1,rb0,BAR,16);
+    for(const f of [0.04,0.3,0.7,0.96]){ const x=xb0+(xb1-xb0)*f, r=rb0+(rb1-rb0)*(1-Math.abs(2*f-1))+0.003; kT.coneX(x-0.006,x+0.006,yb,0,r,r,BLK,16); }
+    kT.discX(xb0,yb,0,rb0,-1,BARd,16); kT.discX(xb1,yb,0,rb0,1,BARd,16);
+    T.cyl(xbm,yb+rb1,0,0.022,0.012,'y',BLK,8); T.cyl(xb1+0.01,yb-0.06,0,0.008,0.02,'x',BRASS,6);
+    kT.rod3([xb1+0.012,yb-0.06,0],[0.36,0.22,0.06],0.016,LEA); kT.rod3([0.36,0.22,0.06],[0.4,0.2,0.08],0.016,LEA);
+    /* coal box */
+    for(const s of [1,-1]) kT.B(0.245,0.245,s*0.185,0.16,0.065,0.012,WOOD);
+    kT.B(0.325,0.245,0,0.012,0.065,0.38,WOOD); kT.B(0.165,0.245,0,0.012,0.065,0.38,WOOD);
+    kT.B(0.245,0.255,0,0.15,0.03,0.36,COAL);
+    for(let q=0;q<9;q++) T.pyr(0.18+((q*37)%14)/100,0.27,(((q*53)%100)/100-0.5)*0.3,0.022,0.02,q%2?COAL2:COAL);
+    kT.rod3([0.31,0.2,0.2],[0.33,0.39,0.2],0.009,BLK); T.cyl(0.33,0.395,0.2,0.014,0.012,'y',BLK,8);
+    kT.B(0.36,0.17,0,0.03,0.016,0.03,BLK);
+    heroBoth(s=>{ T.cyl(-0.375,0.175,s*0.13,0.024,0.03,'x',LEA,8); T.cyl(-0.393,0.175,s*0.13,0.026,0.006,'x',WOODd,8); });
+    const wc=heroWC(c,{rim:C(L.wheel||'#e2b83a'),rimIn:C(L.wheel||'#e2b83a').multiplyScalar(0.75)});
+    return {eng:G, ten:T,
+      drvR:heroWheel(sp.rD,1,{...wc,th:0.03,seg:20,spokes:12,hub:0.2,crank:sp.rc}), drvL:heroWheel(sp.rD,-1,{...wc,th:0.03,seg:20,spokes:12,hub:0.2,crank:sp.rc}),
+      whlR:heroWheel(1,1,{...wc,rimIn:null,th:0.03,seg:10,spokes:8,hub:0.28}), whlL:heroWheel(1,-1,{...wc,rimIn:null,th:0.03,seg:10,spokes:8,hub:0.28})};
+  }
+  /* Rocket on the rails: one rigid engine on its driving and trailing axles (pitched to the track under both, then lowered
+     or raised so they stand on the rail heads), the tender on its own place with its wheels on springs. The connecting rod
+     runs from the crank pin to the crosshead, which slides on the inclined cylinder line (in-line slider crank). */
+  function heroRocketPose(t,CP,o){
+    const sp=HERO_SPEC[t.type], E=heroGeo(t), mx=HERO.max; if(!hO){ hO=new THREE.Object3D(); hO.rotation.order='YZX'; }
+    const f=CP[0][1], r=CP[0][2], c=trailPoint(t,sp.mid*TS);
+    const fx=f.x/TS, fz=f.y/TS, rx=r.x/TS, rz=r.y/TS, ns=Math.abs(fz-rz)>Math.abs(fx-rx), yf=railY(fx,fz,null,ns), yr=railY(rx,rz,null,ns);
+    hO.position.set(c.x/TS,(yf+yr)/2+WHEEL_LIFT,c.y/TS); hO.rotation.set(0,-Math.atan2(fz-rz,fx-rx),Math.atan2(yf-yr,Math.hypot(fx-rx,fz-rz)||1)); hO.scale.setScalar(TRAIN_K); hO.updateMatrix(); hE.copy(hO.matrix);
+    const run=HERO.run.get(t), d=run?run.d:0, th=d/(sp.rD*TRAIN_K);
+    const info={id:t.id, type:t.type, d:HERO.on.get(t), x:hO.position.x, y:hO.position.y, z:hO.position.z, yaw:hO.rotation.y, run:d, angle:th, rWheel:sp.rD*TRAIN_K, culled:false};
+    HERO.info.push(info);
+    { const tm=o.cars[1]; hO.position.copy(tm.position); hO.rotation.copy(tm.rotation); hO.updateMatrix(); hTn.copy(hO.matrix); }
+    if(heroCull(info)) return;
+    const nsH=Math.abs(t.heading.y)>Math.abs(t.heading.x), railTop=(x,z)=>railY(x,z,null,nsH)+0.09*TRACK_K;
+    const gap=(x,rr)=>{ hV.set(x,rr+0.01,0).applyMatrix4(hE); return hV.y-rr*TRAIN_K-railTop(hV.x,hV.z); };
+    const xF=sp.dx[0], [xR,rR]=sp.small[0];
+    { const tilt=clamp((gap(xR,rR)-gap(xF,sp.rD))/((xF-xR)*TRAIN_K),-0.05,0.05); if(tilt) hE.multiply(hL.makeRotationZ(tilt));
+      const dy=clamp((gap(xF,sp.rD)+gap(xR,rR))/2,-0.03,0.03); hE.elements[13]-=dy; info.y-=dy; }
+    const spring=(b,s,rr)=>{ const e=hW.elements, Bm=b.elements, g=e[13]-rr*TRAIN_K-railTop(e[12]-s*sp.wz*Bm[8],e[14]-s*sp.wz*Bm[10]); e[13]-=clamp(g,-0.03,0.03); return hW; };
+    heroPut('eng|'+E.key,E.eng,mx,hE); heroPut('ten|'+E.key,E.ten,mx,hTn);
+    const nb=mx*HERO_BOXES*2, npn=mx*16, ay=sp.rD+0.01, ca=Math.cos(sp.cyl), sa=Math.sin(sp.cyl);
+    const rod=(x0,y0,x1,y1,z,h,w,col=HERO_STEEL)=>{ const dx=x1-x0, dy=y1-y0; heroPut('box',E.box,nb,hAt(hE,(x0+x1)/2,(y0+y1)/2,z,Math.atan2(dy,dx),Math.hypot(dx,dy)||1e-4,h,w),col); };
+    const pin=(x,y,z,rr,len)=>heroPut('pin',E.pin,npn,hAt(hE,x,y,z,0,rr,rr,len));
+    for(const s of [1,-1]){
+      const side=s>0?'R':'L', z=s*sp.wz, psi=(s>0?0:Math.PI/2)-th;   /* the right-hand crank leads by a quarter turn */
+      const j=heroPut('drv'+side+'|'+E.key,E['drv'+side],mx*2,hAt(hE,xF,ay,z,psi)); if(V3.wheelLog) heroWheelLog(t,hW,sp.rD,hE,s*sp.wz);
+      if(s>0){ info.wheelIdx=j; info.wheelPool='drvR|'+E.key; HERO.bases[HERO.info.length-1].copy(hE); }
+      for(const [x,rr,on] of sp.small){ const b=on==='t'?hTn:hE; hAt(b,x,rr+0.01,z,-d/(rr*TRAIN_K),rr,rr,1); heroPut('whl'+side+'|'+E.key,E['whl'+side],mx*sp.small.length,spring(b,s,rr)); if(V3.wheelLog) heroWheelLog(t,hW,rr,b,s*sp.wz); }
+      /* crank pin, then the crosshead on the cylinder line (from the axle, back and up): s = w.u + sqrt(l^2 - |w x u|^2) */
+      const wx=sp.rc*Math.cos(psi), wy=sp.rc*Math.sin(psi), Px=xF+wx, Py=ay+wy, wu=-wx*ca+wy*sa, wn=wx*sa+wy*ca, sv=wu+Math.sqrt(sp.lcr*sp.lcr-wn*wn);
+      const X=xF-ca*sv, Y=ay+sa*sv;
+      rod(Px,Py,X,Y,s*0.237,0.013,0.008,HERO_POLISH);                                                   /* connecting rod */
+      heroPut('box',E.box,nb,hAt(hE,X,Y,s*0.235,Math.atan2(sa,-ca),0.04,0.026,0.018),HERO_STEEL);        /* crosshead between the guide bars */
+      rod(X-ca*0.02,Y+sa*0.02,xF-ca*0.27,ay+sa*0.27,s*0.235,0.008,0.008);                                 /* piston rod, into the cylinder */
+      pin(Px,Py,s*0.231,0.01,0.03); pin(X,Y,s*0.244,0.007,0.018);
+      if(s>0){ info.rod=[+((Px+X)/2).toFixed(4),+((Py+Y)/2).toFixed(4)]; info.xh=[+X.toFixed(5),+Y.toFixed(5)]; }
+    }
+  }
   /* ---- Class 08 shunter (1953, E2): a 0-6-0 diesel-electric, a long low bonnet (grilled doors, the radiator at the
      front, a sloping top front edge) and a tall cab at the back with big windows front and back and a curved roof; BR
      green, wasp stripes on both ends, red buffer beams with big buffers. About 4,000 triangles with wheels and rods. ---- */
@@ -9315,6 +9618,309 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     const wc=heroWC(c,{rim:C('#1c1c1c'),rimIn:C('#121212')});
     return {eng:G,
       drvR:heroWheel(sp.rD,1,{...wc,th:0.03,seg:18,spokes:10,hub:0.28,weight:true,crank:sp.rc}), drvL:heroWheel(sp.rD,-1,{...wc,th:0.03,seg:18,spokes:10,hub:0.28,weight:true,crank:sp.rc}),
+      whlR:heroWheel(1,1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3}), whlL:heroWheel(1,-1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3})};
+  }
+  /* ---- Royal Scot 4-6-0 (1927, in its rebuilt look; E2, sold on its own as trainmasters.engine.rscot): an LMS three-cylinder
+     express in two carriage places with a tender. A leading bogie and three coupled axles on 6'9" spoked wheels, no trailing
+     truck (the cab overhangs the last coupled axle); outside cylinders over the bogie driving the middle axle, outside
+     Walschaerts gear; a high straight running board with no splashers, dropping in a curve ahead of the cylinders; a taper
+     boiler with a top feed, a Belpaire firebox, a short double chimney and curved-top smoke deflectors; a side-window cab;
+     a Fowler-style tender with coal rails. Crimson lake lined in gold edged with black; no crest, name or number. ---- */
+  function heroRoyalScot(L,sp){
+    const c=heroCols(L), {C,body,bodyDk,line,BLK,DK,FR,SMK,STEEL,BRASS,WIN,ROOF,COAL,COAL2}=c;
+    const YB=0.455, RF=0.138, RS=0.12, X0=-0.21, X1=0.56, RBY=0.33, CF=-0.522, CB=-0.79, CW=0.205, EAVE=0.645;
+    const Rb=x=>RF+(RS-RF)*(x-X0)/(X1-X0);
+    const G=new Geo(), k=heroKitSteam(G), {B,coneX,discX,rod3,plateZ,LZ}=k;
+    /* a gold line edged with black, flat on a side at z (facing s) */
+    const gl=(x,y,z,sx,sy,s)=>{ LZ(x,y,z,sx+(sx<sy?0.005:0),sy+(sx<sy?0:0.005),s,BLK); LZ(x,y,z+s*0.0004,sx,sy,s,line); };
+    /* ---- frames, bogie, brake blocks, sand pipes, guard irons ---- */
+    heroBoth(s=>B(-0.01,0.21,s*0.15,1.6,0.15,0.014,FR));
+    B(0.59,0.095,0,0.24,0.04,0.27,FR);
+    heroBoth(s=>{ B(0.59,0.085,s*0.145,0.3,0.05,0.012,FR); for(const x of [0.68,0.5]) B(x,0.072,s*0.226,0.044,0.044,0.016,DK); B(0.59,0.1,s*0.226,0.2,0.012,0.014,DK); B(0.59,0.118,s*0.226,0.06,0.03,0.018,DK); });
+    for(const x of sp.dx) heroBoth(s=>B(x-sp.rD-0.012,0.1,s*0.19,0.016,0.07,0.03,DK));
+    heroBoth(s=>{ for(const x of sp.dx.slice(0,2)) rod3([x+sp.rD+0.024,RBY-0.01,s*0.172],[x+sp.rD+0.008,0.03,s*0.185],0.008,DK); B(0.775,0.1,s*0.19,0.012,0.12,0.022,FR);
+      for(const x of sp.dx) B(x,sp.rD+0.012,s*0.158,0.05,0.05,0.016,DK); });   /* axleboxes in the frames */
+    /* outside cylinders (clad, lined) and valve chests over the bogie; drain cocks, slide bars, motion bracket, the
+       expansion link's bracket and the reach rod back to the cab */
+    heroBoth(s=>{ const z=s*0.24, yc=sp.yc;
+      coneX(0.44,0.6,yc,z,0.052,0.052,body,12); discX(0.6,yc,z,0.052,1,BLK,12); discX(0.44,yc,z,0.052,-1,BLK,12);
+      for(const x of [0.449,0.591]) coneX(x-0.004,x+0.004,yc,z,0.0545,0.0545,line,10,-2.4,2.4);
+      coneX(0.43,0.615,yc+0.084,z-s*0.008,0.033,0.033,body,10); discX(0.615,yc+0.084,z-s*0.008,0.033,1,BLK,10); discX(0.43,yc+0.084,z-s*0.008,0.033,-1,BLK,10);
+      B(0.49,yc-0.06,z,0.01,0.022,0.008,BRASS); B(0.55,yc-0.06,z,0.01,0.022,0.008,BRASS);
+      B(0.35,yc+0.026,z,0.17,0.01,0.014,STEEL); B(0.35,yc-0.026,z,0.17,0.01,0.014,STEEL);
+      B(0.27,0.305,s*0.226,0.024,0.05,0.05,FR); B(0.262,0.25,s*0.243,0.012,0.07,0.012,FR);
+      B(sp.K[0],sp.K[1]+0.036,s*0.25,0.016,0.024,0.02,FR); B(sp.K[0],0.29,s*0.236,0.02,0.05,0.012,FR);
+      B(-0.24,0.304,s*0.226,0.56,0.008,0.008,STEEL); });
+    /* ---- the high running board, dropping in a curve ahead of the cylinders to the buffer beam; lined valances ---- */
+    B(-0.13,RBY,0,1.4,0.014,0.43,DK);
+    { const N=4, xa=0.57, xb=0.69, yb=0.25, Y=t=>RBY-(RBY-yb)*(1-Math.cos(Math.PI*t))/2;
+      for(let i=0;i<N;i++){ const t0=i/N, t1=(i+1)/N, x0=xa+(xb-xa)*t0, x1=xa+(xb-xa)*t1, y0=Y(t0), y1=Y(t1);
+        G.hexa([[x0,y0-0.007,-0.215],[x1,y1-0.007,-0.215],[x1,y1-0.007,0.215],[x0,y0-0.007,0.215],[x0,y0+0.007,-0.215],[x1,y1+0.007,-0.215],[x1,y1+0.007,0.215],[x0,y0+0.007,0.215]],DK);
+        heroBoth(s=>plateZ([[x0,y0-0.028],[x1,y1-0.028],[x1,y1+0.007],[x0,y0+0.007]],s*0.217,0.006,body)); } }
+    B(0.75,0.25,0,0.12,0.014,0.43,DK);
+    heroBoth(s=>{ const z=s*0.217; B(-0.13,RBY-0.017,z,1.4,0.022,0.006,body); gl(-0.13,RBY-0.017,s*0.2203,1.4,0.0035,s); B(0.75,0.239,z,0.12,0.022,0.006,body); });
+    heroBeam(k,c,0.815,1);
+    heroBoth(s=>{ B(0.74,0.17,s*0.212,0.05,0.006,0.03,DK); B(0.74,0.205,s*0.222,0.006,0.075,0.006,DK); });
+    /* ---- smokebox on its saddle, the door with hinges and dart, a short double chimney ---- */
+    B(0.66,0.3,0,0.18,0.09,0.17,BLK);
+    coneX(0.555,0.78,YB,0,RS+0.008,RS+0.008,SMK,20); coneX(0.778,0.786,YB,0,RS+0.012,RS+0.012,SMK,20);
+    coneX(0.786,0.797,YB,0,RS+0.002,RS-0.02,SMK,20); discX(0.797,YB,0,RS-0.02,1,SMK,20);
+    for(const dy of [0.045,-0.045]) B(0.798,YB+dy,0,0.005,0.012,0.14,C('#2c2c2c'));
+    B(0.802,YB,0,0.01,0.02,0.02,STEEL); B(0.81,YB,0,0.005,0.006,0.045,STEEL);
+    B(0.792,YB+RS-0.02,0,0.008,0.024,0.012,BLK); rod3([0.793,YB+0.08,-0.065],[0.793,YB+0.08,0.065],0.007,STEEL);
+    const cy0=YB+RS+0.008;
+    B(0.675,cy0+0.003,0,0.125,0.014,0.08,SMK);
+    for(const x of [0.651,0.699]){ G.cyl(x,cy0+0.024,0,0.031,0.036,'y',BLK,10); G.cyl(x,cy0+0.046,0,0.035,0.008,'y',BLK,10); }
+    B(0.675,cy0+0.024,0,0.048,0.036,0.062,BLK); B(0.675,cy0+0.046,0,0.048,0.008,0.07,BLK); B(0.675,cy0+0.0505,0,0.1,0.002,0.05,C('#060606'));
+    /* ---- smoke deflectors with a curved top front, turned in at the top, lined, with stays to the smokebox ---- */
+    heroBoth(s=>{ const z=s*0.211, R=0.07, cx0=0.795-R, cy0=0.555-R, pts=[[0.57,RBY-0.012],[0.69,0.243],[0.795,0.243]];
+      for(let i=0;i<=5;i++){ const a=Math.PI/2*i/5; pts.push([cx0+Math.cos(a)*R,cy0+Math.sin(a)*R]); }
+      pts.push([0.57,0.555]); plateZ(pts,z,0.005,body);
+      G.hexa([[0.57,0.551,s*0.2135],[0.72,0.551,s*0.2135],[0.72,0.551,s*0.2085],[0.57,0.551,s*0.2085],[0.57,0.566,s*0.199],[0.72,0.566,s*0.199],[0.72,0.566,s*0.194],[0.57,0.566,s*0.194]],body);
+      gl(0.65,0.538,s*0.2138,0.13,0.0035,s); gl(0.784,0.4,s*0.2138,0.0035,0.13,s);
+      rod3([0.64,0.52,s*0.207],[0.64,YB+0.03,s*0.126],0.006,body); rod3([0.75,0.47,s*0.207],[0.75,YB,s*0.132],0.006,body); });
+    /* ---- taper boiler: lined bands, the top feed with its clack pipes, handrails on stanchions ---- */
+    coneX(X0,X1,YB,0,RF,RS,body,20);
+    for(const x of [0.44,0.25,0.06,-0.12]){ coneX(x-0.008,x+0.008,YB,0,Rb(x)+0.003,Rb(x)+0.003,line,12,-2.0,2.0); coneX(x-0.0035,x+0.0035,YB,0,Rb(x)+0.0045,Rb(x)+0.0045,BLK,12,-2.0,2.0); }
+    coneX(0.546,0.558,YB,0,RS+0.004,RS+0.004,line,14,-2.0,2.0);
+    G.dome(0.36,YB+Rb(0.36)-0.008,0,0.04,body,8,2,0.5); heroBoth(s=>rod3([0.36,YB+Rb(0.36)+0.004,s*0.024],[0.345,YB+0.06,s*(Rb(0.345)-0.004)],0.009,body));
+    heroBoth(s=>{ const zb=x=>Math.sqrt(Rb(x)**2-0.07**2)+0.022; rod3([0.555,YB+0.07,s*zb(0.555)],[-0.2,YB+0.07,s*zb(-0.2)],0.007,STEEL);
+      for(const x of [0.45,0.2,-0.05]) B(x,YB+0.07,s*(zb(x)-0.012),0.006,0.006,0.024,STEEL); });
+    /* ---- Belpaire firebox: square shoulders, lined panels, washout plugs, safety valves and whistle ---- */
+    B(-0.365,0.455,0,0.3,0.25,0.29,body); G.arc(-0.365,0.58,0,0.3,0.29,0.03,0.03,body,6);
+    heroBoth(s=>{ const z=s*0.1455; gl(-0.365,0.555,z,0.27,0.0035,s); gl(-0.365,0.35,z,0.27,0.0035,s); gl(-0.232,0.4525,z,0.0035,0.205,s); gl(-0.498,0.4525,z,0.0035,0.205,s);
+      for(const x of [-0.29,-0.4]) B(x,0.575,s*0.138,0.012,0.01,0.012,BRASS); });
+    B(-0.3,0.613,0,0.08,0.01,0.04,body); for(const x of [-0.28,-0.32]){ G.cyl(x,0.63,0,0.012,0.026,'y',BRASS,8); G.cyl(x,0.645,0,0.007,0.006,'y',BRASS,6); }
+    G.cyl(-0.47,0.622,0.05,0.004,0.03,'y',BRASS,5); G.cyl(-0.47,0.645,0.05,0.011,0.02,'y',BRASS,8);
+    /* ---- the cab: spectacle plate with windows, side sheets with two windows each, lined panels, roof, interior, steps ---- */
+    heroBoth(s=>{ B(CF,0.48,s*0.18,0.012,0.31,0.06,body); B(CF+0.007,0.565,s*0.178,0.002,0.06,0.032,WIN); });
+    B(CF,0.628,0,0.012,0.034,0.3,body);
+    heroBoth(s=>{ const z=s*CW;
+      B(-0.656,0.405,z,0.268,0.15,0.012,body); B(CF-0.018,0.555,z,0.036,0.15,0.012,body); B(-0.638,0.555,z,0.014,0.15,0.012,body); B(-0.738,0.555,z,0.022,0.15,0.012,body); B(-0.643,0.632,z,0.242,0.024,0.012,body);
+      B(-0.588,0.556,s*(CW-0.0015),0.064,0.118,0.006,WIN); B(-0.688,0.556,s*(CW-0.0015),0.078,0.118,0.006,WIN); B(-0.588,0.556,s*(CW+0.0055),0.004,0.118,0.003,BLK);
+      gl(-0.656,0.462,s*(CW+0.0065),0.23,0.0035,s); gl(-0.656,0.348,s*(CW+0.0065),0.23,0.0035,s); gl(CF-0.022,0.405,s*(CW+0.0065),0.0035,0.11,s); gl(-0.77,0.405,s*(CW+0.0065),0.0035,0.11,s);
+      rod3([-0.752,0.33,s*(CW+0.009)],[-0.752,0.6,s*(CW+0.009)],0.007,STEEL); rod3([CB-0.008,0.33,s*CW],[CB-0.008,0.58,s*CW],0.007,STEEL);
+      B(-0.785,0.245,s*0.214,0.06,0.006,0.03,DK); B(-0.785,0.175,s*0.214,0.06,0.006,0.03,DK); B(-0.757,0.215,s*0.222,0.006,0.1,0.006,DK); B(-0.813,0.215,s*0.222,0.006,0.1,0.006,DK); });
+    G.arc(-0.665,EAVE,0,0.37,0.44,0.035,0.015,ROOF,8); B(-0.665,EAVE+0.038,0,0.08,0.012,0.06,ROOF); heroBoth(s=>B(-0.665,EAVE+0.008,s*0.19,0.35,0.005,0.006,BLK));
+    B(CF-0.012,0.47,0,0.01,0.25,0.26,BLK); B(CF-0.019,0.41,0,0.003,0.04,0.06,C('#ff8a2a')); B(-0.83,RBY-0.008,0,0.03,0.008,0.3,DK);
+    /* sandbox fillers and mechanical lubricators on the running board */
+    heroBoth(s=>{ B(0.1,RBY+0.015,s*0.19,0.022,0.014,0.022,body); B(-0.15,RBY+0.015,s*0.19,0.022,0.014,0.022,body);
+      B(0.4,RBY+0.024,s*0.178,0.06,0.034,0.032,BLK); B(0.44,RBY+0.016,s*0.178,0.016,0.02,0.016,BRASS); B(-0.02,RBY+0.02,s*0.18,0.05,0.026,0.03,BLK); });
+    /* ---- the Fowler-style tender: low flat sides with a beaded top, coal rails, the coal behind a front plate with tool
+       boxes, the tank top and water filler at the back; lined panels ---- */
+    const T=new Geo(), kt=heroKitSteam(T), {B:TB,rod3:trod,LZ:TLZ}=kt;
+    const tgl=(x,y,z,sx,sy,s)=>{ TLZ(x,y,z,sx+(sx<sy?0.005:0),sy+(sx<sy?0:0.005),s,BLK); TLZ(x,y,z+s*0.0004,sx,sy,s,line); };
+    heroTenderFrame(kt,c,[-0.26,0,0.26]);
+    TB(-0.012,0.355,0,0.736,0.27,0.41,body);
+    heroBoth(s=>{ T.hexa([[-0.38,0.484,s*0.205],[0.356,0.484,s*0.205],[0.356,0.484,s*0.196],[-0.38,0.484,s*0.196],[-0.38,0.5,s*0.212],[0.356,0.5,s*0.212],[0.356,0.5,s*0.2],[-0.38,0.5,s*0.2]],body);   /* the beaded top */
+      tgl(-0.012,0.465,s*0.2056,0.68,0.0035,s); tgl(-0.012,0.248,s*0.2056,0.68,0.0035,s); tgl(0.326,0.3565,s*0.2056,0.0035,0.21,s); tgl(-0.35,0.3565,s*0.2056,0.0035,0.21,s);
+      for(const y of [0.53,0.56,0.588]) trod([-0.13,y,s*0.202],[0.352,y,s*0.202],0.007,bodyDk);   /* coal rails */
+      for(const x of [-0.13,0.03,0.19,0.345]) trod([x,0.5,s*0.202],[x,0.594,s*0.202],0.008,bodyDk);
+      trod([0.37,0.25,s*0.2],[0.37,0.48,s*0.2],0.007,STEEL); trod([-0.388,0.25,s*0.17],[-0.388,0.49,s*0.17],0.006,STEEL);
+      TB(0.335,0.53,s*0.15,0.06,0.04,0.09,body); });   /* handrails; tool boxes on the front plate */
+    TB(0.358,0.53,0,0.01,0.06,0.33,body);   /* coal plate */
+    T.arc(0.11,0.497,0,0.47,0.38,0.085,0.03,COAL,8);
+    for(let q=0;q<11;q++){ const x=-0.1+((q*37)%45)/100, z=((((q*53)%100)/100)-0.5)*0.3; T.pyr(x,0.497+0.085*(1-(z/0.19)**2)-0.01,z,0.02,0.018,q%2?COAL2:COAL); }
+    TB(-0.25,0.493,0,0.25,0.008,0.39,DK); T.cyl(-0.29,0.505,0,0.035,0.02,'y',DK,10); TB(-0.29,0.517,0,0.05,0.006,0.008,STEEL);
+    TB(0.364,0.36,0,0.01,0.26,0.39,bodyDk); for(let q=0;q<4;q++) TB(-0.386,0.28+q*0.055,0,0.004,0.004,0.14,STEEL);
+    heroBeam(kt,c,-0.392,-1,{lamps:false});
+    const wc=heroWC(c);
+    return {eng:G, ten:T,
+      drvR:heroWheel(sp.rD,1,{...wc,th:0.035,seg:18,spokes:15,hub:0.24,weight:true,crank:sp.rc}), drvL:heroWheel(sp.rD,-1,{...wc,th:0.035,seg:18,spokes:15,hub:0.24,weight:true,crank:sp.rc}),
+      whlR:heroWheel(1,1,{...wc,rimIn:null,th:0.03,seg:9,spokes:7,hub:0.28}), whlL:heroWheel(1,-1,{...wc,rimIn:null,th:0.03,seg:9,spokes:7,hub:0.28})};
+  }
+  /* ---- Britannia 4-6-2 (1951, E2, the second engine sold on its own): BR Standard Class 7 express Pacific. Two outside
+     cylinders with Walschaerts gear, 6'2" spoked driving wheels left bare under a high running board (no splashers), a
+     leading bogie and trailing truck, big smoke deflectors with hand holds cut through them, a single chimney, a tapered
+     boiler with a dome and top feed, a round-topped firebox, a cab with a curved roof and two side windows, and a BR1-style
+     tender with a high coal space. Brunswick green with orange-and-black lining, black smokebox and frames, red beams.
+     Class name only: no number, no crest. About 6,000 triangles with wheels and rods. ---- */
+  function heroBrit(L,sp){
+    const c=heroCols(L), {C,body,bodyDk,line,BLK,DK,FR,SMK,STEEL,BRASS,WIN,ROOF,COAL,COAL2}=c, YB=0.475, RB=0.133, RF=0.148, RBY=0.338, LB=C('#0d0d0d'), HR=C('#c9ccc8'), GLINT=C('#41505c');
+    const G=new Geo(), k=heroKitSteam(G), {B,coneX,discX,rod3,plateZ,LZ}=k;
+    /* BR lining on a flat side (facing s at z): a black band edged with fine orange lines, round a panel */
+    const linePanel=(LZf,x0,x1,y0,y1,z,s)=>{ const w=0.007, o=0.0022;
+      for(const [cx,cy,sx,sy] of [[(x0+x1)/2,y0,x1-x0,0],[(x0+x1)/2,y1,x1-x0,0],[x0,(y0+y1)/2,0,y1-y0],[x1,(y0+y1)/2,0,y1-y0]]){
+        LZf(cx,cy,z,sx+w+2*o,sy+w+2*o,s,line); LZf(cx,cy,z+s*0.0004,sx+w,sy+w,s,LB); } };
+    /* frames, bogie, trailing truck, brake blocks, sand pipes, outside cylinders (lined) with valve chests, slide bars, the
+       motion bracket, the expansion link bracket and the reach rod (shared with the Duchess) */
+    heroChassis462(k,sp,{...c,body,band:line},{walsch:true});
+    /* outside steam pipes from the smokebox sides down to the valve chests, behind the deflectors */
+    heroBoth(s=>{ rod3([0.6,YB-0.05,s*0.118],[0.49,RBY-0.01,s*0.2],0.024,body); rod3([0.49,RBY-0.01,s*0.2],[0.47,0.3,s*0.226],0.024,body); });
+    /* the high running board, dropping in a curve to the buffer beam; its black valance edge */
+    B(-0.13,RBY,0,1.42,0.014,0.43,DK);
+    G.hexa([[0.6,RBY-0.007,-0.215],[0.7,0.255,-0.215],[0.7,0.255,0.215],[0.6,RBY-0.007,0.215],[0.6,RBY+0.007,-0.215],[0.7,0.269,-0.215],[0.7,0.269,0.215],[0.6,RBY+0.007,0.215]],DK);
+    B(0.755,0.262,0,0.11,0.014,0.43,DK);
+    heroBoth(s=>{ B(-0.13,RBY-0.013,s*0.2145,1.42,0.018,0.004,BLK); plateZ([[0.6,RBY-0.022],[0.7,0.24],[0.7,0.262],[0.6,RBY-0.004]],s*0.2145,0.004,BLK); B(0.755,0.25,s*0.2145,0.11,0.018,0.004,BLK); });
+    heroBeam(k,c,0.815,1);
+    heroBoth(s=>{ B(0.74,0.18,s*0.212,0.05,0.006,0.03,DK); B(0.74,0.215,s*0.222,0.006,0.075,0.006,DK); B(0.36,0.255,s*0.212,0.05,0.006,0.03,DK); B(0.36,0.29,s*0.222,0.006,0.075,0.006,DK); });   /* front steps */
+    /* smokebox on its saddle; the door with its hinges, dart handles, handrail and top lamp iron */
+    B(0.67,0.38,0,0.18,0.06,0.18,BLK);
+    coneX(0.56,0.782,YB,0,RB+0.006,RB+0.006,SMK,22); coneX(0.78,0.788,YB,0,RB+0.009,RB+0.009,SMK,22); coneX(0.788,0.797,YB,0,RB-0.004,RB-0.026,SMK,22); discX(0.797,YB,0,RB-0.026,1,SMK,22);
+    for(const dy of [0.05,-0.05]) B(0.798,YB+dy,0,0.005,0.012,0.15,C('#2c2c2c'));
+    B(0.802,YB,0,0.01,0.02,0.02,STEEL); B(0.81,YB,0,0.005,0.006,0.045,STEEL);
+    rod3([0.8,YB+0.075,-0.065],[0.8,YB+0.075,0.065],0.006,HR); B(0.794,YB+0.11,0,0.008,0.026,0.012,BLK);
+    /* a BR single chimney with a lip */
+    const ch=YB+RB+0.006; G.cyl(0.672,ch+0.008,0,0.04,0.022,'y',BLK,12); G.cyl(0.672,ch+0.03,0,0.033,0.036,'y',BLK,12); G.cyl(0.672,ch+0.05,0,0.039,0.01,'y',BLK,12); G.cyl(0.672,ch+0.0555,0,0.027,0.002,'y',C('#060606'),10);
+    /* the big smoke deflectors, standing on the running board and following its drop at the front, with two hand holds cut
+       right through each near the front (the Britannia's own mark); stays to the smokebox; turned in a little at the top */
+    heroBoth(s=>{ const z=s*0.207, th=0.005, X0=0.565, X1=0.787, H0=0.703, H1=0.758, R=(x0,x1,y0,y1)=>plateZ([[x0,y0],[x1,y0],[x1,y1],[x0,y1]],z,th,body);
+      plateZ([[X0,RBY+0.008],[0.7,0.27],[X1,0.27],[X1,0.5],[X0,0.5]],z,th,body);
+      R(X0,H0,0.5,0.523); R(H1,X1,0.5,0.523); R(X0,X1,0.523,0.548); R(X0,H0,0.548,0.571); R(H1,X1,0.548,0.571);
+      plateZ([[X0,0.571],[X1,0.571],[X1,0.592],[X1-0.016,0.608],[X0,0.608]],z,th,body);
+      G.hexa([[X0,0.604,s*0.2095],[X1-0.016,0.604,s*0.2095],[X1-0.016,0.604,s*0.2045],[X0,0.604,s*0.2045],[X0,0.616,s*0.2],[X1-0.016,0.616,s*0.2],[X1-0.016,0.616,s*0.195],[X0,0.616,s*0.195]],body);
+      for(const y of [0.5115,0.5595]) B((H0+H1)/2,y,s*0.2015,H1-H0+0.01,0.03,0.003,DK);   /* the recess behind each hand hold */
+      rod3([0.6,0.58,s*0.204],[0.6,YB+0.04,s*0.13],0.006,body); rod3([0.6,0.4,s*0.204],[0.6,YB-0.07,s*0.12],0.006,body); });
+    /* the tapered boiler with lined bands, the dome, the top feed and its clack pipes, handrails, washout plugs */
+    const Rb=x=>RB+(RF-RB)*(0.56-x)/0.76;
+    coneX(-0.2,0.56,YB,0,RF,RB,body,22);
+    for(const x of [0.44,0.25,0.06,-0.12]){ coneX(x-0.0075,x+0.0075,YB,0,Rb(x)+0.0025,Rb(x)+0.0025,line,10,-2.15,2.15); coneX(x-0.0045,x+0.0045,YB,0,Rb(x)+0.0035,Rb(x)+0.0035,LB,10,-2.15,2.15); }
+    coneX(0.548,0.562,YB,0,RB+0.003,RB+0.003,line,14,-2.15,2.15);
+    G.dome(0.1,YB+Rb(0.1)-0.008,0,0.046,body,10,3,0.6); G.cyl(0.1,YB+Rb(0.1)-0.004,0,0.046,0.012,'y',body,10);
+    B(0.34,YB+Rb(0.34)-0.002,0,0.07,0.02,0.05,body); heroBoth(s=>rod3([0.34,YB+0.13,s*0.022],[0.32,YB+0.06,s*0.118],0.009,body));
+    heroBoth(s=>{ const zb=x=>Math.sqrt(Rb(x)**2-0.07**2)+0.02; rod3([0.555,YB+0.07,s*zb(0.555)],[-0.5,YB+0.07,s*(zb(-0.2)+0.02)],0.007,HR);
+      for(const x of [0.45,0.2,-0.05]) B(x,YB+0.07,s*(zb(x)-0.012),0.006,0.006,0.024,STEEL); });
+    rod3([0.55,YB-0.035,-0.155],[-0.5,YB-0.035,-0.168],0.014,body);   /* the vacuum ejector pipe along the fireman's side */
+    /* the wide round-topped firebox over the rear coupled wheels (lined), Ross pop safety valves, whistle */
+    coneX(-0.52,-0.2,YB,0,RF+0.005,RF+0.005,body,22,-Math.PI/2-0.25,Math.PI/2+0.25);
+    heroBoth(s=>{ B(-0.36,0.41,s*0.14,0.32,0.15,0.04,body); linePanel(LZ,-0.505,-0.215,0.37,0.455,s*0.1605,s); }); B(-0.36,0.345,0,0.32,0.012,0.3,DK);
+    for(const x of [-0.27,-0.32]){ G.cyl(x,YB+RF+0.012,0,0.013,0.026,'y',STEEL,8); G.cyl(x,YB+RF+0.028,0,0.009,0.006,'y',STEEL,6); }
+    G.cyl(-0.47,YB+RF+0.01,0.06,0.004,0.03,'y',BRASS,5); G.cyl(-0.47,YB+RF+0.03,0.06,0.012,0.024,'y',BRASS,8);
+    /* lubricators and sandbox fillers on the running board */
+    heroBoth(s=>{ B(0.4,RBY+0.025,s*0.185,0.06,0.036,0.032,BLK); B(0.44,RBY+0.018,s*0.185,0.016,0.02,0.016,BRASS); B(0.1,RBY+0.015,s*0.19,0.03,0.016,0.024,body); B(-0.16,RBY+0.015,s*0.19,0.03,0.016,0.024,body); });
+    /* the BR standard cab: front plate with its windows, side sheets reaching below the running board with two windows in
+       frames and a lined panel, handrails and steps; the curved roof overhanging at the back */
+    B(-0.53,0.5,0,0.012,0.33,0.4,body); heroBoth(s=>{ B(-0.524,0.6,s*0.12,0.002,0.06,0.07,WIN); B(-0.5235,0.615,s*0.13,0.0015,0.006,0.03,GLINT); });
+    heroBoth(s=>{ const z=s*0.205;
+      B(-0.66,0.405,z,0.26,0.2,0.012,body); B(-0.545,0.565,z,0.03,0.12,0.012,body); B(-0.638,0.565,z,0.016,0.12,0.012,body); B(-0.755,0.565,z,0.03,0.12,0.012,body); B(-0.66,0.632,z,0.26,0.016,0.012,body);
+      B(-0.59,0.565,s*0.2035,0.062,0.11,0.006,WIN); B(-0.695,0.565,s*0.2035,0.086,0.11,0.006,WIN);
+      LZ(-0.58,0.6,s*0.2116,0.03,0.004,s,GLINT); LZ(-0.68,0.6,s*0.2116,0.04,0.004,s,GLINT);
+      for(const [x,w] of [[-0.59,0.064],[-0.695,0.088]]){ LZ(x,0.621,s*0.2112,w,0.003,s,BLK); LZ(x,0.509,s*0.2112,w,0.003,s,BLK); }
+      linePanel(LZ,-0.768,-0.548,0.322,0.488,s*0.2112,s);
+      rod3([-0.775,RBY-0.03,s*0.215],[-0.775,0.6,s*0.215],0.007,HR); rod3([-0.535,RBY+0.02,s*0.215],[-0.535,0.49,s*0.215],0.006,HR);
+      B(-0.79,0.27,s*0.214,0.06,0.006,0.03,DK); B(-0.79,0.19,s*0.214,0.06,0.006,0.03,DK); B(-0.762,0.23,s*0.222,0.006,0.12,0.006,DK); B(-0.818,0.23,s*0.222,0.006,0.12,0.006,DK); });
+    G.arc(-0.675,0.64,0,0.4,0.44,0.036,0.015,ROOF,8); heroBoth(s=>B(-0.675,0.646,s*0.19,0.38,0.005,0.006,BLK)); B(-0.64,0.678,0,0.12,0.01,0.08,ROOF);
+    B(-0.54,0.47,0,0.01,0.25,0.26,BLK); B(-0.5465,0.41,0,0.003,0.04,0.06,C('#ff8a2a')); B(-0.82,RBY,0,0.04,0.01,0.34,DK);
+    /* ---- the BR1-style tender: tall flat sides with a lined panel, turned in at the top, the high coal space set in, the
+       tank top and water filler behind, steps and handrails ---- */
+    const T=new Geo(), kt=heroKitSteam(T);
+    heroTenderFrame(kt,c,[-0.26,0,0.26]);
+    kt.B(-0.01,0.36,0,0.74,0.28,0.42,body);
+    heroBoth(s=>{ T.hexa([[-0.38,0.488,s*0.21],[0.35,0.488,s*0.21],[0.35,0.52,s*0.18],[-0.38,0.52,s*0.18],[-0.38,0.5,s*0.21],[0.35,0.5,s*0.21],[0.35,0.532,s*0.18],[-0.38,0.532,s*0.18]],body);
+      kt.B(0.06,0.585,s*0.152,0.56,0.12,0.01,body); kt.B(0.06,0.647,s*0.157,0.56,0.006,0.02,body);   /* the bunker's own sides, set in and high */
+      linePanel(kt.LZ,-0.36,0.33,0.25,0.47,s*0.2106,s);
+      kt.rod3([0.36,0.25,s*0.205],[0.36,0.5,s*0.205],0.007,HR); kt.rod3([-0.387,0.25,s*0.17],[-0.387,0.5,s*0.17],0.006,HR);
+      kt.B(0.33,0.56,s*0.11,0.05,0.04,0.08,body); });   /* lockers at the front */
+    kt.B(0.34,0.585,0,0.012,0.12,0.31,body); kt.B(-0.22,0.585,0,0.012,0.12,0.31,body);
+    T.arc(0.06,0.6,0,0.54,0.29,0.06,0.03,COAL,8);
+    for(let q=0;q<10;q++){ const x=-0.17+((q*37)%45)/100, z=((((q*53)%100)/100)-0.5)*0.22; T.pyr(x,0.6+0.06*(1-(z/0.145)**2)-0.008,z,0.02,0.018,q%2?COAL2:COAL); }
+    kt.B(-0.3,0.505,0,0.15,0.006,0.36,DK); T.cyl(-0.31,0.515,0,0.035,0.02,'y',DK,10); kt.B(-0.31,0.528,0,0.05,0.006,0.008,STEEL);
+    for(let q=0;q<4;q++) kt.B(-0.386,0.28+q*0.055,0,0.004,0.004,0.14,STEEL);
+    heroBeam(kt,c,-0.392,-1,{lamps:false});
+    const wc=heroWC(c);
+    return {eng:G, ten:T,
+      drvR:heroWheel(sp.rD,1,{...wc,th:0.034,seg:16,spokes:14,hub:0.24,weight:true,crank:sp.rc}), drvL:heroWheel(sp.rD,-1,{...wc,th:0.034,seg:16,spokes:14,hub:0.24,weight:true,crank:sp.rc}),
+      whlR:heroWheel(1,1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3}), whlL:heroWheel(1,-1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3})};
+  }
+  /* ---- Peppercorn A1 4-6-2 (1948, E2, a single-purchase engine): the last LNER-design express Pacific. Three cylinders,
+     the outside pair with Walschaerts gear; 6'8" spoked driving wheels left bare under a high running board; a leading
+     bogie and trailing truck; a long boiler with a banjo dome (the steam collector); a rimmed double chimney; big smoke
+     deflectors with a curved top front corner; a wide round-topped firebox; a cab with an angled (V) front and two side
+     windows; a large straight-sided tender. LNER apple green with black-and-white lining, black smokebox and frames, green
+     wheels with black tyres, red beams. Class name only: no number, no name, no crest. ---- */
+  function heroA1pc(L,sp){
+    const c=heroCols(L), {C,body,line,BLK,DK,SMK,STEEL,BRASS,WIN,ROOF,COAL,COAL2}=c, YB=0.48, RB=0.142, RF=0.149, RBY=0.335, LB=C('#0d0d0d'), HR=C('#c9ccc8'), GLINT=C('#41505c');
+    const G=new Geo(), k=heroKitSteam(G), {B,coneX,discX,rod3,plateZ,LZ,surf}=k;
+    /* LNER lining on a flat side (facing s at z): a black band edged with fine white lines, round a panel */
+    const linePanel=(LZf,x0,x1,y0,y1,z,s)=>{ const w=0.007, o=0.0022;
+      for(const [cx,cy,sx,sy] of [[(x0+x1)/2,y0,x1-x0,0],[(x0+x1)/2,y1,x1-x0,0],[x0,(y0+y1)/2,0,y1-y0],[x1,(y0+y1)/2,0,y1-y0]]){
+        LZf(cx,cy,z,sx+w+2*o,sy+w+2*o,s,line); LZf(cx,cy,z+s*0.0004,sx+w,sy+w,s,LB); } };
+    /* frames, bogie, trailing truck, brake blocks, sand pipes, the outside cylinders (lined) with valve chests, slide bars,
+       the motion bracket, the expansion link bracket and the reach rod (shared with the Duchess) */
+    heroChassis462(k,sp,{...c,body,band:line},{walsch:true});
+    /* outside steam pipes from the smokebox sides down to the valve chests, behind the deflectors */
+    heroBoth(s=>{ rod3([0.6,YB-0.05,s*0.12],[0.49,RBY-0.01,s*0.2],0.024,body); rod3([0.49,RBY-0.01,s*0.2],[0.47,0.3,s*0.226],0.024,body); });
+    /* the high running board, dropping in a curve to the buffer beam; its black valance edge with a white line */
+    B(-0.13,RBY,0,1.42,0.014,0.43,DK);
+    G.hexa([[0.6,RBY-0.007,-0.215],[0.7,0.255,-0.215],[0.7,0.255,0.215],[0.6,RBY-0.007,0.215],[0.6,RBY+0.007,-0.215],[0.7,0.269,-0.215],[0.7,0.269,0.215],[0.6,RBY+0.007,0.215]],DK);
+    B(0.755,0.262,0,0.11,0.014,0.43,DK);
+    heroBoth(s=>{ B(-0.13,RBY-0.013,s*0.2145,1.42,0.018,0.004,BLK); LZ(-0.13,RBY-0.012,s*0.2168,1.42,0.003,s,line);
+      plateZ([[0.6,RBY-0.022],[0.7,0.24],[0.7,0.262],[0.6,RBY-0.004]],s*0.2145,0.004,BLK); B(0.755,0.25,s*0.2145,0.11,0.018,0.004,BLK); });
+    heroBeam(k,c,0.815,1);
+    heroBoth(s=>{ B(0.74,0.18,s*0.212,0.05,0.006,0.03,DK); B(0.74,0.215,s*0.222,0.006,0.075,0.006,DK); B(0.36,0.255,s*0.212,0.05,0.006,0.03,DK); B(0.36,0.29,s*0.222,0.006,0.075,0.006,DK); });   /* front steps */
+    /* smokebox on its saddle; the door with its hinges, dart handles, handrail and top lamp iron */
+    B(0.67,0.385,0,0.18,0.06,0.18,BLK);
+    coneX(0.56,0.782,YB,0,RB+0.006,RB+0.006,SMK,22); coneX(0.78,0.788,YB,0,RB+0.009,RB+0.009,SMK,22); coneX(0.788,0.797,YB,0,RB-0.004,RB-0.026,SMK,22); discX(0.797,YB,0,RB-0.026,1,SMK,22);
+    for(const dy of [0.05,-0.05]) B(0.798,YB+dy,0,0.005,0.012,0.15,C('#2c2c2c'));
+    B(0.802,YB,0,0.01,0.02,0.02,STEEL); B(0.81,YB,0,0.005,0.006,0.045,STEEL);
+    rod3([0.8,YB+0.078,-0.065],[0.8,YB+0.078,0.065],0.006,HR); B(0.794,YB+0.112,0,0.008,0.026,0.012,BLK);
+    /* the Kylchap double chimney: an oval stack (two round ends and a middle) with a wide lip round its top */
+    const ch=YB+RB+0.004, cxs=[0.655,0.705];
+    B(0.68,ch+0.004,0,0.12,0.012,0.085,SMK);
+    for(const x of cxs){ G.cyl(x,ch+0.026,0,0.031,0.04,'y',BLK,10); G.cyl(x,ch+0.05,0,0.037,0.012,'y',BLK,10); }
+    B(0.68,ch+0.026,0,0.05,0.04,0.062,BLK); B(0.68,ch+0.05,0,0.05,0.012,0.074,BLK); B(0.68,ch+0.0565,0,0.1,0.002,0.05,C('#060606'));
+    /* the big smoke deflectors standing on the running board and following its drop at the front, the top front corner
+       rounded; turned in a little along the top, stays to the smokebox */
+    heroBoth(s=>{ const z=s*0.208, th=0.005, X0=0.565, X1=0.79, Yt=0.622, r=0.075, P=[[X0,RBY+0.008],[0.7,0.27],[X1,0.27],[X1,Yt-r]];
+      for(let i=1;i<=4;i++){ const a=i/5*Math.PI/2; P.push([X1-r+Math.cos(a)*r,Yt-r+Math.sin(a)*r]); } P.push([X1-r,Yt],[X0,Yt]);
+      plateZ(P,z,th,body);
+      G.hexa([[X0,Yt-0.006,s*0.2105],[X1-r,Yt-0.006,s*0.2105],[X1-r,Yt-0.006,s*0.2055],[X0,Yt-0.006,s*0.2055],[X0,Yt+0.004,s*0.2],[X1-r,Yt+0.004,s*0.2],[X1-r,Yt+0.004,s*0.195],[X0,Yt+0.004,s*0.195]],body);
+      rod3([0.62,0.58,s*0.205],[0.62,YB+0.04,s*0.132],0.006,body); rod3([0.62,0.4,s*0.205],[0.62,YB-0.07,s*0.125],0.006,body); });
+    /* the long boiler (a slight taper at the back) with black-and-white lined bands, the banjo dome, handrails */
+    const Rb=x=>RB+(RF-RB)*(0.56-x)/0.76;
+    coneX(-0.2,0.56,YB,0,RF,RB,body,22);
+    for(const x of [0.44,0.25,0.06,-0.12]){ coneX(x-0.0075,x+0.0075,YB,0,Rb(x)+0.0025,Rb(x)+0.0025,line,10,-2.15,2.15); coneX(x-0.0045,x+0.0045,YB,0,Rb(x)+0.0035,Rb(x)+0.0035,LB,10,-2.15,2.15); }
+    coneX(0.548,0.562,YB,0,RB+0.003,RB+0.003,line,14,-2.15,2.15);
+    /* the banjo dome: a long low steam collector, round in plan at the back and drawn out to the front */
+    { const x0=-0.08, x1=0.14, H=0.05, W=0.056, xs=[], us=[]; for(let i=0;i<=8;i++) xs.push(x0+(x1-x0)*i/8); for(let j=0;j<=6;j++) us.push(-Math.PI/2+Math.PI*j/6);
+      surf(xs,us,(x,u)=>{ const t=(x-x0)/(x1-x0), f=Math.sqrt(Math.max(0,1-Math.pow(Math.abs(2*t-1),t<0.5?2:3))), yb=YB+Rb(x)-0.01; return [x,yb+H*f*Math.cos(u),W*Math.pow(f,0.6)*Math.sin(u)]; },body); }
+    heroBoth(s=>{ const zb=x=>Math.sqrt(Rb(x)**2-0.07**2)+0.02; rod3([0.555,YB+0.07,s*zb(0.555)],[-0.5,YB+0.07,s*(zb(-0.2)+0.02)],0.007,HR);
+      for(const x of [0.45,0.2,-0.05]) B(x,YB+0.07,s*(zb(x)-0.012),0.006,0.006,0.024,STEEL); });
+    rod3([0.55,YB-0.035,-0.158],[-0.5,YB-0.035,-0.17],0.014,body);   /* the ejector pipe along the fireman's side */
+    /* the wide round-topped firebox over the rear coupled wheels (lined), Ross pop safety valves, whistle */
+    coneX(-0.52,-0.2,YB,0,RF+0.005,RF+0.005,body,22,-Math.PI/2-0.25,Math.PI/2+0.25);
+    heroBoth(s=>{ B(-0.36,0.415,s*0.14,0.32,0.15,0.04,body); linePanel(LZ,-0.505,-0.215,0.372,0.46,s*0.1605,s); }); B(-0.36,0.342,0,0.32,0.012,0.3,DK);
+    for(const x of [-0.27,-0.32]){ G.cyl(x,YB+RF+0.012,0,0.013,0.026,'y',STEEL,8); G.cyl(x,YB+RF+0.028,0,0.009,0.006,'y',STEEL,6); }
+    G.cyl(-0.46,YB+RF+0.01,0.05,0.004,0.03,'y',BRASS,5); G.cyl(-0.46,YB+RF+0.03,0.05,0.012,0.024,'y',BRASS,8);
+    /* lubricators, sandbox fillers and the electric lighting generator on the running board */
+    heroBoth(s=>{ B(0.4,RBY+0.025,s*0.185,0.06,0.036,0.032,BLK); B(0.44,RBY+0.018,s*0.185,0.016,0.02,0.016,BRASS); B(0.1,RBY+0.015,s*0.19,0.03,0.016,0.024,body); B(-0.16,RBY+0.015,s*0.19,0.03,0.016,0.024,body); });
+    G.cyl(0.5,RBY+0.03,0.175,0.022,0.06,'x',BLK,8);
+    /* the cab: an angled (V) front, its two plates sloping back to the sides with a window in each; side sheets with two
+       windows in frames and a lined panel, handrails and steps; the curved roof overhanging at the back */
+    heroBoth(s=>{ const ax=-0.506, az=s*0.11, bx=-0.548, bz=s*0.2, y0=RBY+0.005, y1=0.648, n=[0.085/0.0947,0,s*0.042/0.0947];
+      G.hexa([[ax,y0,az],[bx,y0,bz],[bx-0.01,y0,bz],[ax-0.01,y0,az],[ax,y1,az],[bx,y1,bz],[bx-0.01,y1,bz],[ax-0.01,y1,az]],body);
+      const Q=(t,y,o)=>[ax+(bx-ax)*t+n[0]*o, y, az+(bz-az)*t+n[2]*o];
+      G.quad(Q(0.22,0.56,0.0015),Q(0.82,0.56,0.0015),Q(0.82,0.625,0.0015),Q(0.22,0.625,0.0015),WIN,n);
+      G.quad(Q(0.3,0.608,0.002),Q(0.6,0.608,0.002),Q(0.6,0.613,0.002),Q(0.3,0.613,0.002),GLINT,n); });
+    B(-0.511,0.615,0,0.01,0.066,0.23,body);
+    heroBoth(s=>{ const z=s*0.205;
+      B(-0.665,0.41,z,0.25,0.2,0.012,body); B(-0.553,0.57,z,0.02,0.12,0.012,body); B(-0.643,0.57,z,0.016,0.12,0.012,body); B(-0.775,0.57,z,0.02,0.12,0.012,body); B(-0.665,0.638,z,0.25,0.016,0.012,body);
+      B(-0.598,0.57,s*0.2035,0.07,0.11,0.006,WIN); B(-0.709,0.57,s*0.2035,0.116,0.11,0.006,WIN);
+      LZ(-0.59,0.605,s*0.2116,0.03,0.004,s,GLINT); LZ(-0.7,0.605,s*0.2116,0.05,0.004,s,GLINT);
+      for(const [x,w] of [[-0.598,0.072],[-0.709,0.118]]){ LZ(x,0.626,s*0.2112,w,0.003,s,BLK); LZ(x,0.514,s*0.2112,w,0.003,s,BLK); }
+      linePanel(LZ,-0.775,-0.555,0.33,0.49,s*0.2112,s);
+      rod3([-0.79,RBY-0.03,s*0.215],[-0.79,0.6,s*0.215],0.007,HR); rod3([-0.545,RBY+0.02,s*0.215],[-0.545,0.49,s*0.215],0.006,HR);
+      B(-0.8,0.27,s*0.214,0.06,0.006,0.03,DK); B(-0.8,0.19,s*0.214,0.06,0.006,0.03,DK); B(-0.772,0.23,s*0.222,0.006,0.12,0.006,DK); B(-0.828,0.23,s*0.222,0.006,0.12,0.006,DK); });
+    G.arc(-0.675,0.645,0,0.4,0.44,0.036,0.015,ROOF,8); heroBoth(s=>B(-0.675,0.651,s*0.19,0.38,0.005,0.006,BLK)); B(-0.65,0.683,0,0.12,0.01,0.08,ROOF);
+    B(-0.545,0.47,0,0.01,0.25,0.26,BLK); B(-0.5515,0.41,0,0.003,0.04,0.06,C('#ff8a2a')); B(-0.83,RBY,0,0.04,0.01,0.34,DK);
+    /* ---- the large straight-sided tender: tall flat sides with a lined panel and a beaded top flared out a little, the
+       coal space at the front behind its coal plate, the tank top and water filler behind, steps and handrails ---- */
+    const T=new Geo(), kt=heroKitSteam(T);
+    heroTenderFrame(kt,c,[-0.26,0,0.26]);
+    kt.B(-0.01,0.39,0,0.74,0.34,0.42,body);
+    heroBoth(s=>{ T.hexa([[-0.38,0.552,s*0.205],[0.355,0.552,s*0.205],[0.355,0.552,s*0.211],[-0.38,0.552,s*0.211],[-0.38,0.576,s*0.212],[0.355,0.576,s*0.212],[0.355,0.576,s*0.222],[-0.38,0.576,s*0.222]],body);
+      linePanel(kt.LZ,-0.355,0.33,0.25,0.52,s*0.2106,s);
+      kt.rod3([0.36,0.25,s*0.205],[0.36,0.55,s*0.205],0.007,HR); kt.rod3([-0.387,0.25,s*0.17],[-0.387,0.56,s*0.17],0.006,HR);
+      kt.B(0.33,0.6,s*0.12,0.05,0.05,0.08,body); });   /* lockers either side of the coal plate */
+    kt.B(0.348,0.6,0,0.012,0.09,0.42,body); kt.B(-0.09,0.585,0,0.012,0.07,0.41,body);
+    T.arc(0.13,0.56,0,0.43,0.4,0.07,0.03,COAL,8);
+    for(let q=0;q<10;q++){ const x=-0.05+((q*37)%35)/100, z=((((q*53)%100)/100)-0.5)*0.28; T.pyr(x,0.56+0.07*(1-(z/0.2)**2)-0.008,z,0.02,0.018,q%2?COAL2:COAL); }
+    kt.B(-0.24,0.558,0,0.28,0.006,0.41,DK); T.cyl(-0.28,0.57,0,0.035,0.02,'y',DK,10); kt.B(-0.28,0.583,0,0.05,0.006,0.008,STEEL);
+    for(let q=0;q<4;q++) kt.B(-0.386,0.28+q*0.06,0,0.004,0.004,0.14,STEEL);
+    heroBeam(kt,c,-0.392,-1,{lamps:false});
+    const wc=heroWC(c);
+    return {eng:G, ten:T,
+      drvR:heroWheel(sp.rD,1,{...wc,th:0.034,seg:16,spokes:18,hub:0.22,weight:true,crank:sp.rc}), drvL:heroWheel(sp.rD,-1,{...wc,th:0.034,seg:16,spokes:18,hub:0.22,weight:true,crank:sp.rc}),
       whlR:heroWheel(1,1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3}), whlL:heroWheel(1,-1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3})};
   }
   /* ---------- Heritage diesel and electric engines (21 Nov 2026, Heritage step 2b): Class 47 and Crocodile ----------
