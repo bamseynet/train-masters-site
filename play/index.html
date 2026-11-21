@@ -1470,6 +1470,7 @@ const WHISTLES={
   c08:{horn:true,notes:[67,62],step:0.3,len:0.3,vol:0.13,lp:1300},   /* Class 08: a short, mellow two-tone, quieter than the mainline horns */
   rscot:{notes:[66,70,73],mix:[1,0.85,0.55],len:1.05,att:0.11},   /* Royal Scot: a deep, mellow LMS hooter */
   brit:{notes:[62,66,69],mix:[1,0.85,0.55],len:1.15,att:0.13},   /* Britannia: a deep, chunky BR standard chime, rounder than the 9F's hooter */
+  wc:{notes:[79,83,86],mix:[1,0.75,0.5],len:0.9,att:0.05},   /* rebuilt West Country (E2): a bright, sharp Bulleid chime, a touch higher than the Merchant Navy's */
   a1pc:{notes:[68,72,75],mix:[1,0.75,0.5],len:1.05,att:0.09},   /* Peppercorn A1: a bright, full LNER three-note chime, higher than the Britannia's */
   c37:{horn:true,notes:[69,64],step:0.38,len:0.36},
   c55:{horn:true,notes:[71,66],step:0.34,len:0.32},
@@ -2538,7 +2539,7 @@ const TRAIN_TYPES={
   a4:{name:'A4 Streamliner 4-6-2',short:'A4 Streamliner',group:'Steam',era:'1935',desc:'Wind-cheating streamlined Pacific — the class that holds the world steam speed record',cost:130000,speed:5.0,steam:true,run:1200,fare:9,goods:false,streamlined:true,
     consist:['loco','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#1c3f7a',lining:'#e9e4d4',chimney:'#151515',dome:'#1c3f7a',coachLo:'#8a5a2b',coachHi:'#9a6a35',roof:'#5e5a55',wheel:'#b3262b'}},
   /* Heritage Collection (Pro, 21 Nov 2026): heritage:true engines get a detailed hero model near the 3D camera (V3 HERO), pro:true
-     ones are bought by Pro players only. The Duchess is a long engine: its front and rear halves (engF, engR) take two carriage
+     ones are bought by Pro players, or by anyone with the Heritage Collection pack (HERITAGE_SKU). The Duchess is a long engine: its front and rear halves (engF, engR) take two carriage
      places, so engine and tender keep a real Duchess's proportions (engine about twice the tender's length). */
   duchess:{name:'Duchess 4-6-2',short:'Duchess',group:'Steam',era:'1937',desc:'Mighty four-cylinder express Pacific in crimson and gold, built for the long climbs to Scotland',cost:115000,speed:4.7,steam:true,run:1100,fare:8.8,goods:false,heritage:true,pro:true,
     consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#8e1f27',lining:'#d8a640',chimney:'#151515',dome:'#8e1f27',smokebox:'#1d1d1d',coachLo:'#6e1c22',coachHi:'#6e1c22',roof:'#4a4644',roof2:'#3e3b39',wheel:'#8e1f27'}},
@@ -2578,6 +2579,11 @@ const TRAIN_TYPES={
      camera. Two carriage places (engF, engR) and a tender, BR maroon coaches; lining: the orange of the orange-and-black lining */
   brit:{name:'Britannia 4-6-2',short:'Britannia',group:'Steam',era:'1951',desc:'The BR Standard express Pacific: big smoke deflectors with hand holds, wheels bare under a high running board, in Brunswick green with orange-and-black lining',cost:108000,speed:4.5,steam:true,run:1020,fare:8.6,goods:false,hero:true,
     consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#1f4d2f',lining:'#e8892e',chimney:'#151515',dome:'#1f4d2f',smokebox:'#1a1a1a',coachLo:'#72232b',coachHi:'#72232b',roof:'#4a4644',roof2:'#3e3b39',wheel:'#1f4d2f'}},
+  /* E2 (21 Nov 2026): the rebuilt West Country 4-6-2, sold on its own (ENGINE_SKUS.wc), not Pro and not Heritage; hero model
+     near the camera (HERO_SPEC.wc). Bulleid's light Pacific as rebuilt by BR: two carriage places and a tender, a fast mixed
+     express a little below the Britannia, BR lined green with green Southern-style coaches; lining: the orange line */
+  wc:{name:'West Country 4-6-2 (rebuilt)',short:'West Country',group:'Steam',era:'1957',desc:'Bulleid’s light Pacific as rebuilt by BR: three cylinders, box-pok wheels bare under a high running board and big flat smoke deflectors, in lined Brunswick green. Quick on expresses and stopping trains alike',cost:100000,speed:4.4,steam:true,run:980,fare:8.4,goods:false,hero:true,
+    consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#1f4d2f',lining:'#e8892e',chimney:'#151515',dome:'#1f4d2f',smokebox:'#1a1a1a',coachLo:'#2c5e3a',coachHi:'#2c5e3a',roof:'#4a4644',roof2:'#3e3b39',wheel:'#1f4d2f'}},
   /* E2 (21 Nov 2026): a single-purchase engine (ENGINE_SKUS.a1pc), not Pro and not Heritage; hero model near the camera.
      Two carriage places (engF, engR) and a tender, BR crimson-and-cream coaches; lining: the white of the black-and-white lining */
   a1pc:{name:'Peppercorn A1 4-6-2',short:'Peppercorn A1',group:'Steam',era:'1948',desc:'The last LNER-design express Pacific: three cylinders, 6 ft 8 in driving wheels, a double chimney and big smoke deflectors, in apple green with black-and-white lining',cost:112000,speed:4.65,steam:true,run:1080,fare:8.7,goods:false,hero:true,
@@ -3717,10 +3723,10 @@ function buyTrain(idx){
   const items=[];
   for(const g of ['Steam','Diesel','High speed','Freight']){
     for(const [k,ty] of Object.entries(TRAIN_TYPES)){ if(ty.group!==g)continue; if(ENGINE_SKUS[k]&&ENGINE_SKUS[k].soon&&engineLocked(k)) continue;   /* not on sale yet */
-      const n=ty.consist.length-ty.consist.filter(NOT_PAY).length, lock=ty.pro&&!isPro(), shop=!lock&&engineLocked(k);   /* shop: a store engine not bought yet (E1) */
-      items.push({pre:`<small style="display:inline-block;min-width:76px;color:var(--accent);font-weight:700">${g}</small>`,label:ty.name+(lock?' '+PRO_TAG:''),
+      const n=ty.consist.length-ty.consist.filter(NOT_PAY).length, lock=heritageLocked(k), shop=!lock&&engineLocked(k);   /* shop: a store engine not bought yet (E1); lock: Heritage without Pro or the pack */
+      items.push({pre:`<small style="display:inline-block;min-width:76px;color:var(--accent);font-weight:700">${g}</small>`,label:ty.name,
         detail:`${ty.era} · ${ty.heritage?'Heritage Collection · ':''}${ty.desc} · ${n} ${ty.goods?'wagons':'coaches'} · ${Math.round(ty.speed*20)} mph${money()?` · ${fmt(ty.run)}/hr to run`:''}`,
-        cost:shop?(EDITION==='web'?'On Fire TV':EngineStore.price(ENGINE_SKUS[k].sku)||'Buy'):price(ty.cost),disabled:!lock&&!shop&&money()&&ty.cost>rail.money,fn:lock?()=>openUpsell():shop?(m,j)=>openEngineCard(k,j):()=>pickStops({type:k},[])}); }
+        cost:lock?(EDITION==='web'?'On Fire TV':EngineStore.price(HERITAGE_SKUS[k]||HERITAGE_SKU)||'Buy'):shop?(EDITION==='web'?'On Fire TV':EngineStore.price(ENGINE_SKUS[k].sku)||'Buy'):price(ty.cost),disabled:!lock&&!shop&&money()&&ty.cost>rail.money,fn:lock?(m,j)=>openHeritageCard(k,j):shop?(m,j)=>openEngineCard(k,j):()=>pickStops({type:k},[])}); }
   }
   items.push({label:'Back',fn:()=>openTrains()});
   openModal({title:'Choose a train',text:'Classic British favourites and a couple of world-famous giants.',items,idx,onCancel:()=>openTrains()});
@@ -3763,7 +3769,7 @@ function finishTrain(draft,stops,pattern,dwell){
   }
   if(LEGACY_TYPES[draft.type]) draft.type=LEGACY_TYPES[draft.type];
   const ty=TRAIN_TYPES[draft.type]; if(!ty) return;
-  if(ty.pro&&!isPro()){ openUpsell(); return; }   /* Heritage engines: Pro only */
+  if(heritageLocked(draft.type)){ openHeritageCard(draft.type); return; }   /* Heritage engines: Pro or the Heritage Collection pack */
   if(engineLocked(draft.type)){ openEngineCard(draft.type); return; }   /* store engines: bought once (trains already running keep running) */
   if(money()&&ty.cost>rail.money){ toast('Not enough money',true); return; }
   if(!draft.checked){ const cl=lineClash(draft.type,stops,pattern); if(cl){ openClash(draft,stops,pattern,dwell,cl); return; } }
@@ -4320,6 +4326,23 @@ HERIT_2D.brit=(part,box,dt,poly,L)=>{ const b=L.body, ln=L.lining||'#e8892e', hi
   dt('#0a0a0a',0.672,0,0.039); dt('#222',0.672,0,0.026); dt(b,0.1,0,0.046); dt(hi,0.095,-0.012,0.02); box('#333',0.31,0.37,-0.025,0.025,0.01);
   dt('#9aa0a4',-0.27,0,0.013); dt('#9aa0a4',-0.32,0,0.013); dt('#c9a23a',-0.47,0.06,0.012);
   box('#2b2928',-0.875,-0.475,-0.22,0.22,0.03); box('rgba(255,255,255,0.12)',-0.865,-0.485,-0.08,-0.03);
+  box('#151515',0.38,0.42,-0.2,-0.17); box('#151515',0.38,0.42,0.17,0.2); };
+/* rebuilt West Country (E2) from above: the running board, big flat smoke deflectors beside the smokebox, the short wide
+   chimney, the parallel boiler with lined bands and a low dome, the round-topped firebox, the cab roof; the tender's high
+   raised side sheets round the coal, the tank top and filler behind */
+HERIT_2D.wc=(part,box,dt,poly,L)=>{ const b=L.body, ln=L.lining||'#e8892e', hi='rgba(255,255,255,0.17)', lo='rgba(0,0,0,0.26)';
+  if(part==='tender'){ box(b,-0.385,0.36,-0.212,0.212,0.03); box(ln,-0.37,0.345,-0.206,-0.2); box(ln,-0.37,0.345,0.2,0.206);
+    box(b,-0.14,0.355,-0.212,-0.19); box(b,-0.14,0.355,0.19,0.212); box('#121212',-0.13,0.34,-0.185,0.185,0.03); for(let q=0;q<9;q++) dt(q%2?'#2d2d2d':'#202020',-0.08+((q*37)%40)/100,(((q*53)%100)/100-0.5)*0.3,0.032);
+    box('rgba(255,255,255,0.1)',-0.37,-0.16,-0.18,0.18,0.02); dt('#2c2c2c',-0.29,0,0.035); box('#b3262b',-0.40,-0.38,-0.2,0.2); return; }
+  box('#191919',-0.84,0.81,-0.215,0.215,0.02); box('#b3262b',0.8,0.83,-0.21,0.21); dt('#2a2a2a',0.865,-0.13,0.035); dt('#2a2a2a',0.865,0.13,0.035);
+  box(b,0.56,0.787,-0.213,-0.203); box(b,0.56,0.787,0.203,0.213);                      /* the big flat smoke deflectors */
+  box(b,-0.2,0.565,-0.142,0.142,0.04); box(hi,-0.2,0.565,-0.06,-0.01); box(lo,-0.2,0.565,0.07,0.142);
+  for(const x of [0.45,0.3,0.15,0.0,-0.14]){ box(ln,x-0.007,x+0.007,-0.14,0.14); box('#0d0d0d',x-0.0035,x+0.0035,-0.14,0.14); }
+  box(b,-0.52,-0.2,-0.156,0.156,0.04); box(hi,-0.52,-0.2,-0.06,-0.01); box(lo,-0.52,-0.2,0.08,0.156);   /* firebox */
+  box(L.smokebox||'#1a1a1a',0.56,0.79,-0.142,0.142,0.04); box('rgba(255,255,255,0.08)',0.56,0.79,-0.06,-0.02);
+  dt('#0a0a0a',0.67,0,0.047); dt('#1e1e1e',0.67,0,0.034); dt(b,0.22,0,0.04); dt(hi,0.215,-0.012,0.017);   /* wide chimney, low dome */
+  dt('#9aa0a4',-0.24,0,0.013); dt('#9aa0a4',-0.28,0,0.013); dt('#c9a23a',-0.47,0.06,0.012);
+  box('#2b2928',-0.875,-0.48,-0.22,0.22,0.03); box('rgba(255,255,255,0.12)',-0.865,-0.49,-0.08,-0.03);
   box('#151515',0.38,0.42,-0.2,-0.17); box('#151515',0.38,0.42,0.17,0.2); };
 /* Peppercorn A1 (E2) from above: the running board, big smoke deflectors beside the smokebox, the long boiler with its
    black-and-white lined bands, the banjo dome and the double chimney, the wide round-topped firebox, the cab roof; the
@@ -5747,7 +5770,7 @@ window.tmProUnlocked=()=>ProStore.unlock();
 window.tmProRevoked=()=>ProStore.revoke();
 window.tmStoreMessage=m=>toast(String(m||''));
 /* Engines sold one by one (backlog E1, 21 Nov 2026). Peter: each new engine is its own one-off store purchase (an
-   "entitlement"); Pro does NOT include them; the seven Heritage engines stay in Pro. ENGINE_SKUS maps a train type to its
+   "entitlement"); Pro does NOT include them; the seven Heritage engines are in Pro, or in the Heritage Collection pack (HERITAGE_SKU). ENGINE_SKUS maps a train type to its
    store item, e.g. c08:{sku:'trainmasters.engine.c08'}. It holds no price: the game is sold worldwide, so the price shown is
    the store's own localised string (tmPrices below); the base price is the lowest tier ($0.99 / £0.99 / €0.99). Until the
    store reports one, the game just says "Buy". Cozy rules: no pop-ups, no nagging; a locked engine shows its price in the
@@ -5759,12 +5782,23 @@ window.tmStoreMessage=m=>toast(String(m||''));
 const ENGINE_SKUS={c08:{sku:'trainmasters.engine.c08'}, brit:{sku:'trainmasters.engine.brit'}};   /* 21 Nov 2026: the Amazon item is approved, so the Class 08 is on sale (was soon:true in 1.4). A new engine starts with soon:true until its store item exists */   /* soon: not on sale yet (21 Nov 2026, Peter: ship 1.4 with the Class 08 hidden until its store item exists); hidden from the works list unless already owned. Set soon:false (or delete it) to put it on sale */
 ENGINE_SKUS.rscot={sku:'trainmasters.engine.rscot'};   /* Royal Scot (E2, 21 Nov 2026): its Amazon item is approved, so it is on sale */
 ENGINE_SKUS.a1pc={sku:'trainmasters.engine.a1pc'};   /* its Amazon item is approved (21 Nov 2026): on sale */   /* Peppercorn A1 (E2, 21 Nov 2026): not on sale until its Amazon item is approved */
-function allSkus(){ return [PRO_SKU,...Object.values(ENGINE_SKUS).filter(e=>!e.soon).map(e=>e.sku)]; }
-function engineForSku(sku){ return Object.keys(ENGINE_SKUS).find(k=>ENGINE_SKUS[k].sku===sku)||null; }
-/* true when this player cannot buy more of a train type: Heritage without Pro, or a store engine not bought */
-function typeLocked(k){ const ty=TRAIN_TYPES[k]; if(!ty) return false; if(ty.pro&&!isPro()) return true; return engineLocked(k); }
+/* Heritage Collection pack (Peter, 21 Nov 2026): one store item unlocks the seven Heritage engines (ty.pro / ty.heritage) for
+   players without Pro. Pro still includes them, so Pro owners never see the pack. It unlocks only the engines, no Pro feature. */
+const HERITAGE_SKU='trainmasters.heritage';
+const HERITAGE_NAMES='the Duchess and its Streamliner, the Merchant Navy, the 9F, the Terrier, the Class 47 and the Crocodile';
+/* Peter, 21 Nov 2026 (later): each Heritage engine is also sold on its own (trainmasters.engine.<type id>), next to the pack.
+   duchessS has a capital letter: fine on Amazon (its item exists and SKUs are permanent), but Google Play product ids must be
+   lower case, so the Play edition will need a lower-case SKU mapped to this one engine. */
+const HERITAGE_SKUS={duchess:'trainmasters.engine.duchess',duchessS:'trainmasters.engine.duchessS',mn:'trainmasters.engine.mn',f9:'trainmasters.engine.f9',terrier:'trainmasters.engine.terrier',c47:'trainmasters.engine.c47',croc:'trainmasters.engine.croc'};
+function heritageOwned(){ return isPro()||EngineStore.owns(HERITAGE_SKU); }
+function heritageLocked(k){ const ty=TRAIN_TYPES[k]; return !!ty&&!!(ty.pro||ty.heritage)&&!heritageOwned()&&!(HERITAGE_SKUS[k]&&EngineStore.owns(HERITAGE_SKUS[k])); }
+function allSkus(){ return [PRO_SKU,HERITAGE_SKU,...Object.values(HERITAGE_SKUS),...Object.values(ENGINE_SKUS).filter(e=>!e.soon).map(e=>e.sku)]; }
+function engineForSku(sku){ return Object.keys(ENGINE_SKUS).find(k=>ENGINE_SKUS[k].sku===sku)||Object.keys(HERITAGE_SKUS).find(k=>HERITAGE_SKUS[k]===sku)||null; }
+/* true when this player cannot buy more of a train type: Heritage without Pro or the pack, or a store engine not bought */
+function typeLocked(k){ const ty=TRAIN_TYPES[k]; if(!ty) return false; if(heritageLocked(k)) return true; return engineLocked(k); }
 function engineLocked(k){ const e=ENGINE_SKUS[k]; return !!e&&!EngineStore.owns(e.sku); }
 ENGINE_SKUS.rocket={sku:'trainmasters.engine.rocket'};   /* Rocket (E2, 21 Nov 2026): its Amazon item is approved, so it is on sale */
+ENGINE_SKUS.wc={sku:'trainmasters.engine.wc'};   /* its Amazon item is approved (21 Nov 2026): on sale */   /* rebuilt West Country (E2, 21 Nov 2026): not on sale until its Amazon item exists */
 const EngineStore={
   _own:null, _price:null,
   _load(key){ try{ return JSON.parse(localStorage.getItem(key)||'null'); }catch(_){ return null; } },
@@ -5777,7 +5811,9 @@ const EngineStore={
   price(sku){ if(EDITION==='web') return ''; return String(this._prices()[sku]||''); },
   setPrices(m){ if(typeof m==='string'){ try{ m=JSON.parse(m); }catch(_){ return; } } if(!m||typeof m!=='object') return;
     const P=this._prices(); for(const [k,v] of Object.entries(m)) if(v) P[k]=String(v); try{ localStorage.setItem('tm-prices',JSON.stringify(P)); }catch(_){} },
-  buy(sku){ if(EDITION==='web'){ openGetIt(engineForSku(sku)); return; } if(this.owns(sku)){ toast('You already have this engine'); return; }
+  buy(sku){ if(EDITION==='web'){ openGetIt(engineForSku(sku)); return; }
+    if((sku===HERITAGE_SKU||Object.values(HERITAGE_SKUS).includes(sku))&&heritageOwned()){ toast(isPro()?'The Heritage Collection is already in your Pro':'You already have the Heritage Collection'); return; }
+    if(this.owns(sku)){ toast('You already have this engine'); return; }
     const b=ProStore.bridge();
     try{ if(b==='android'){ if(!window.TMAndroid.buy){ toast(`Please update Train Masters from ${ProStore.storeName()} to buy engines`); return; } window.TMAndroid.buy(sku); }
       else if(b==='vega') window.ReactNativeWebView.postMessage(JSON.stringify({type:'tm-store',action:'buy',sku}));
@@ -5786,7 +5822,7 @@ const EngineStore={
     toast(`Opening ${ProStore.storeName()}…`); },
   restore(){ ProStore.restore(); },
   add(sku,loud){ if(!sku) return; if(sku===PRO_SKU){ ProStore.unlock(); return; } const S=this._set(); if(S.has(sku)) return; S.add(sku); this._save();
-    const k=engineForSku(sku); if(loud){ Sound.fanfare(); toast(`🎉 ${k?TRAIN_TYPES[k].name:'Your new engine'} is yours to keep. Thank you!`); } dirty=true; },
+    const k=engineForSku(sku); if(loud){ Sound.fanfare(); toast(sku===HERITAGE_SKU?'🎉 The Heritage Collection is yours: seven famous engines for all your railways. Thank you!':`🎉 ${k?TRAIN_TYPES[k].name:'Your new engine'} is yours to keep. Thank you!`); } dirty=true; },
   remove(sku){ if(sku===PRO_SKU){ ProStore.revoke(); return; } if(this._set().delete(sku)) this._save(); },
   /* tests only: a stand-in engine (a copy of an existing type) sold under o.sku. No real engine is ever locked this way. */
   _testAdd(k,o){ const base=TRAIN_TYPES[o.base||'black5']; TRAIN_TYPES[k]={...base,name:o.name||k,short:o.short||o.name||k,era:o.era||base.era,desc:o.desc||base.desc,heritage:false,pro:false};
@@ -5820,6 +5856,17 @@ function openEngineCard(k,idx){ const ty=TRAIN_TYPES[k], e=ENGINE_SKUS[k]; if(!t
   openModal({title:ty.name,text:`${pic?`<img class="engpic" src="${pic}" alt="">`:''}<b>${ty.era}</b> · ${ty.desc}`,items:[
     {label:pr?`Buy this engine (${pr})`:'Buy this engine',detail:'A one-off purchase · yours on all your railways',fn:()=>EngineStore.buy(e.sku)},
     {label:'Back',fn:back}],idx:0,onCancel:back}); }
+/* the Heritage Collection card, for a Heritage engine chosen by a player without Pro or the pack: calm, two choices and Back.
+   Prices only from the store (EngineStore.price); no amount until it reports one. Web edition: nothing is sold, it points to Fire TV. */
+function openHeritageCard(k,idx){ const ty=TRAIN_TYPES[k]; if(!ty) return; const back=()=>buyTrain(idx), pic=EnginePic.get(k);
+  const head=`${pic?`<img class="engpic" src="${pic}" alt="">`:''}<b>${ty.name}</b> · ${ty.era} · `;
+  if(EDITION==='web'){ openGetIt(k,back); return; }   /* web demo: nothing is sold, the Fire TV card instead */
+  const sku=HERITAGE_SKUS[k], pe=sku?EngineStore.price(sku):'', pr=EngineStore.price(HERITAGE_SKU), pp=EngineStore.price(PRO_SKU);
+  openModal({title:'Heritage Collection',text:head+`One of seven famous engines in fine detail: ${HERITAGE_NAMES}.`,items:[
+    ...(sku?[{label:pe?`Buy this engine (${pe})`:'Buy this engine',detail:'A one-off purchase · yours on all your railways',fn:()=>EngineStore.buy(sku)}]:[]),
+    {label:pr?`Buy the whole Heritage Collection (${pr})`:'Buy the whole Heritage Collection',detail:'All seven engines · a one-off purchase',fn:()=>EngineStore.buy(HERITAGE_SKU)},
+    {label:pp?`Or get Pro (${pp})`:'Or get Pro',detail:'All of these plus sandbox, scenarios, driving, replays and more',fn:()=>ProStore.buy()},
+    {label:'Back',fn:back}],idx:0,onCancel:back}); }
 // Back button in the Android wrapper. At the top level ask before leaving; otherwise it acts as Esc.
 function askLeave(){ openModal({title:'Leave Train Masters?',text:'Your railway is saved.',items:[
       {label:'Keep playing',fn:()=>{}},
@@ -5836,8 +5883,9 @@ window.tmCanExit=()=>!Offers.peeking&&!trackEdit&&!AutoNet.planning&&!AutoNet.bu
 function proGate(fn){ return (...a)=>{ if(isPro()) return fn(...a); openUpsell(); }; }
 function openUpsell(){
   if(EDITION==='web'){ openGetIt(); return; }
-  openModal({title:`Train Masters ${PRO_TAG}`,text:'Upgrade once to unlock:<br>🏡 <b>Countryside life</b> — villages, traffic, boats and canals<br>🖼️ <b>Display mode</b> — your railway as a living picture<br>🚂 <b>Drive it yourself</b> — take the controls in the cab<br>🏛️ <b>Heritage Collection</b> — famous engines in fine detail: the Duchess and its Streamliner, the Merchant Navy, the 9F, the Terrier, the Class 47 and the Crocodile<br>🏗️ <b>Sandbox</b> — unlimited money, instant building<br>🗺️ <b>Map editor</b> — paint your own landscape<br>🎯 <b>Scenarios</b> — challenges with star ratings<br>⏯️ Replays · 📷 Photo mode · 🕰️ Exact timetables',
-    items:[{label:'Upgrade to Pro',detail:'One-off purchase · keeps all your railways',fn:()=>ProStore.buy()},{label:'Restore a previous purchase',fn:()=>ProStore.restore()},{label:'Not now',fn:()=>{}}],onCancel:()=>{}});
+  const pp=EngineStore.price(PRO_SKU);
+  openModal({title:`Train Masters ${PRO_TAG}`,text:`Upgrade once to unlock:<br>🏡 <b>Countryside life</b> — villages, traffic, boats and canals<br>🖼️ <b>Display mode</b> — your railway as a living picture<br>🚂 <b>Drive it yourself</b> — take the controls in the cab<br>🏛️ <b>Heritage Collection</b> included — famous engines in fine detail: ${HERITAGE_NAMES}${EngineStore.owns(HERITAGE_SKU)?' (already yours)':''}<br>🏗️ <b>Sandbox</b> — unlimited money, instant building<br>🗺️ <b>Map editor</b> — paint your own landscape<br>🎯 <b>Scenarios</b> — challenges with star ratings<br>⏯️ Replays · 📷 Photo mode · 🕰️ Exact timetables`,
+    items:[{label:pp?`Upgrade to Pro (${pp})`:'Upgrade to Pro',detail:'One-off purchase · keeps all your railways',fn:()=>ProStore.buy()},{label:'Restore a previous purchase',fn:()=>ProStore.restore()},{label:'Not now',fn:()=>{}}],onCancel:()=>{}});
 }
 /* The free web demo (backlog S1, 21 Nov 2026): no buying at all. Where the store edition would sell Pro or an engine,
    a friendly card says where they are and links to the Amazon page (opens in a new tab). Cozy: shown only when the player
@@ -5848,7 +5896,7 @@ function openAmazon(u){ try{ window.open(u||AMAZON_URL.uk,'_blank','noopener'); 
 const GETIT_LINK=`<a href="${AMAZON_URL.uk}" target="_blank" rel="noopener" onclick="event.stopPropagation();event.preventDefault();openAmazon(AMAZON_URL.uk)" style="color:var(--accent)">Get it on Fire TV</a>`;
 function openGetIt(k,back){ const ty=k&&TRAIN_TYPES[k], pic=ty?EnginePic.get(k):'';
   const pro='🏡 Countryside life · 🚂 Drive it yourself · 🏛️ the Heritage Collection engines · 🏗️ Sandbox · 🗺️ Map editor · 🎯 Scenarios · ⏯️ Replays and 📷 photo mode';
-  const text=ty?`${pic?`<img class="engpic" src="${pic}" alt="">`:''}<b>${ty.era}</b> · ${ty.desc}<br><br>This engine is in the Fire TV and Fire tablet version of Train Masters, where you can add it to all your railways.`
+  const text=ty?`${pic?`<img class="engpic" src="${pic}" alt="">`:''}<b>${ty.era}</b> · ${ty.desc}<br><br>This engine is in the Fire TV and Fire tablet version of Train Masters, where you can add it to all your railways${ty.heritage?': on its own, in the Heritage Collection of seven, or with Pro':''}.`
     :`<b>Pro and extra engines are in the Fire TV and Fire tablet version.</b><br>This free browser version has the whole railway to build and run. On Fire TV and Fire tablets you can also have:<br>${pro}<br>and a growing line of famous engines, one at a time, like the Royal Scot, the Britannia and Stephenson’s Rocket.`;
   const done=back||(()=>{});
   openModal({title:ty?ty.name:'Train Masters on Fire TV',text,items:[
@@ -8549,6 +8597,18 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     bx(-0.78,-0.53,0.47,0,0.33,0.42,body); bx(-0.875,-0.475,0.655,0,0.02,0.44,ROOF); bx(-0.8,0.8,0.2,0,0.08,0.3,DK);
     for(const s of [-1,1]){ bx(0.565,0.787,0.44,s*0.207,0.34,0.006,body); bx(-0.74,-0.56,0.565,s*0.211,0.1,0.004,WIN); bx(-0.42,0.33,0.15,s*0.222,0.018,0.012,ROD); cx(0.38,0.54,0.2,s*0.24,0.05,body,8); cx(0.83,0.88,0.215,s*0.13,0.025,DK,6); }
     wh([0.27,-0.045,-0.36],0.137,body); wh([0.66,0.5],0.064,DK); wh([-0.62],0.074,DK); };
+  /* rebuilt West Country far away (E2): high running board, parallel boiler, smokebox and its short wide chimney, big flat
+     deflectors, round-topped firebox, the wedge-fronted cab and roof, cylinders, rods and wheels; the tender with its
+     raised side sheets round the coal */
+  HERO_FAR.wc=(K,part)=>{ const {bx,cx,up,wh,C,body,L}=K, DK=C('#222'), SMK=C(L.smokebox||'#1a1a1a'), WIN=C('#26303a'), ROD=C('#9a9a9a'), RED=C('#b3262b'), ROOF=C('#2b2928'), LN=C(L.lining||'#e8892e');
+    if(part==='tender'){ bx(-0.385,0.36,0.36,0,0.28,0.42,body); bx(-0.37,0.345,0.47,0,0.008,0.424,LN); bx(-0.14,0.355,0.56,0,0.12,0.42,body); bx(-0.13,0.345,0.615,0,0.02,0.37,C('#151515'));
+      bx(-0.38,0.36,0.19,0,0.05,0.42,DK); wh([-0.26,0,0.26],0.08,body); bx(-0.41,-0.38,0.215,0,0.1,0.42,RED); return; }
+    bx(-0.84,0.6,0.338,0,0.016,0.43,DK); bx(0.6,0.81,0.262,0,0.016,0.43,DK); bx(0.8,0.83,0.215,0,0.1,0.42,RED);
+    cx(-0.2,0.56,0.475,0,0.145,body,10); cx(0.56,0.79,0.475,0,0.139,SMK,10); cx(-0.52,-0.2,0.475,0,0.153,body,10); bx(-0.52,-0.2,0.4,0,0.13,0.32,body);
+    up(0.67,0.625,0,0.045,0.028,C('#151515')); up(0.22,0.615,0,0.04,0.025,body);
+    bx(-0.78,-0.53,0.47,0,0.33,0.42,body); bx(-0.875,-0.48,0.655,0,0.02,0.44,ROOF); bx(-0.8,0.8,0.2,0,0.08,0.3,DK);
+    for(const s of [-1,1]){ bx(0.56,0.787,0.44,s*0.208,0.34,0.006,body); bx(-0.74,-0.56,0.565,s*0.211,0.1,0.004,WIN); bx(-0.42,0.33,0.15,s*0.222,0.018,0.012,ROD); cx(0.38,0.54,0.2,s*0.24,0.05,body,8); cx(0.83,0.88,0.215,s*0.13,0.025,DK,6); }
+    wh([0.27,-0.045,-0.36],0.137,body); wh([0.66,0.5],0.064,DK); wh([-0.62],0.074,DK); };
   /* Peppercorn A1 far away (E2): high running board, long boiler, smokebox and double chimney, big deflectors, banjo
      dome, round-topped firebox, cab and roof, cylinders, rods and wheels; the straight-sided tender */
   HERO_FAR.a1pc=(K,part)=>{ const {bx,cx,up,wh,C,body,L}=K, DK=C('#222'), SMK=C(L.smokebox||'#1d1d1d'), WIN=C('#26303a'), ROD=C('#9a9a9a'), RED=C('#b3262b'), ROOF=C('#2b2928'), LN=C(L.lining||'#f1efe6');
@@ -8844,6 +8904,10 @@ void main(){ gl_FragColor=texture2D(map,vUv);
        Walschaerts gear (the return crank on the centre axle) */
     brit:{rD:0.137, dx:[0.27,-0.045,-0.36], main:1, small:[[0.66,0.064,'e'],[0.5,0.064,'e'],[-0.62,0.074,'e'],[0.26,0.08,'t'],[0,0.08,'t'],[-0.26,0.08,'t']],
       wz:0.19, rc:0.047, yc:0.2, lcr:0.33, K:[0.1,0.225], V:[0.355,0.255], Le:0.15, build:(L,sp)=>heroBrit(L,sp)},
+    /* rebuilt West Country (E2): 6'2" box-pok driving wheels, 3'1" bogie and 3'7" trailing wheels, three cylinders (the
+       outside two show, with BR's outside Walschaerts gear); the same 4-6-2 layout as the Britannia */
+    wc:{rD:0.137, dx:[0.27,-0.045,-0.36], main:1, small:[[0.66,0.064,'e'],[0.5,0.064,'e'],[-0.62,0.074,'e'],[0.26,0.08,'t'],[0,0.08,'t'],[-0.26,0.08,'t']],
+      wz:0.19, rc:0.047, yc:0.2, lcr:0.33, K:[0.1,0.225], V:[0.355,0.255], Le:0.15, build:(L,sp)=>heroWestCountry(L,sp)},
     /* Peppercorn A1 (E2): 6'8" driving wheels, 3'2" bogie, 3'8" trailing and 4'2" tender wheels; three cylinders, the
        outside pair with Walschaerts gear driving the centre axle (the inside one is hidden between the frames) */
     a1pc:{rD:0.148, dx:[0.27,-0.05,-0.37], main:1, small:[[0.66,0.065,'e'],[0.5,0.065,'e'],[-0.62,0.077,'e'],[0.26,0.085,'t'],[0,0.085,'t'],[-0.26,0.085,'t']],
@@ -9821,6 +9885,99 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     return {eng:G, ten:T,
       drvR:heroWheel(sp.rD,1,{...wc,th:0.034,seg:16,spokes:14,hub:0.24,weight:true,crank:sp.rc}), drvL:heroWheel(sp.rD,-1,{...wc,th:0.034,seg:16,spokes:14,hub:0.24,weight:true,crank:sp.rc}),
       whlR:heroWheel(1,1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3}), whlL:heroWheel(1,-1,{...wc,rimIn:null,th:0.03,seg:8,spokes:6,hub:0.3})};
+  }
+  /* ---- rebuilt West Country 4-6-2 (E2, sold on its own as trainmasters.engine.wc): Bulleid's light Pacific as rebuilt by
+     BR from 1957 without its air-smoothed casing. Three cylinders (the outside two show, with outside Walschaerts gear; the
+     middle one sits between the frames under the smokebox), 6'2" box-pok disc driving wheels bare under a high running
+     board, a leading bogie and trailing truck, a parallel boiler with lined lagging bands and a low dome, a short wide
+     chimney, big flat-sided smoke deflectors, a round-topped firebox, Bulleid's wedge-fronted cab, and a high-sided tender
+     with raised side sheets round the coal. BR lined green, black smokebox and frames, red beams. Class name only: no
+     name, number or crest. ---- */
+  function heroWestCountry(L,sp){
+    const c=heroCols(L), {C,body,line,BLK,DK,SMK,STEEL,BRASS,WIN,ROOF,COAL,COAL2}=c, YB=0.475, RB=0.141, RS=0.147, RF=0.15, RBY=0.338, LB=C('#0d0d0d'), HR=C('#c9ccc8'), GLINT=C('#41505c');
+    const G=new Geo(), k=heroKitSteam(G), {B,coneX,discX,rod3,plateZ,LZ}=k;
+    /* BR lining on a flat side (facing s at z): a black band edged with fine orange lines, round a panel */
+    const linePanel=(LZf,x0,x1,y0,y1,z,s)=>{ const w=0.007, o=0.0022;
+      for(const [cx,cy,sx,sy] of [[(x0+x1)/2,y0,x1-x0,0],[(x0+x1)/2,y1,x1-x0,0],[x0,(y0+y1)/2,0,y1-y0],[x1,(y0+y1)/2,0,y1-y0]]){
+        LZf(cx,cy,z,sx+w+2*o,sy+w+2*o,s,line); LZf(cx,cy,z+s*0.0004,sx+w,sy+w,s,LB); } };
+    /* frames, bogie, trailing truck, brake blocks, sand pipes, the outside cylinders (lined) with valve chests, slide bars, the
+       motion bracket, expansion link bracket and reach rod */
+    heroChassis462(k,sp,{...c,body,band:line},{walsch:true});
+    /* the middle cylinder between the frames, its front cover showing under the smokebox */
+    B(0.67,0.29,0,0.13,0.08,0.2,BLK); coneX(0.735,0.745,0.29,0,0.045,0.04,DK,10); discX(0.745,0.29,0,0.04,1,DK,10);
+    /* outside steam pipes from the smokebox sides down to the valve chests, behind the deflectors */
+    heroBoth(s=>{ rod3([0.6,YB-0.05,s*0.122],[0.49,RBY-0.01,s*0.2],0.024,body); rod3([0.49,RBY-0.01,s*0.2],[0.47,0.3,s*0.226],0.024,body); });
+    /* the high running board, dropping in a curve to the buffer beam; its black edge */
+    B(-0.13,RBY,0,1.42,0.014,0.43,DK);
+    G.hexa([[0.6,RBY-0.007,-0.215],[0.7,0.255,-0.215],[0.7,0.255,0.215],[0.6,RBY-0.007,0.215],[0.6,RBY+0.007,-0.215],[0.7,0.269,-0.215],[0.7,0.269,0.215],[0.6,RBY+0.007,0.215]],DK);
+    B(0.755,0.262,0,0.11,0.014,0.43,DK);
+    heroBoth(s=>{ B(-0.13,RBY-0.013,s*0.2145,1.42,0.018,0.004,BLK); plateZ([[0.6,RBY-0.022],[0.7,0.24],[0.7,0.262],[0.6,RBY-0.004]],s*0.2145,0.004,BLK); B(0.755,0.25,s*0.2145,0.11,0.018,0.004,BLK); });
+    heroBeam(k,c,0.815,1);
+    heroBoth(s=>{ B(0.74,0.18,s*0.212,0.05,0.006,0.03,DK); B(0.74,0.215,s*0.222,0.006,0.075,0.006,DK); B(0.36,0.255,s*0.212,0.05,0.006,0.03,DK); B(0.36,0.29,s*0.222,0.006,0.075,0.006,DK); });   /* front steps */
+    /* smokebox on its saddle; the door with its hinges, dart handles, handrail and top lamp iron */
+    B(0.62,0.37,0,0.12,0.05,0.18,BLK);
+    coneX(0.56,0.782,YB,0,RS,RS,SMK,22); coneX(0.78,0.788,YB,0,RS+0.003,RS+0.003,SMK,22); coneX(0.788,0.797,YB,0,RS-0.01,RS-0.032,SMK,22); discX(0.797,YB,0,RS-0.032,1,SMK,22);
+    for(const dy of [0.05,-0.05]) B(0.798,YB+dy,0,0.005,0.012,0.15,C('#2c2c2c'));
+    B(0.802,YB,0,0.01,0.02,0.02,STEEL); B(0.81,YB,0,0.005,0.006,0.045,STEEL);
+    rod3([0.8,YB+0.075,-0.065],[0.8,YB+0.075,0.065],0.006,HR); B(0.794,YB+0.115,0,0.008,0.026,0.012,BLK);
+    /* the short, wide Bulleid chimney: a plain stovepipe on a broad base, barely above the smokebox */
+    const ch=YB+RS; G.cyl(0.67,ch,0,0.056,0.016,'y',BLK,12); G.cyl(0.67,ch+0.02,0,0.046,0.03,'y',BLK,12); G.cyl(0.67,ch+0.0355,0,0.037,0.002,'y',C('#060606'),10);
+    /* the big flat-sided smoke deflectors, standing on the running board and following its drop at the front, up to the boiler
+       top; plain plates turned in at the top, with stays to the smokebox */
+    heroBoth(s=>{ const z=s*0.208, th=0.005, X0=0.56, X1=0.787;
+      plateZ([[X0,RBY+0.008],[0.7,0.27],[X1,0.27],[X1,0.6],[X1-0.02,0.616],[X0,0.616]],z,th,body);
+      G.hexa([[X0,0.612,s*0.2105],[X1-0.02,0.612,s*0.2105],[X1-0.02,0.612,s*0.2055],[X0,0.612,s*0.2055],[X0,0.624,s*0.2005],[X1-0.02,0.624,s*0.2005],[X1-0.02,0.624,s*0.1955],[X0,0.624,s*0.1955]],body);
+      rod3([0.6,0.59,s*0.205],[0.6,YB+0.05,s*0.135],0.006,body); rod3([0.6,0.4,s*0.205],[0.6,YB-0.07,s*0.125],0.006,body); });
+    /* the parallel boiler with lined lagging bands, the low dome, handrails on stanchions, the ejector pipe */
+    coneX(-0.2,0.56,YB,0,RB,RB,body,22);
+    for(const x of [0.45,0.3,0.15,0,-0.14]){ coneX(x-0.0075,x+0.0075,YB,0,RB+0.0025,RB+0.0025,line,10,-2.15,2.15); coneX(x-0.0045,x+0.0045,YB,0,RB+0.0035,RB+0.0035,LB,10,-2.15,2.15); }
+    coneX(0.548,0.562,YB,0,RB+0.003,RB+0.003,line,14,-2.15,2.15);
+    G.dome(0.22,YB+RB-0.008,0,0.044,body,10,3,0.42); G.cyl(0.22,YB+RB-0.004,0,0.044,0.012,'y',body,10);
+    heroBoth(s=>{ const zb=Math.sqrt(RB*RB-0.07*0.07)+0.02; rod3([0.555,YB+0.07,s*zb],[-0.5,YB+0.07,s*(zb+0.012)],0.007,HR);
+      for(const x of [0.45,0.2,-0.05]) B(x,YB+0.07,s*(zb-0.012),0.006,0.006,0.024,STEEL); });
+    rod3([0.55,YB-0.035,-0.16],[-0.5,YB-0.035,-0.17],0.014,body);
+    /* safety valves on the boiler just ahead of the firebox; the round-topped firebox over the rear coupled wheels (lined); whistle */
+    for(const x of [-0.13,-0.17]){ G.cyl(x,YB+RB+0.01,0,0.013,0.024,'y',STEEL,8); G.cyl(x,YB+RB+0.025,0,0.009,0.006,'y',STEEL,6); }
+    coneX(-0.52,-0.2,YB,0,RF+0.005,RF+0.005,body,22,-Math.PI/2-0.25,Math.PI/2+0.25);
+    heroBoth(s=>{ B(-0.36,0.41,s*0.14,0.32,0.15,0.04,body); linePanel(LZ,-0.505,-0.215,0.37,0.455,s*0.1605,s); }); B(-0.36,0.345,0,0.32,0.012,0.3,DK);
+    G.cyl(-0.47,YB+RF+0.01,0.06,0.004,0.03,'y',BRASS,5); G.cyl(-0.47,YB+RF+0.03,0.06,0.012,0.024,'y',BRASS,8);
+    /* lubricators and sandbox fillers on the running board */
+    heroBoth(s=>{ B(0.4,RBY+0.025,s*0.185,0.06,0.036,0.032,BLK); B(0.44,RBY+0.018,s*0.185,0.016,0.02,0.016,BRASS); B(0.1,RBY+0.015,s*0.19,0.03,0.016,0.024,body); B(-0.16,RBY+0.015,s*0.19,0.03,0.016,0.024,body); });
+    /* Bulleid's wedge-fronted cab: the front plates meet in a point ahead of the firebox, each with a window; side sheets
+       reaching below the running board with two windows and a lined panel, handrails and steps; the roof overhanging */
+    heroBoth(s=>{ const y0=0.335, y1=0.665, zA=0, zB=s*0.2, xA=-0.505, xB=-0.545, t=0.012;
+      G.hexa([[xA,y0,zA],[xB,y0,zB],[xB-t,y0,zB],[xA-t,y0,zA],[xA,y1,zA],[xB,y1,zB],[xB-t,y1,zB],[xA-t,y1,zA]],body);
+      const dl=Math.hypot(xB-xA,0.2), dx=(xB-xA)/dl, dz=0.2*s/dl, nx=0.2/dl, nz=-(xB-xA)*s/dl, mx=xA+(xB-xA)*0.55+nx*0.0015, mz=zB*0.55+nz*0.0015, hw=0.038, hh=0.032, y=0.6;
+      const P=(a,b)=>[mx+dx*a,y+b,mz+dz*a]; G.quad(P(-hw,-hh),P(hw,-hh),P(hw,hh),P(-hw,hh),WIN,[nx,0,nz]);
+      G.quad(P(-hw*0.8,hh*0.45),P(hw*0.2,hh*0.45),P(hw*0.2,hh*0.65),P(-hw*0.8,hh*0.65),GLINT,[nx,0,nz]); });
+    heroBoth(s=>{ const z=s*0.205;
+      B(-0.66,0.405,z,0.26,0.2,0.012,body); B(-0.545,0.565,z,0.03,0.12,0.012,body); B(-0.638,0.565,z,0.016,0.12,0.012,body); B(-0.755,0.565,z,0.03,0.12,0.012,body); B(-0.66,0.632,z,0.26,0.016,0.012,body);
+      B(-0.59,0.565,s*0.2035,0.062,0.11,0.006,WIN); B(-0.695,0.565,s*0.2035,0.086,0.11,0.006,WIN);
+      LZ(-0.58,0.6,s*0.2116,0.03,0.004,s,GLINT); LZ(-0.68,0.6,s*0.2116,0.04,0.004,s,GLINT);
+      for(const [x,w] of [[-0.59,0.064],[-0.695,0.088]]){ LZ(x,0.621,s*0.2112,w,0.003,s,BLK); LZ(x,0.509,s*0.2112,w,0.003,s,BLK); }
+      linePanel(LZ,-0.768,-0.548,0.322,0.488,s*0.2112,s);
+      rod3([-0.775,RBY-0.03,s*0.215],[-0.775,0.6,s*0.215],0.007,HR); rod3([-0.535,RBY+0.02,s*0.215],[-0.535,0.49,s*0.215],0.006,HR);
+      B(-0.79,0.27,s*0.214,0.06,0.006,0.03,DK); B(-0.79,0.19,s*0.214,0.06,0.006,0.03,DK); B(-0.762,0.23,s*0.222,0.006,0.12,0.006,DK); B(-0.818,0.23,s*0.222,0.006,0.12,0.006,DK); });
+    G.arc(-0.69,0.64,0,0.37,0.44,0.036,0.015,ROOF,8); heroBoth(s=>B(-0.69,0.646,s*0.19,0.35,0.005,0.006,BLK)); B(-0.65,0.678,0,0.12,0.01,0.08,ROOF);
+    B(-0.55,0.47,0,0.01,0.25,0.26,BLK); B(-0.5565,0.41,0,0.003,0.04,0.06,C('#ff8a2a')); B(-0.82,RBY,0,0.04,0.01,0.34,DK);
+    /* ---- the tender: tall flat sides with a lined panel, raised side sheets flush with them round the coal (sloped at the
+       back), the tank top and water filler behind, handrails ---- */
+    const T=new Geo(), kt=heroKitSteam(T);
+    heroTenderFrame(kt,c,[-0.26,0,0.26]);
+    kt.B(-0.01,0.36,0,0.74,0.28,0.42,body);
+    heroBoth(s=>{ kt.plateZ([[-0.14,0.5],[0.355,0.5],[0.355,0.625],[-0.085,0.625],[-0.14,0.58]],s*0.204,0.012,body);
+      linePanel(kt.LZ,-0.36,0.33,0.25,0.47,s*0.2106,s); linePanel(kt.LZ,-0.07,0.325,0.525,0.598,s*0.2106,s);
+      kt.rod3([0.36,0.25,s*0.205],[0.36,0.6,s*0.205],0.007,HR); kt.rod3([-0.387,0.25,s*0.17],[-0.387,0.5,s*0.17],0.006,HR); });
+    kt.B(0.35,0.5625,0,0.012,0.125,0.4,body); kt.B(-0.135,0.545,0,0.012,0.09,0.4,body);
+    T.arc(0.11,0.585,0,0.46,0.38,0.055,0.03,COAL,8);
+    for(let q=0;q<10;q++){ const x=-0.09+((q*37)%40)/100, z=((((q*53)%100)/100)-0.5)*0.28; T.pyr(x,0.585+0.055*(1-(z/0.19)**2)-0.008,z,0.02,0.018,q%2?COAL2:COAL); }
+    kt.B(-0.26,0.503,0,0.24,0.006,0.38,DK); T.cyl(-0.29,0.513,0,0.035,0.02,'y',DK,10); kt.B(-0.29,0.526,0,0.05,0.006,0.008,STEEL);
+    for(let q=0;q<4;q++) kt.B(-0.386,0.28+q*0.055,0,0.004,0.004,0.14,STEEL);
+    heroBeam(kt,c,-0.392,-1,{lamps:false});
+    const wc=heroWC(c);
+    return {eng:G, ten:T,
+      drvR:heroWheel(sp.rD,1,{...wc,th:0.035,seg:16,disc:8,hub:0.24,weight:true,crank:sp.rc}), drvL:heroWheel(sp.rD,-1,{...wc,th:0.035,seg:16,disc:8,hub:0.24,weight:true,crank:sp.rc}),
+      whlR:heroWheel(1,1,{...wc,th:0.03,seg:10,disc:5,hub:0.3}), whlL:heroWheel(1,-1,{...wc,th:0.03,seg:10,disc:5,hub:0.3})};
   }
   /* ---- Peppercorn A1 4-6-2 (1948, E2, a single-purchase engine): the last LNER-design express Pacific. Three cylinders,
      the outside pair with Walschaerts gear; 6'8" spoked driving wheels left bare under a high running board; a leading
