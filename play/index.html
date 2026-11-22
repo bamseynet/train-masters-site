@@ -165,6 +165,14 @@ button.tb{border-radius:14px}
 #modal .opt.toggle .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--muted);flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--accent-ink)}
 #modal .opt.toggle.on .box{background:var(--accent);border-color:var(--accent)}
 #modal .foot{margin-top:10px;font-size:12.5px;color:var(--muted)}
+/* Closing a card (22 Nov 2026, Peter on his phone): a round close button in the card's top corner, next to the title. The title,
+   tabs and close button stay put; only the body below them scrolls. A tap on the dimmed backdrop also does what Back does. */
+#modal .chead{display:flex;align-items:flex-start;gap:8px;flex:none}
+#modal .chead h2{flex:1;min-width:0}
+#modal .mclose{flex:none;width:40px;height:40px;margin:-6px -8px 0 0;padding:0;border-radius:999px;border:2px solid rgba(255,240,200,.16);background:rgba(255,240,200,.07);color:#fbf1d6;font:800 18px/1 Nunito,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,transform .12s}
+#modal .mclose:hover{background:rgba(255,240,200,.16)}
+#modal .mclose:active{transform:scale(.92)}
+#modal .cbody{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}
 #view3d{position:fixed;inset:0;width:100%;height:100%;display:none;z-index:2;touch-action:none}
 #bar3d{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:6;display:none;gap:6px;align-items:center;background:var(--panel);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:6px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 #bar3d .tb.active{background:var(--accent);color:var(--accent-ink);border-color:#f6d68c}
@@ -322,6 +330,7 @@ body.driving.ptr #drivepad{display:flex}
 /* touch: finger-sized targets everywhere */
 .touch button.tb{min-height:44px;min-width:44px}
 .touch #modal .opt{min-height:48px}
+.touch #modal .mclose{width:44px;height:44px}
 .touch .clock #clock{min-height:44px;display:inline-flex;align-items:center}
 .touch .seed input{min-height:44px}
 .touch #status button{min-height:44px;padding:6px 14px}
@@ -348,7 +357,7 @@ body.driving.ptr #drivepad{display:flex}
   .touch #bar3d,.touch #edbar,.touch #rpbar{bottom:6px;padding:4px}
   .touch #photobar{top:6px;right:6px}
   body.touch.mode-replay.mode3d #rpbar{bottom:62px}
-  .touch #modal .card{overflow-y:auto;padding:14px 16px;max-height:calc(100vh - 12px)}
+  .touch #modal .card{overflow:hidden;padding:14px 16px;max-height:calc(100vh - 12px)} .touch #modal .cbody{overflow-y:auto}   /* the body scrolls, the title and close button stay */
   .touch #modal .opts{overflow:visible} .touch #modal p{font-size:13px;margin-bottom:8px} .touch #modal h2{font-size:20px}
   .touch #modal .opt{padding:8px 14px}
 }
@@ -1310,6 +1319,7 @@ function undo(){
     const r=undoStack.pop(); for(let i=r.tiles.length-1;i>=0;i--) restore(r.tiles[i]); rail.money=r.money; n++;
     if(r.stationAdded!=null) rail.stations=rail.stations.filter(s=>s.id!==r.stationAdded);
     if(r.stationRemoved) rail.stations.push(r.stationRemoved);
+    if(r.altRemoved){ const st=stationById(r.altRemoved.id); if(st) st.alt=r.altRemoved.alt; }
     if(r.signal){ if(r.signal.before) rail.signals[r.signal.c]=r.signal.before; else delete rail.signals[r.signal.c]; }
     if(r.sigs) for(const x of r.sigs){ if(x.before) rail.signals[x.c]=x.before; else delete rail.signals[x.c]; }
   }
@@ -2181,14 +2191,15 @@ function defaultStatus(){
 function openModal(cfg){
   modal={...cfg, idx:Number.isInteger(cfg.idx)?cfg.idx:0};
   if(!Number.isInteger(cfg.idx)) cfg={...cfg, idx:null};
-  if(!$('modal').classList.contains('open')) Sound.pop();
+  if(!$('modal').classList.contains('open')){ Sound.pop(); modalOpenedAt=performance.now(); }
   if(modal.items[modal.idx]?.disabled || cfg.idx==null){ const f=modal.items.findIndex(i=>!i.disabled&&!i.toggle); if(cfg.idx==null||modal.items[modal.idx]?.disabled) modal.idx=f<0?0:f; }
   renderModal(); const md=$('modal'); md.classList.remove('side-left','side-right'); if(cfg.side) md.classList.add('side-'+cfg.side); md.classList.add('open');
 }
 function renderModal(){
   const m=modal, card=$('modal').querySelector('.card');
   const tabs=m.tabs?`<div class="tabs" role="tablist">${m.tabs.map((t,i)=>`<button class="tab${t.cls?' '+t.cls:''}${i===m.tab?' on':''}${i===m.tab&&m.tabFocus?' sel':''}" role="tab" aria-selected="${i===m.tab}">${t.label}${t.badge?`<span class="tbadge">${t.badge}</span>`:''}</button>`).join('')}</div>`:'';
-  card.innerHTML=`<h2>${m.title}${m.badge?`<span class="badge">${m.badge}</span>`:''}</h2>${tabs}${m.text?`<p>${m.text}</p>`:''}<div class="opts"></div>${m.foot?`<div class="foot">${m.foot}</div>`:''}`;
+  card.innerHTML=`<div class="chead"><h2>${m.title}${m.badge?`<span class="badge">${m.badge}</span>`:''}</h2><button class="mclose" type="button" tabindex="-1" aria-label="Close (same as Back)" title="Close">✕</button></div>${tabs}<div class="cbody">${m.text?`<p>${m.text}</p>`:''}<div class="opts"></div>${m.foot?`<div class="foot">${m.foot}</div>`:''}</div>`;
+  card.querySelector('.mclose').onclick=e=>{ e.stopPropagation(); modalBack(); };
   card.querySelectorAll('.tabs .tab').forEach((b,i)=>{ b.onclick=()=>{ if(i===m.tab){ m.tabFocus=false; renderModal(); } else modalTab(i,false); }; });
   const box=card.querySelector('.opts');
   m.items.forEach((it,i)=>{
@@ -2201,7 +2212,7 @@ function renderModal(){
     box.appendChild(b);
   });
   const sel=box.children[m.idx];
-  if(m.tabs&&(m.tabFocus||m.idx===m.items.findIndex(i=>!i.disabled))){ box.scrollTop=0; card.scrollTop=0; }   /* a tab's top: keep the tabs in view (on phones the whole card scrolls) */
+  if(m.tabs&&(m.tabFocus||m.idx===m.items.findIndex(i=>!i.disabled))){ box.scrollTop=0; card.scrollTop=0; card.querySelector('.cbody').scrollTop=0; }   /* a tab's top: keep the tabs in view (on phones the whole card scrolls) */
   else if(sel) sel.scrollIntoView({block:'nearest'});
 }
 /* Tabs (22 Nov 2026, "Choose a train"): a modal may carry tabs:[{label,badge,cls}], tab (the open one) and onTab(i), which
@@ -2215,6 +2226,16 @@ function activateModal(){
   const idx=m.idx; closeModal(); it.fn&&it.fn(m,idx);
 }
 function closeModal(){ modal=null; $('modal').classList.remove('open'); }
+/* Back for the open card: what Escape, the remote's Back, the close button and a tap on the backdrop all do (the card's onCancel:
+   up one level, "decide later" for a contract offer, "Not now" for a buy card; never a purchase). */
+function modalBack(){ const m=modal; if(!m) return; const cb=m.onCancel; closeModal(); cb&&cb(); }
+/* A tap on the dimmed backdrop = Back (22 Nov 2026). Only when the press both starts and ends on the backdrop, without dragging,
+   and not in the first 250 ms after the card opened (so the tap that opened it can't close it). */
+var modalOpenedAt=0, modalDown=null;   /* var: openModal may run before this line during start-up */
+$('modal').addEventListener('pointerdown',e=>{ modalDown=(e.target===$('modal')&&performance.now()-modalOpenedAt>250)?{x:e.clientX,y:e.clientY}:null; });
+$('modal').addEventListener('click',e=>{ const d=modalDown; modalDown=null;
+  if(!d||e.target!==$('modal')||!modal||performance.now()-modalOpenedAt<250||Math.hypot(e.clientX-d.x,e.clientY-d.y)>16) return;
+  e.preventDefault(); modalBack(); });
 function modalKey(e){
   const m=modal, k=e.key; e.preventDefault();
   const move=d=>{ let i=m.idx; for(let n=0;n<m.items.length;n++){ i=(i+d+m.items.length)%m.items.length; if(!m.items[i].disabled){m.idx=i;break;} } Sound.tick(); renderModal(); };
@@ -2225,7 +2246,7 @@ function modalKey(e){
   if(k==='ArrowDown'||k==='ArrowRight') move(1);
   else if(k==='ArrowUp'||k==='ArrowLeft') move(-1);
   else if(k==='Enter'||k===' ') activateModal();
-  else if(k==='Escape'||k==='Backspace'||e.keyCode===82){ const cb=m.onCancel; closeModal(); cb&&cb(); }
+  else if(k==='Escape'||k==='Backspace'||e.keyCode===82) modalBack();
 }
 
 /* ---------------- saved games ---------------- */
@@ -2812,7 +2833,7 @@ function trackEditPick(c){
     if(rail.stations.some(s=>s!==st&&Math.abs(cX(s.c)-cX(c))+Math.abs(cY(s.c)-cY(c))<=1)) return no('Too close to another station');
     { const e=stationGroundProblem(c)||townLimitProblem(c,st); if(e) return no(e); }
     if(resv[st.c]||resv[c]) return no('A train is at the station — try again once it has left');
-    st.c=c; for(const t of trains) if(t.state==='moving'&&t.nextStationId===st.id){ t.state='noroute'; t.retryAt=sim.time; }   // re-plan to the new spot
+    st.c=c; delete st.alt; for(const t of trains) if(t.state==='moving'&&t.nextStationId===st.id){ t.state='noroute'; t.retryAt=sim.time; }   // re-plan to the new spot
     trackEdit=null; defaultStatus(); Sound.signal(); toast(`${st.name} moved`); afterChange(); return true;
   }
   return false;
@@ -2877,6 +2898,80 @@ function turnLoopPlan(st){
 }
 function buildTurnLoop(st,pl){ const g=++groupSeq; for(const [a,b] of pl.pieces){ const r=placePiece(a,b,{group:g}); if(!r.ok){ toast(r.reason,true); return; } }
   st.turnLoop=true; st.turnBack=pl.back; Sound.signal(); toast(`Turning loop built — trains now turn round at ${st.name} instead of reversing`); afterChange(); }
+/* Second platform (22 Nov 2026, Peter said yes to the queue study's option A, as a player tool). A busy station gets a
+   second track beside its platform, on the side away from the building, with an island platform between the two.
+   At a terminus it is a bay (a dead end joined to the line by points a little more than a train's length out); at a
+   through station a loop joined at both ends. No new signals: the stopping place on the second track (st.alt.c) ends a
+   block like a station does (isSafe). A train setting off picks a free platform (pickPlatform), and one waiting at a
+   signal for a platform another train has taken switches to the free one. Kept with the station in the save as
+   st.alt = {c, kind, tiles (the whole second track), plat (the tiles along the island), cost}. If its track is lifted,
+   the station simply has one platform again (altOf). See docs/proposals/2026-11-20-train-queues.md, section 0. */
+const PLAT2_COST=STATION_COST/2;
+function altOf(st){ const a=st&&st.alt; return a&&rail.bits[a.c]&&a.tiles.every(t=>rail.bits[t])?a:null; }
+const ALT_STOPS={v:-1,r:null,set:new Set()};
+function isAltStop(c){
+  if(ALT_STOPS.v!==railVersion||ALT_STOPS.r!==rail){ ALT_STOPS.v=railVersion; ALT_STOPS.r=rail; ALT_STOPS.set.clear(); for(const s of rail.stations){ const a=altOf(s); if(a) ALT_STOPS.set.add(a.c); } }
+  return ALT_STOPS.set.size>0&&ALT_STOPS.set.has(c);
+}
+const callingAt=st=>trains.filter(t=>t.stops.includes(st.id));
+function platform2Plan(st){
+  if(altOf(st)) return {reason:'It already has a second platform'};
+  const calls=callingAt(st); if(calls.length<2) return {reason:'Only for busy stations: at least 2 trains must call here'};
+  const c=st.c, m=rail.bits[c], h=(m&10)!==0&&!(m&5), v=(m&5)!==0&&!(m&10); if(!h&&!v) return {reason:'Needs a straight station'};
+  const straight=h?10:5, sb=h?4:2;
+  const len=calls.reduce((a,t)=>Math.max(a,tilesLong(t.type)),0), k=Math.max(4,Math.ceil(len+1.5));
+  const sameLine=n=>h?cY(n)===cY(c):cX(n)===cX(c);
+  const runFrom=d=>{ const r=[]; let x=c; for(let i=0;i<k;i++){ const n=nb(x,d); if(n<0||n>=world.N||!sameLine(n)||rail.bits[n]!==straight||rail.kind[n]!==GROUND||stationAt(n)) return null; r.push(n); x=n; } return r; };
+  let run, kind;
+  if(bitCount(m)===1){ const a=runFrom(m); if(!a) return {reason:`Needs ${k} tiles of plain straight track out of the station (no points, bridges or stations)`}; run=[c,...a]; kind='bay'; }
+  else { const [p,q]=h?[2,8]:[4,1], a=runFrom(p), b=runFrom(q); if(!a||!b) return {reason:`Needs ${k} tiles of plain straight track each side of the station (no points, bridges or stations)`}; run=[...b.reverse(),c,...a]; kind='loop'; }
+  const side=run.map(t=>nb(t,sb));
+  const free=t=>!rail.bits[t]&&!catOf(t)&&world.type[t]<HILLS&&world.indAt[t]<0&&!depotAt(t)&&!decorAt(t)&&!rivalOwns(t)&&!stationAt(t);
+  for(let i=0;i<side.length;i++){ const t=side[i]; if(t<0||t>=world.N||(h?cX(t)!==cX(run[i]):cY(t)!==cY(run[i]))||!free(t)) return {reason:'No clear ground beside the platform (away from the building): it must be free of track, water, hills, houses, roads and industry'}; }
+  const plat=kind==='bay'?side.slice(0,k):side.slice(1,-1);
+  if(groundProblem(plat)) return {reason:'The ground beside the platform is not flat enough for a second one'};
+  const pieces=[]; if(kind==='bay'){ pieces.push([run[k],side[k]]); for(let i=k;i>0;i--) pieces.push([side[i],side[i-1]]); }
+  else { const L=run.length; pieces.push([run[0],side[0]]); for(let i=0;i<L-1;i++) pieces.push([side[i],side[i+1]]); pieces.push([side[L-1],run[L-1]]); }
+  const alt=kind==='bay'?side[0]:side[k];
+  const cost=money()?side.reduce((a,t)=>a+tileCost(t,GROUND),0)+PLAT2_COST:0;
+  return {ok:true,kind,run,side,plat,alt,pieces,cost,k};
+}
+function buildPlatform2(st,pl){
+  if(money()&&pl.cost>rail.money){ Sound.blocked(); toast(`Not enough money — it costs ${fmt(pl.cost)}`,true); return false; }
+  const g=++groupSeq, before=rail.money;
+  for(const [a,b] of pl.pieces){ const r=placePiece(a,b,{group:g,silent:true,batch:true}); if(!r.ok){ toast(r.reason,true); afterChange(); return false; } }
+  if(money()) rail.money-=PLAT2_COST;
+  undoStack.push({group:g,tiles:[],money:before});
+  st.alt={c:pl.alt,kind:pl.kind,tiles:pl.side.slice(),plat:pl.plat.slice(),cost:pl.cost};
+  Sound.clunk(GROUND,3); Sound.signal(); toast(`Second platform built at ${st.name} — trains take whichever platform is free`); afterChange(); return true;
+}
+function removePlatform2(st){
+  const a=st.alt; if(!a) return false;
+  if(a.tiles.some(t=>resv[t])||trains.some(t=>t.state==='moving'&&t.path&&t.path.tiles[t.path.tiles.length-1]===a.c)){ Sound.blocked(); toast('A train is using the second platform — try again once it has left',true); return false; }
+  const R=rail, set=new Set(a.tiles), touched=new Set(a.tiles); for(const t of a.tiles) for(const b of I_BIT) if(R.bits[t]&b){ const n=nb(t,b); if(!set.has(n)) touched.add(n); }
+  const tiles=[...touched].map(snap), before=R.money;
+  for(const t of a.tiles){ for(const b of I_BIT) if(R.bits[t]&b){ const n=nb(t,b); if(!set.has(n)) R.bits[n]&=~OPP[b]; } R.bits[t]=0; R.cost[t]=0; R.kind[t]=0; R.clear[t]=0; if(R.signals[t]) delete R.signals[t]; }
+  const refund=money()?Math.round((a.cost||0)*0.5):0; R.money+=refund;
+  undoStack.push({group:++groupSeq,tiles,money:before,altRemoved:{id:st.id,alt:a}}); delete st.alt;
+  Sound.lift(); toast(`Second platform at ${st.name} removed${refund?' · '+fmt(refund)+' refunded':''}`); afterChange(); return true;
+}
+function platform2Item(st){
+  if(st.alt) return {label:'Remove the second platform',detail:'Lift the second track; trains use the one platform again',cost:money()?'+'+fmt(Math.round((st.alt.cost||0)*0.5)):'',fn:()=>removePlatform2(st)};
+  const pl=platform2Plan(st);
+  return pl.ok?{label:'Build a second platform',detail:money()&&pl.cost>rail.money?`Not enough money — it costs ${fmt(pl.cost)} and you have ${fmt(rail.money)}`:`A ${pl.kind==='bay'?'bay':'loop'} beside the platform: two trains can stand here at once, and each takes the free one`,cost:price(pl.cost),disabled:money()&&pl.cost>rail.money,fn:()=>buildPlatform2(st,pl)}
+              :{label:'Build a second platform',detail:pl.reason,disabled:true};
+}
+/* where a train going to station `there` should stop: the main platform or the second one, whichever is free (held by
+   no other train and not chosen by one already on its way); null if there is no route at all */
+function pickPlatform(t,there,from,entry){
+  const a=altOf(there), goals=a?[there.c,a.c]:[there.c]; let best=null;
+  for(const g of goals){
+    const r=trackRoute(from,g,entry,null,penalFor(t)); if(!r) continue;
+    const score=r.length+((resv[g]&&resv[g]!==t.id)?500:0)+(a&&trains.some(u=>u!==t&&u.state==='moving'&&u.path&&u.path.tiles[u.path.tiles.length-1]===g)?300:0);
+    if(!best||score<best.score) best={r,score,g};
+  }
+  return best;
+}
 // Turntable + roundhouse: a decorative 3x3 engine shed beside a station (mostly for the look).
 const decorAt=c=>!!(rail&&rail.decor&&rail.decor.length&&rail.decor.some(d=>Math.abs(cX(c)-cX(d.c))<=1&&Math.abs(cY(c)-cY(d.c))<=1));
 function roundhousePlan(st){
@@ -2981,7 +3076,7 @@ function buildLoop(lp,o={}){
 const tilesLong=type=>{ const ty=TRAIN_TYPES[type]; return ty?ty.consist.length*(CAR_LEN+CAR_GAP)-CAR_GAP:0; };
 const loopLenFor=len=>Math.max(8,Math.ceil(len+3.6));      // room for the train between the signals, clear of both turnouts (signals sit 2 in from each end: the tail must clear the turnout tile's edge; 9 Nov 2026: +3 left an 8-car A4 over the turnout)
 const longestTrain=()=>trains.reduce((m,t)=>Math.max(m,tilesLong(t.type)),7);
-function onPlatform(c){ for(const s of rail.stations){ if(s.c===c) return true; const pl=platformTiles(s); if(pl.neg.includes(c)||pl.pos.includes(c)) return true; } return false; }
+function onPlatform(c){ for(const s of rail.stations){ if(s.c===c) return true; const pl=platformTiles(s); if(pl.neg.includes(c)||pl.pos.includes(c)) return true; const a=altOf(s); if(a&&a.plat.includes(c)) return true; } return false; }
 // Passing places along a station-to-station route: pairs of turnouts joined by a second track.
 function passingPlaces(route){
   const on=new Set(route), out=[];
@@ -3109,7 +3204,7 @@ const AutoNet={
   END_DRY:4,     /* a new station keeps river and lake crossings on its line at least this many tiles away (see plan: wetEnd) */
   FAR_END:9,     // ...and more than this many tiles (a long train and a bit) from the shared line's other end
   THROAT:10,     // lines into a shared station join within this many tiles of it (a short shared stretch: no long single-track bottleneck)
-  SITE_LINES:3,  // most lines one station serves (one platform)
+  SITE_LINES:2,  // most lines one station serves (one platform). 22 Nov 2026: 2, was 3 (queue study: waiting 52% -> 31%, trips an hour +51%)
   CROSS:60,      // extra route cost of a flat crossing: go a long way round first
   DETOUR:2,     // a link whose route is longer than this times the walk along the grid (at least MIN_LINE, +10) is not worth building (round mountains, sea inlets)
   HIGH:0.4,     // nor one with more than this share of its route climbing over hills on the surface (a hill tile counts half)
@@ -3388,7 +3483,7 @@ const AutoNet={
     this.queue=this.queue.filter(q=>{
       if(n>=limit) return true;
       const A=stationById(q.stops[0]), B=stationById(q.stops[1]); if(!A||!B) return false;
-      const at=!resv[A.c]?0:!resv[B.c]?1:-1; if(at<0) return true;
+      const L=Math.ceil(tilesLong(q.type))+2, at=spawnClear(A,L)?0:spawnClear(B,L)?1:-1; if(at<0) return true;   /* 22 Nov 2026: the whole train's length, not just the station tile (one was placed over a train just pulling out) */
       this.addTrain(q.type,q.stops,at); n++; return false; });
     return n;
   },
@@ -3485,17 +3580,29 @@ function spawnTrain(def,loading){
   if(!st) return null;
   const firstNext=stationById(t.stops[nextStopIndex({...t})]);
   const route=firstNext?trackRoute(st.c,firstNext.c):null;
-  let behindBit=0; const m=rail.bits[st.c];
-  if(route&&route.length>1){ const ob=dirBit(st.c,route[1]); behindBit=(m&OPP[ob])?OPP[ob]:0; t.heading=ob===2?{x:1,y:0}:ob===8?{x:-1,y:0}:ob===1?{x:0,y:-1}:{x:0,y:1}; }
-  else { for(const b of I_BIT) if(m&b){behindBit=b;break;} }
-  const behind=[st.c]; let c=st.c, out=behindBit; const need=Math.ceil(t.cars*(CAR_LEN+CAR_GAP))+2;
-  while(out && behind.length<need){ const n=nb(c,out); if(!(rail.bits[n]&OPP[out]))break; behind.push(n); const mm=rail.bits[n]; const inb=OPP[out]; let nx=0;
-    if(mm&OPP[inb]) nx=OPP[inb]; else for(const b of I_BIT) if((mm&b)&&b!==inb){nx=b;break;} c=n; out=nx; }
+  /* the carriages lie along the track behind the engine, which stands on the station tile. 22 Nov 2026: at a terminus
+     there is no track behind (the buffers), so the trail was one point and every carriage stood on the same spot,
+     crossed over each other ("its carriages are crossed over"). Lay the train along whichever side has more track:
+     at a terminus that is the platform, as if it had just pulled in (engine at the buffers, facing them), and it
+     sets off the same way an arriving train does (depart reverses it). */
+  const m=rail.bits[st.c], need=Math.ceil(t.cars*(CAR_LEN+CAR_GAP))+2, vec=b=>b===2?{x:1,y:0}:b===8?{x:-1,y:0}:b===1?{x:0,y:-1}:{x:0,y:1};
+  const walk=bit=>{ const tl=[st.c]; let c=st.c, out=bit;
+    while(out && tl.length<need){ const n=nb(c,out); if(n<0||n>=world.N||!(rail.bits[n]&OPP[out]))break; tl.push(n); const mm=rail.bits[n]; const inb=OPP[out]; let nx=0;
+      if(mm&OPP[inb]) nx=OPP[inb]; else for(const b of I_BIT) if((mm&b)&&b!==inb){nx=b;break;} c=n; out=nx; }
+    return tl; };
+  let ob=0; if(route&&route.length>1) ob=dirBit(st.c,route[1]); else for(const b of I_BIT) if(m&b){ ob=OPP[b]; break; }
+  let behind=walk((m&OPP[ob])?OPP[ob]:0); t.heading=vec(ob||2);
+  if(behind.length<need && ob && (m&ob)){ const ahead=route&&route.length>1?route.slice(0,need):walk(ob);   /* along the line it will leave by, so it reverses straight onto its route */ if(ahead.length>behind.length){ behind=ahead; t.heading=vec(OPP[ob]); } }
   t.trail = behind.length>1 ? buildPath(behind).pts.slice().reverse() : [centrePt(st.c)];
   trains.push(t);
   for(const c2 of bodyTiles(t)){ if(!resv[c2]&&!isFlyover(c2)) { resv[c2]=t.id; t.res.add(c2); } }
   return t;
 }
+/* no train on the station tile, nor on the track either side of it for n tiles (where a new train's carriages go) */
+function spawnClear(st,n){ if(resv[st.c]) return false;
+  for(const b0 of I_BIT){ if(!(rail.bits[st.c]&b0)) continue; let c=st.c, b=b0;
+    for(let k=0;k<n;k++){ const u=nb(c,b); if(u<0||u>=world.N||!(rail.bits[u]&OPP[b])) break; if(resv[u]) return false; const on=I_BIT.filter(x=>(rail.bits[u]&x)&&x!==OPP[b]); if(on.length!==1) break; c=u; b=on[0]; } }
+  return true; }
 function removeTrain(t){ for(const c of t.res) if(resv[c]===t.id) resv[c]=0; trains=trains.filter(x=>x!==t); if(following===t) following=null; if(typeof V3!=='undefined') V3.dropTrain(t); }
 function nextStopIndex(t){
   const n=t.stops.length; if(n<2)return 0;
@@ -3511,30 +3618,31 @@ function trainHeadPt(t){ return headOf(t); }
 // Steam passenger 0-30 mph in about 2½ minutes, goods steam slower, diesels about twice as quick, high-speed trains quickest.
 function accelOf(ty,v){ const a0=(ty.steam?(ty.goods?0.45:0.7):ty.speed>=5?2.4:1.6)*TS; if(v==null) return a0;
   const f=Math.min(1,v/(ty.speed*TS)); return a0*Math.max(0.25,1-0.65*f); }   // pulling hardest from a stand, less near top speed
-function trailPoint(t,d){
-  const tr=t.trail; let i=tr.length-1, acc=0;
-  const H=headOf(t), L=tr[i];
-  if(H!==L){ const l0=Math.hypot(H.x-L.x,H.y-L.y); if(d<=l0){ const u=d/(l0||1); return {x:H.x+(L.x-H.x)*u, y:H.y+(L.y-H.y)*u}; } acc=l0; }
-  while(i>0){ const a=tr[i], b=tr[i-1], l=Math.hypot(a.x-b.x,a.y-b.y);
-    if(acc+l>=d){ const u=(d-acc)/(l||1); return {x:a.x+(b.x-a.x)*u, y:a.y+(b.y-a.y)*u}; } acc+=l; i--; }
-  return tr[0];
-}
+/* the point d px back along the train from its front. 22 Nov 2026: the same walk as carPts (one source of truth), straight
+   on past the end of a too-short trail as the carriages are drawn: it had its own copy that stopped at the trail's end, so
+   3D, the hero engines and the platform crowds put a new train's last carriages somewhere other than the 2D map did */
+function trailPoint(t,d){ let p=null; walkTrail(t,[d],q=>{ p=q; },true); return p; }
 function trimTrail(t){
   const need=t.cars*(CAR_LEN+CAR_GAP)*TS+TS; let acc=0;
   for(let i=t.trail.length-1;i>0;i--){ acc+=Math.hypot(t.trail[i].x-t.trail[i-1].x,t.trail[i].y-t.trail[i-1].y); if(acc>need){ t.trail.splice(0,i-1); return; } }
 }
 function bodyLen(t){ return (t.cars*(CAR_LEN+CAR_GAP)-CAR_GAP)*TS; }
-function walkTrail(t,ds,fn){   /* trailPoint for many distances (ascending) in one walk along the trail: same points, a fraction of the work */
+function walkTrail(t,ds,fn,ext){   /* trailPoint for many distances (ascending) in one walk along the trail: same points, a fraction of the work.
+                                     ext (carriage positions, carPts and trailPoint, 22 Nov 2026): past the end of a too-short trail, carry on in a straight line rather than
+                                     stacking the last carriages on one point (a train on a stub shorter than itself) */
   const tr=t.trail; let i=tr.length-1, acc=0, k=0; const H=headOf(t), Lp=tr[i], n=ds.length;
   if(H!==Lp){ const l0=Math.hypot(H.x-Lp.x,H.y-Lp.y); while(k<n&&ds[k]<=l0){ const u=ds[k]/(l0||1); fn({x:H.x+(Lp.x-H.x)*u, y:H.y+(Lp.y-H.y)*u}); k++; } acc=l0; }
   while(i>0&&k<n){ const a=tr[i], b=tr[i-1], l=Math.hypot(a.x-b.x,a.y-b.y);
     while(k<n&&acc+l>=ds[k]){ const u=(ds[k]-acc)/(l||1); fn({x:a.x+(b.x-a.x)*u, y:a.y+(b.y-a.y)*u}); k++; } acc+=l; i--; }
+  if(k<n&&ext){ const e=tr[0]; let f=tr.length>1?tr[1]:H, dx=e.x-f.x, dy=e.y-f.y, l=Math.hypot(dx,dy);
+    if(l<1e-6&&t.heading){ dx=-t.heading.x; dy=-t.heading.y; l=Math.hypot(dx,dy); }
+    if(l>1e-6){ dx/=l; dy/=l; while(k<n){ const u=ds[k]-acc; fn({x:e.x+dx*u, y:e.y+dy*u}); k++; } } }
   while(k<n){ fn(tr[0]); k++; }
 }
 function bodyTiles(t){ const s=new Set(), L=bodyLen(t), ds=[]; for(let d=0; d<=L; d+=TS*0.35) ds.push(d); ds.push(L); walkTrail(t,ds,p=>s.add(pointTile(p))); return s; }   /* 9 Nov 2026: one walk, not one per sample (5.8 ms a frame on the stick) */
 function carPts(t){   /* each carriage's middle and two ends ([p,a,b], a nearer the engine), all in one walk along the trail */
   const Lp=(CAR_LEN+CAR_GAP)*TS, len=CAR_LEN*TS, ds=[]; for(let i=0;i<t.cars;i++){ const d=i*Lp+len/2; ds.push(Math.max(0,d-len/2), d, d+len/2); }
-  const q=[]; walkTrail(t,ds,p=>q.push(p)); const out=[]; for(let i=0;i<t.cars;i++) out.push([q[3*i+1],q[3*i],q[3*i+2]]); return out; }
+  const q=[]; walkTrail(t,ds,p=>q.push(p),true); const out=[]; for(let i=0;i<t.cars;i++) out.push([q[3*i+1],q[3*i],q[3*i+2]]); return out; }
 function pointTile(p){ const x=clamp(Math.floor(p.x/TS),0,world.W-1), y=clamp(Math.floor(p.y/TS),0,world.H-1); return cIdx(x,y); }
 function isOnScreen(p){ if(typeof V3!=='undefined'&&V3.active) return V3.camDist(p.x/TS,p.y/TS)<14;   /* 9 Nov 2026: in 3D, near the 3D camera (the 2D map's view meant cab rides had no whistles) */
   const s=w2s(p.x,p.y); return s.x>-40&&s.y>-40&&s.x<view.w+40&&s.y<view.h+40 && cam.z>0.9; }
@@ -3542,26 +3650,48 @@ const blockedFor=t=>c=>resv[c]&&resv[c]!==t.id;
 const penalFor=t=>c=>(resv[c]&&resv[c]!==t.id)?60:0;
 function isSafe(P,j){
   const c=P.tiles[j]; if(j===P.tiles.length-1) return true;
-  if(stationAt(c)) return true;
+  if(stationAt(c)||isAltStop(c)) return true;   /* a second platform's stopping place ends a block too */
   const sg=sigAt(c); return !!(sg && (sg & dirBit(c,P.tiles[j+1])));
 }
+/* 22 Nov 2026 (queue study, E2): a flat crossing is its own small block. A train still books its whole single-line
+   section at once (so trains on one line never meet head-on), but not the flat crossings in it: it stops booking just
+   before the first one (t.secEnd keeps where the section ends) and books the crossings only as it reaches them, letting
+   each go as its tail passes. Before, a crossing in the middle of a 150-tile section was held for the whole run and the
+   other line waited all that time. If a section has two or more crossings, all of them are booked together at the
+   first: a train holding a crossing then holds everything to the end of its section, so two trains can never each hold
+   one crossing and wait for the other's. Hand-laid crossings are flyovers (never booked); only AutoNet's flat ones count. */
+const isFlatX=c=>bitCount(rail.bits[c])===4&&!isFlyover(c);
 function tryExtend(t){
-  const P=t.path, n=P.tiles.length; let j=t.resEnd+1; const add=[];
+  const P=t.path, n=P.tiles.length;
+  if(t.secEnd>t.resEnd){   /* at a crossing: the section beyond is ours already */
+    const xs=[]; for(let i=t.resEnd+1;i<=t.secEnd;i++) if(isFlatX(P.tiles[i])) xs.push(P.tiles[i]);
+    const busy=xs.find(c=>resv[c]&&resv[c]!==t.id);
+    if(busy!=null){ t.blocker=resv[busy]; t.want=xs; t.yielded=false; return false; }
+    for(const c of xs){ resv[c]=t.id; t.res.add(c); }
+    t.resEnd=t.secEnd; t.secEnd=-1; t.blocker=0; t.want=null; return true;
+  }
+  let j=t.resEnd+1; const add=[];
   while(j<n){ add.push(P.tiles[j]); if(isSafe(P,j)) break; j++; }
   if(!add.length) return false;
   const first=fairFirst(t,add); t.yielded=!!first; if(first){ t.blocker=first.id; t.want=add; return false; }
-  for(const c of add) if(resv[c]&&resv[c]!==t.id){ t.blocker=resv[c]; t.want=add; return false; }
-  for(const c of add){ if(isFlyover(c)) continue; resv[c]=t.id; t.res.add(c); }
-  t.resEnd=Math.min(j,n-1); t.blocker=0; t.want=null; return true;
+  for(const c of add) if(!isFlatX(c)&&resv[c]&&resv[c]!==t.id){ t.blocker=resv[c]; t.want=add; return false; }
+  for(const c of add){ if(isFlyover(c)||isFlatX(c)) continue; resv[c]=t.id; t.res.add(c); }
+  const end=Math.min(j,n-1), xi=add.findIndex(isFlatX);
+  if(xi<0){ t.resEnd=end; t.secEnd=-1; } else { t.secEnd=end; t.resEnd=t.resEnd+xi; }   /* stop just short of the first crossing */
+  t.blocker=0; t.want=null; return true;
 }
 /* 19 Nov 2026: first come, first served. Lines now share stations and their approaches (AutoNet), and a train on a
    short line could take a shared platform every time it came free, so a train waiting at the far end of a long line
    waited all day. A train gives way to one that has waited longer for any of the same track, unless that one is (in
    a chain of waiting trains) waiting for this one, so giving way never makes two trains wait for each other. */
+/* 22 Nov 2026 (queue study, E1): give way only to a train that could go at once if this one didn't take the track (every
+   tile it wants is free, or held by one of the two). Giving way to a train that is itself stuck behind another (often one
+   coming the other way on its own long line) made this one stand for nothing, with a queue building up behind it. */
+const readyFor=(u,t)=>u.want.every(c=>!resv[c]||resv[c]===t.id||resv[c]===u.id);
 function fairFirst(t,add){
   let best=null;
   for(const u of trains){
-    if(u===t||!u.want||!(u.waitT>(t.waitT||0)+2)||(best&&u.waitT<=best.waitT)||!u.want.some(c=>add.includes(c))) continue;
+    if(u===t||!u.want||!(u.waitT>(t.waitT||0)+2)||(best&&u.waitT<=best.waitT)||!u.want.some(c=>add.includes(c))||!readyFor(u,t)) continue;
     let x=u, k=0, mine=false; while(x&&x.blocker&&x.want&&k++<trains.length){ if(x.blocker===t.id){ mine=true; break; } x=trains.find(q=>q.id===x.blocker); }
     if(!mine) best=u;
   }
@@ -3569,12 +3699,12 @@ function fairFirst(t,add){
 }
 function releaseBehind(t){
   const body=bodyTiles(t); let ahead=null;
-  if(t.state==='moving'&&t.path){ const hi=pathPoint(t.path,t.s).i; ahead=new Set(t.path.tiles.slice(hi,t.resEnd+1)); }
+  if(t.state==='moving'&&t.path){ const hi=pathPoint(t.path,t.s).i; ahead=new Set(t.path.tiles.slice(hi,Math.max(t.resEnd,t.secEnd??-1)+1)); }   /* secEnd: the rest of its section past a crossing (tryExtend) */
   for(const c of t.res){ if(!body.has(c)&&!(ahead&&ahead.has(c))){ if(resv[c]===t.id) resv[c]=0; t.res.delete(c); } }
   for(const c of body){ if(!resv[c]&&!isFlyover(c)){ resv[c]=t.id; t.res.add(c); } }
 }
 function startPath(t,P,s0){
-  t.path=P; t.s=s0; t.v=0; t.state='moving'; t.waitT=0; t.stuck=false;
+  t.path=P; t.s=s0; t.v=0; t.state='moving'; t.waitT=0; t.stuck=false; t.secEnd=-1;
   t.resEnd=pathPoint(P,s0).i;
   for(let i=0;i<=t.resEnd;i++){ const c=P.tiles[i]; if(isFlyover(c)) continue; if(!resv[c]||resv[c]===t.id){ resv[c]=t.id; t.res.add(c); } }
   tryExtend(t);
@@ -3587,7 +3717,7 @@ function depart(t){
   const from=rail.bits[curTile]?curTile:here.c;
   let route=null;
   if(here.turnLoop&&from===here.c&&(rail.bits[from]&here.turnBack)) route=trackRoute(from, there.c, here.turnBack, null, penalFor(t));   // turn round on the loop
-  if(!route) route=trackRoute(from, there.c, 0, null, penalFor(t));
+  if(!route){ if(altOf(there)){ const b=pickPlatform(t,there,from,0); route=b&&b.r; } else route=trackRoute(from, there.c, 0, null, penalFor(t)); }   /* 22 Nov 2026: a free platform of two */
   if(!route){ t.state='noroute'; t.retryAt=sim.time+2; t.blockedName=there.name; return; }
   const P=buildPath(route);
   const d0={x:P.pts[Math.min(3,P.pts.length-1)].x-P.pts[0].x, y:P.pts[Math.min(3,P.pts.length-1)].y-P.pts[0].y};
@@ -3606,8 +3736,17 @@ function markStuck(t){
   const b=trainById(t.blocker);
   if(t.stuck || !b || !(b.waiting && b.blocker===t.id) || t.yielded || b.yielded) return;   /* giving way (fairFirst) is never being stuck: it sorts itself out next frame */
   t.stuck=true; b.stuck=true;
-  if(!modal&&!board&&!V3.active&&!Editor.active&&!Replay.active&&!PhotoMode.active){ Sound.alert(); openStuck(t,b); }
-  else toast(`${t.name} is stuck facing ${b.name} — add a passing loop so they can pass`,true);
+  if(!stuckBusyUI()){ Sound.alert(); openStuck(t,b); }
+  else { t.stuckShow=true; if(V3.active) V3.status(); toast(`${t.name} is stuck facing ${b.name} — add a passing loop so they can pass`,true); }   /* 22 Nov 2026: shown later (stuckLater) */
+}
+/* 22 Nov 2026 (Peter, in 3D: two Panniers stuck facing each other and no way to find the fix). A pair that got stuck while
+   a menu, the departures board, 3D, the editor, a replay or photo mode was open gets its "Trains stuck" card as soon as
+   that closes (once per pair, quietly); a stuck train's own menu and the 3D menu also lead to it. */
+const stuckBusyUI=()=>!!(modal||board||V3.active||Editor.active||Replay.active||PhotoMode.active);
+function stuckPair(t){ const b=t&&t.stuck?trainById(t.blocker):null; return b&&b.stuck?b:null; }
+function stuckLater(){
+  if(stuckBusyUI()) return;
+  for(const t of trains){ if(!t.stuckShow) continue; t.stuckShow=false; const b=stuckPair(t); if(b){ b.stuckShow=false; openStuck(t,b); return; } }
 }
 function arrive(t){
   const st=stationById(t.nextStationId); t.state='dwell'; t.v=0; t.arrivals=(t.arrivals||0)+1; t.boardUntil=0;
@@ -3660,6 +3799,7 @@ function simUpdate(rdt){
     contractsTick(); wxTick(); updateWxBadge(); scnTick(); scnUpdateUI();
     if(Math.floor(sim.time)%5===0) scheduleSave();
     if(Math.floor(sim.time)%30===0) Advisor.check(false);
+    stuckLater();
     if(following && !autoRun && !V3.active) defaultStatus();
   }
   crewUpdate(gdt);
@@ -3689,11 +3829,17 @@ function simUpdate(rdt){
     t.waiting = t.resEnd<last && rem<TS*0.25 && t.v<TS*0.2;
     if(t.waiting){
       t.waitT+=gdt;
-      if(t.waitT>1.5 && sim.time>=t.nextReroute && (s=>!(s&&resv[s.c]&&resv[s.c]!==t.id))(stationById(t.nextStationId))){        // try another way round (e.g. the other side of a loop); 19 Nov 2026: not while another train is at the platform it is going to (no way round that: it once swung a waiting train across both tracks of a loop)
+      const toSt=stationById(t.nextStationId), goal=P.tiles[last];
+      if(t.waitT>1.5 && sim.time>=(t.nextAlt||0) && altOf(toSt) && ((resv[goal]&&resv[goal]!==t.id)||trains.some(u=>u!==t&&u.state==='moving'&&u.path&&u.path.tiles[u.path.tiles.length-1]===goal))){   /* 22 Nov 2026: its platform is taken: switch to the free one */
+        t.nextAlt=sim.time+1;
+        const here=P.tiles[t.resEnd], entry=t.resEnd>0?dirBit(here,P.tiles[t.resEnd-1]):0, b=pickPlatform(t,toSt,here,entry);
+        if(b&&b.g!==goal&&b.score<500){ const NP=buildPath(b.r), keepTrail=t.trail; startPath(t,NP,0); t.trail=keepTrail; continue; }
+      }
+      else if(t.waitT>1.5 && sim.time>=t.nextReroute && !(resv[goal]&&resv[goal]!==t.id) && toSt){        // try another way round (e.g. the other side of a loop); 19 Nov 2026: not while another train is at the platform it is going to (no way round that: it once swung a waiting train across both tracks of a loop)
         t.nextReroute=sim.time+2;
         const here=P.tiles[t.resEnd], entry=t.resEnd>0?dirBit(here,P.tiles[t.resEnd-1]):0;
-        const r=trackRoute(here,stationById(t.nextStationId).c,entry,null,penalFor(t));
-        if(r && r.join(',')!==P.tiles.slice(t.resEnd).join(',')){ const NP=buildPath(r); const keepTrail=t.trail; startPath(t,NP,0); t.trail=keepTrail; t.tripTiles+=0; }
+        const r=trackRoute(here,goal,entry,null,penalFor(t));
+        if(r && r.join(',')!==P.tiles.slice(t.resEnd).join(',')){ const NP=buildPath(r); const keepTrail=t.trail; startPath(t,NP,0); t.trail=keepTrail; continue; }   /* 22 Nov 2026: on to the next train: the rest of this step still had the old path, and put the head (and a trail point) at its start for a frame, which could be far away (reserving track across the map) */
       }
       if(t.waitT>20) markStuck(t);
     } else if(rem>TS*0.5) { t.waitT=0; t.stuck=false; }
@@ -3703,7 +3849,7 @@ function simUpdate(rdt){
     if(t.driven) Drive.physics(t,ty,t.vLim||vmax,dec,gdt);   // the player is driving: their power and brakes, within the line speed
     else t.v = t.v<vt ? Math.min(vt,t.v+acc*gdt) : Math.max(vt,t.v-dec*2*gdt);
     const vBefore=t.v;
-    t.s=Math.min(t.s+t.v*gdt, stopS);
+    t.s=Math.max(t.s, Math.min(t.s+t.v*gdt, stopS));   /* 22 Nov 2026: never backwards. A train reversing out of a terminus starts with its head past the middle of its last free tile; snapping back to it folded the front carriages over each other */
     if(t.s>=stopS-0.01 && t.resEnd<last){ if(t.driven) Drive.red(t,vBefore); t.v=0; }
     const h=pathPoint(P,t.s), lp=t.trail[t.trail.length-1]; t.head={x:h.x,y:h.y};
     if(Math.hypot(h.x-lp.x,h.y-lp.y)>0.8){ t.heading={x:h.x-lp.x,y:h.y-lp.y}; const l=Math.hypot(t.heading.x,t.heading.y); t.heading.x/=l; t.heading.y/=l; t.trail.push({x:h.x,y:h.y}); trimTrail(t); }
@@ -3846,7 +3992,9 @@ function finishTrain(draft,stops,pattern,dwell){
   defaultStatus(); dirty=true;
 }
 function trainMenu(t){
+  const sb=stuckPair(t);
   openModal({title:`<span class="dot" style="background:${t.color};width:16px;height:16px"></span>${t.name}`,text:trainStatus(t)+(TRAIN_TYPES[t.type].goods?` · carrying ${loadText(t)} (${capacityOf(t)}t max)`:'')+(t.lastPax&&money()?` · last trip carried ${t.lastPax} passengers`:''),items:[
+    ...(sb?[{label:'Get unstuck…',detail:`It is facing ${sb.name} on a single line: build a passing loop, or sell one of them`,fn:()=>{ t.stuckShow=sb.stuckShow=false; openStuck(t,sb); }}]:[]),
     {label:'Departure board',detail:'At its next station',fn:()=>{ const st=stationById(t.nextStationId||t.stops[t.stopIdx]); if(st) openBoard(st); }},
     {label:'Ride in the cab (3D)',detail:'See the line from the driver’s seat',fn:()=>enter3D('cab',t)},
     {label:`Replay its last hour ${isPro()?'':PRO_TAG}`,detail:'Watch its journey again from the cab',fn:proGate(()=>{ const S=Recorder.span(); if(!S){ toast('Nothing recorded yet',true); return; } Replay.start({from:Math.max(S.t0,S.t1-60),follow:t.id,speed:1,view:'cab'}); })},
@@ -4027,6 +4175,10 @@ function drawRailLOD(list){
 function deckOrient(m){ const h=(m&10)!==0, v=(m&5)!==0; return h&&!v?'h':v&&!h?'v':'x'; }
 function rrect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); }
 /* 19 Nov 2026: a station's look, shared by 2D and 3D: brick or stone, slate or tiles, and a footbridge where a platform runs on 2+ tiles */
+/* a second platform's island along the station (in tiles from the station, along its track): [from, to] */
+function altRange(st,a){ const m=rail.bits[st.c], vert=(m&5)!==0&&!((m&10)!==0); let lo=1e9, hi=-1e9;
+  for(const t of a.plat){ const d=vert?cY(t)-cY(st.c):cX(t)-cX(st.c); lo=Math.min(lo,d); hi=Math.max(hi,d); }
+  return lo<=hi?[lo-0.5,hi+0.5]:null; }
 function stationLook(st){ const h=Math.imul(st.c+7,2654435761)>>>0, pl=platformTiles(st), n=pl.neg.length, p=pl.pos.length;
   return {brick:h%3!==0, slate:((h>>>4)&1)===1, hue:(h>>>8)%3, fb:Math.max(n,p)>=2?(p>=n?1:-1):0}; }
 /* 19 Nov 2026 (Peter: "stations need more texture and details"): seen from above, like a model railway. Paved platforms with
@@ -4062,11 +4214,25 @@ function drawStations(list,top){
       fillR('#e6c94a',()=>R(a0,side<0?-PI0-0.064:PI0+0.05,L,0.014));               /* yellow line */
       fillR('rgba(0,0,0,0.13)',()=>{ for(let a=a0+0.5;a<a1-0.1;a+=0.5) R(a-0.006,side<0?-PO:PI0+0.08,0.012,PO-PI0-0.08); });   /* slab joints */
     }
+    const alt=altOf(st), ar=alt?altRange(st,alt):null;
+    if(ar){   /* 22 Nov 2026: second platform: an island between the two tracks (the second track is one tile over, at b=1) */
+      const [p0,p1]=ar, o0=Math.max(a0,p0), o1=Math.min(a1,p1), B0=1-PO, B1=1-PI0;
+      ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fillRect(p0*T+1.5,B0*T+1.5,(p1-p0)*T,(B1-B0)*T);
+      ctx.fillStyle='#c8c1b2'; ctx.fillRect(p0*T,B0*T,(p1-p0)*T,(B1-B0)*T); if(o1>o0) ctx.fillRect(o0*T,PO*T-0.5,(o1-o0)*T,(B0-PO)*T+1);
+      if(!fine){ ctx.fillStyle='#f1e7b8'; ctx.fillRect(p0*T,B1*T-1,(p1-p0)*T,1); }
+      else {
+        fillR('#ebe5d5',()=>R(p0,B1-0.035,p1-p0,0.035)); fillR('#e6c94a',()=>R(p0,B1-0.064,p1-p0,0.014));
+        fillR('rgba(0,0,0,0.13)',()=>{ for(let a=p0+0.5;a<p1-0.1;a+=0.5) R(a-0.006,B0,0.012,B1-B0-0.08); });
+        fillR('#6b4a2e',()=>{ for(let a=Math.ceil(p0)+1;a<p1-0.4;a+=3) R(a-0.065,0.48,0.13,0.04); });
+        fillR('#2e2e2e',()=>{ for(let a=Math.ceil(p0)+0.5;a<p1;a+=2){ ctx.moveTo((a+0.035)*T,0.52*T); ctx.arc(a*T,0.52*T,0.035*T,0,Math.PI*2); } });
+        fillR('#f4e3a0',()=>{ for(let a=Math.ceil(p0)+0.5;a<p1;a+=2){ ctx.moveTo((a+0.018)*T,0.52*T); ctx.arc(a*T,0.52*T,0.018*T,0,Math.PI*2); } });
+      }
+    }
     const brick=look.brick?['#9b5440','#a5613f','#8e4a3a'][look.hue]:'#d8c7a0', roof=look.slate?['#6c7481','#484e59']:['#a84a35','#7e3224'];
     if(!fine){ ctx.fillStyle=roof[0]; ctx.fillRect(-0.38*T,-0.84*T,0.76*T,0.4*T); ctx.fillStyle='#66756a'; ctx.fillRect(cL*T,-0.44*T,CL*T,0.19*T); ctx.restore(); continue; }
     /* white fences along the back of both platforms (round the building on the far side), a few bushes behind the near one */
-    fillR('#3f6b35',()=>{ for(let a=a0+0.4;a<a1-0.2;a+=1.3){ ctx.moveTo((a+0.06)*T,(PO+0.07)*T); ctx.arc(a*T,(PO+0.07)*T,0.06*T,0,Math.PI*2); } });
-    fillR('#ecebe4',()=>{ for(const [p,q,y] of [[a0,-0.39,-PO-0.02],[0.39,a1,-PO-0.02],[a0,a1,PO+0.01]]) if(q-p>0.1){ R(p,y,q-p,0.01); for(let a=p+0.02;a<q;a+=0.5) R(a-0.008,y-0.005,0.016,0.02); } });
+    if(!ar) fillR('#3f6b35',()=>{ for(let a=a0+0.4;a<a1-0.2;a+=1.3){ ctx.moveTo((a+0.06)*T,(PO+0.07)*T); ctx.arc(a*T,(PO+0.07)*T,0.06*T,0,Math.PI*2); } });
+    fillR('#ecebe4',()=>{ for(const [p,q,y] of [[a0,-0.39,-PO-0.02],[0.39,a1,-PO-0.02],...(ar?[]:[[a0,a1,PO+0.01]])]) if(q-p>0.1){ R(p,y,q-p,0.01); for(let a=p+0.02;a<q;a+=0.5) R(a-0.008,y-0.005,0.016,0.02); } });
     /* lamps, benches, boards, tubs, churns (the footbridge's stairs keep their own space); drawn first, the canopy covers those under it */
     const stairs=fbDir?[Math.min(fa,fa-fbDir*0.56)-0.08,Math.max(fa,fa-fbDir*0.56)+0.08]:null, free=a=>!stairs||a<stairs[0]||a>stairs[1];
     const lamps=[], benches=[];
@@ -4105,7 +4271,7 @@ function rcUsable(){ return !RC.off && view.dpr*cam.z<=3.4; }   /* closer in, sq
 function rcGlobalSig(){
   const B=rail.bits, K=rail.kind, C=rail.clear, n=B.length; let h=2166136261;
   for(let i=0;i<n;i++){ const b=B[i]; if(b) h=Math.imul(h^(i*67+b*7+K[i]*3+(C[i]?1:0)),16777619); }
-  for(const st of rail.stations) h=Math.imul(h^(st.c*977+1),16777619);
+  for(const st of rail.stations) h=Math.imul(h^(st.c*977+1+(altOf(st)?st.alt.c*7:0)),16777619);
   for(const d of rail.depots||[]) h=Math.imul(h^(d.c*131+5),16777619);   /* 20 Nov 2026: depots and roundhouses are in the pictures too */
   for(const d of rail.decor||[]) h=Math.imul(h^(d.c*137+Math.round((d.face||0)*1000)+7),16777619);
   return (h^rail.stations.length)>>>0;
@@ -4117,7 +4283,7 @@ function rcSig(cx,cy,CH){
   for(let y=y0;y<=y1;y++){ let i=y*W+x0; for(let x=x0;x<=x1;x++,i++){ const b=B[i]; if(b){ any=1; h=Math.imul(h^(i*67+b*7+K[i]*3+(C[i]?1:0)),16777619); } } }
   const pad=PLAT_MAX+2, sts=[];
   for(const st of rail.stations){ const x=cX(st.c), y=cY(st.c); if(x<cx*CH-pad||x>cx*CH+CH+pad||y<cy*CH-pad||y>cy*CH+CH+pad) continue;
-    const pl=platformTiles(st); any=1; sts.push(st.c); h=Math.imul(h^(st.c*977+pl.neg.length*13+pl.pos.length*29+1),16777619); }
+    const pl=platformTiles(st); any=1; sts.push(st.c); h=Math.imul(h^(st.c*977+pl.neg.length*13+pl.pos.length*29+1+(altOf(st)?st.alt.c*7:0)),16777619); }
   /* still parts of industries (2x2), roundhouses (reach 2 tiles) and depots that touch this square */
   const inds=[], decs=[], deps=[];
   for(const ind of world.industries||[]) if(ind.x+2>=x0&&ind.x<=x1&&ind.y+2>=y0&&ind.y<=y1){ any=1; inds.push(ind); h=Math.imul(h^(ind.c*71+3),16777619); }
@@ -7165,6 +7331,7 @@ function actionAt(c){
       openModal({title:st.name,items:[{label:'Move this station',detail:'Slide it to a new spot on the same line',fn:()=>startMoveStation(st)},
         ...(st.turnLoop?[]:[tl&&tl.ring?{label:'Add a turning loop beyond this station',detail:'Trains turn round on it instead of reversing in the platform',cost:price(tl.cost),disabled:money()&&tl.cost>rail.money,fn:()=>buildTurnLoop(st,tl)}
                                        :{label:'Add a turning loop beyond this station',detail:tl.reason,disabled:true}]),
+        platform2Item(st),
         ...(()=>{ const rh=roundhousePlan(st); return [rh.c!=null?{label:'Build a roundhouse beside this station',detail:'A turntable and engine shed where steam engines rest',cost:price(rh.cost),disabled:money()&&rh.cost>rail.money,fn:()=>buildRoundhouse(st,rh)}
                                                  :{label:'Build a roundhouse beside this station',detail:rh.reason,disabled:true}]; })(),
         {label:'Cancel',fn:()=>{}}],onCancel:()=>{}}); return true; } buildStation(c); return true; }
@@ -7932,6 +8099,21 @@ const V3=(()=>{
       for(let a=a0+0.5;a<a1-0.1;a+=0.5) top(a-0.004,a+0.004,s*(PI0+0.08),s*PO,PT+0.004,S.joint);            /* slab joints */
     }
     SC3.platInner=PI0; SC3.platTop=PT;
+    const alt=altOf(st), ar=alt?altRange(st,alt):null;
+    if(ar){   /* 22 Nov 2026: second platform: an island between the two tracks (the second track is one tile over, at b=1) */
+      const [p0,p1]=ar, pm=(p0+p1)/2, pL=p1-p0, B0=1-PO, B1=1-PI0, o0=Math.max(a0,p0), o1=Math.min(a1,p1);
+      let lo=-0.2; for(let a=p0;a<=p1+1e-6;a+=0.25) for(const b of [B0,B1]){ const [x,z]=P(a,b); lo=Math.min(lo,terrainH(x,z)-ry-0.04); }
+      bx(pm,(B0+B1)/2,(PT+lo)/2,pL,PT-lo,B1-B0,S.plat);
+      if(o1>o0) bx((o0+o1)/2,(PO+B0)/2,(PT+lo)/2,o1-o0,PT-lo,B0-PO+0.01,S.plat);   /* joins the near platform into one island */
+      top(p0,p1,B1-0.035,B1,PT+0.004,S.cope); fB(B1+0.004,1,p0,p1,PT-0.022,PT+0.004,S.cope);
+      top(p0,p1,B1-0.064,B1-0.05,PT+0.004,S.yel);
+      fB(B1+0.002,1,p0,p1,-0.03,PT-0.022,S.face); fB(B1+0.003,1,p0,p1,PT*0.35,PT*0.35+0.008,S.course);
+      for(let a=p0+0.5;a<p1-0.1;a+=0.5) top(a-0.004,a+0.004,B0,B1-0.08,PT+0.004,S.joint);
+      const lv0=G.lv; G.lv=2;
+      for(let a=Math.ceil(p0)+0.5;a<p1;a+=2){ bx(a,0.5,PT+0.17,0.014,0.34,0.014,S.lampPost); bx(a,0.5,PT+0.355,0.036,0.042,0.036,S.lamp); }
+      for(let a=Math.ceil(p0)+1;a<p1-0.4;a+=3) bx(a,0.5,PT+0.028,0.13,0.014,0.042,S.wood);
+      G.lv=lv0;
+    }
     /* building: one storey, set just behind the far platform */
     const BL=0.72, BD=0.3, BC=-(PO+0.02+BD/2), WT=PT+0.32, RH=0.19, wall=look.brick?S.bricks[look.hue%3]:S.stone, roofC=look.slate?S.slate:S.tile, yaw=vert?Math.PI/2:0;
     bx(0,BC,(PT+0.04-0.2)/2,BL+0.024,PT+0.04+0.2,BD+0.024,S.plinth);
@@ -7984,10 +8166,10 @@ const V3=(()=>{
     for(const k of [0,1]){ const a=k?cR-0.04:cL+0.04; bx(a,-0.445,PT+0.02,0.045,0.04,0.045,S.tub); bx(a,-0.445,PT+0.05,0.04,0.024,0.04,S.flowers[(look.hue+k)%3]); }
     { const a=fbDir<0?a1-0.25:a0+0.25; if(free(a)) for(const k of [0,1]) bx(a+k*0.03,0.40,PT+0.022,0.022,0.044,0.022,S.churn); }
     /* a white fence along the back of both platforms (round the building on the far side), a few bushes behind the near one */
-    for(const [p,q,b] of [[a0,-BL/2-0.03,-(PO+0.01)],[BL/2+0.03,a1,-(PO+0.01)],[a0,a1,PO+0.01]]){ if(q-p<0.1) continue;
+    for(const [p,q,b] of [[a0,-BL/2-0.03,-(PO+0.01)],[BL/2+0.03,a1,-(PO+0.01)],...(ar?[]:[[a0,a1,PO+0.01]])]){ if(q-p<0.1) continue;
       for(const s of [-1,1]) for(const y of [PT+0.04,PT+0.09]) fB(b+s*0.004,s,p,q,y,y+0.012,S.fence);
       for(let a=p+0.02;a<q;a+=0.5) for(const s of [-1,1]) fB(b+s*0.006,s,a-0.007,a+0.007,PT-0.02,PT+0.12,S.fence); }
-    for(let a=a0+0.4,i=0;a<a1-0.2;a+=1.3,i++){ const b=PO+0.07, [hx,hz]=P(a,b), g=terrainH(hx,hz)-ry, h=0.07+0.02*((i+look.hue)%3);
+    if(!ar) for(let a=a0+0.4,i=0;a<a1-0.2;a+=1.3,i++){ const b=PO+0.07, [hx,hz]=P(a,b), g=terrainH(hx,hz)-ry, h=0.07+0.02*((i+look.hue)%3);
       bx(a,b,g+h/2-0.01,0.12+0.03*(i%2),h,0.07,S.hedge[(i+look.hue)%3]); }
     G.lv=lv0;
   }
@@ -8051,7 +8233,18 @@ const V3=(()=>{
     if(!rail.bloomed||!rail.bloomed.length) return; const C=BLOOM_COLS.map(col);
     for(const v of world.villages){ if(!rail.bloomed.includes(v.name)) continue;
       v.cells.forEach((c,i)=>{ if(rail.bits[c]) return; for(let k=0;k<2;k++){ const h=((c*31+k*17)%97)/97, h2=((c*13+k*29)%89)/89, x=cX(c)+0.15+0.7*h, z=cY(c)+0.2+0.7*h2;
-        G.box(x,terrainH(x,z)+0.03,z,0.07,0.06,0.07,0,C[(i+k)%C.length]); } }); }
+        bloomClump(G,x,terrainH(x,z),z,(h+h2)*3.1,C[(i+k)%C.length],C[(i+k+1)%C.length]); } }); }
+  }
+  /* a flower bed (22 Nov 2026, Peter: "what are all the boxes in the village?" They were 0.07 cubes in the flower colours):
+     a low green mound of leaves (0.09 x 0.06, 0.018 tall) with four small blossoms on top, 26 triangles, 0.03 tall
+     at most (a house door is 0.11). */
+  let LEAF3=null;
+  function bloomClump(G,x,y,z,a,c1,c2){
+    const L=LEAF3||(LEAF3=[col('#4f8a3a'),col('#3d7030')]), co=Math.cos(a), si=Math.sin(a), P=(u,hh,v)=>[x+u*co+v*si, y+hh, z-u*si+v*co];
+    const H=0.018, b=[P(-0.045,-0.004,-0.03),P(0.045,-0.004,-0.03),P(0.045,-0.004,0.03),P(-0.045,-0.004,0.03)], t=[P(-0.03,H,-0.018),P(0.03,H,-0.018),P(0.03,H,0.018),P(-0.03,H,0.018)];
+    G.quad(t[0],t[1],t[2],t[3],L[0],[0,1,0]);
+    for(let i=0;i<4;i++){ const j=(i+1)%4; G.quad(b[i],b[j],t[j],t[i],L[1],[(b[i][0]+b[j][0])/2-x,0.6,(b[i][2]+b[j][2])/2-z]); }
+    for(const [u,v,k] of [[-0.02,-0.006,0],[-0.004,0.009,1],[0.01,-0.008,0],[0.024,0.006,1]]){ const q=P(u,H-0.003,v); G.pyr(q[0],q[1],q[2],0.012,0.014,k?c2:c1); }
   }
   /* ---------- building detail (20 Nov 2026, Peter: "check if we can do the same for other builds") ----------
      Small extra parts on industries, engineering depots, roundhouses, level crossings, road overbridges and village houses:
@@ -10549,12 +10742,22 @@ void main(){ gl_FragColor=texture2D(map,vUv);
   let crowd=[], bodyMesh=null, headMesh=null, crateMesh=null; const seenArr=new Map();
   const CLOTHES=['#2f4f7a','#7a2f2f','#3b6b3b','#5a4a3a','#8a7a4a','#2a2a2a','#6a3a6a','#c08a3a','#4a6a8a','#9a9a9a'];
   const SKIN=['#e3bd98','#c99872','#8d5f3e','#f1d0b0','#6b4429'];
+  /* a person (22 Nov 2026, Peter: "what are all the boxes in the village?"): two legs, a body wider at the shoulders and a
+     head, 0.085 tiles tall at s=1 (villagers use 1.12: 0.095, a little under a house door, 0.11; they were 0.13), 48 triangles, feet at y=0. Sized for the 55% trains: a
+     coach is 0.37 tall. The body (white) takes the wearer's colour; s<1 for children. */
+  function personGeo(G,s,body,headCol){
+    if(body){ const LEG=new THREE.Color('#2e3440'), WHc=new THREE.Color('#ffffff');
+      for(const z of [-0.0072,0.0072]) G.box(0,0.018*s,z*s,0.011*s,0.036*s,0.011*s,0,LEG);
+      G.hexa([[-0.008*s,0.034*s,-0.0135*s],[0.008*s,0.034*s,-0.0135*s],[0.008*s,0.034*s,0.0135*s],[-0.008*s,0.034*s,0.0135*s],
+              [-0.009*s,0.068*s,-0.0175*s],[0.009*s,0.068*s,-0.0175*s],[0.009*s,0.068*s,0.0175*s],[-0.009*s,0.068*s,0.0175*s]],WHc); }
+    if(headCol) G.box(0.001*s,0.0765*s,0,0.015*s,0.017*s,0.015*s,0,headCol); }
+  const geoOf=G=>{ const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(G.p,3)); g.setAttribute('normal',new THREE.Float32BufferAttribute(G.n,3)); g.setAttribute('color',new THREE.Float32BufferAttribute(G.c,3)); return g; };
   function buildCrowdMeshes(){
-    const body=new THREE.CylinderGeometry(0.038,0.045,0.15,7); body.translate(0,0.1,0);
-    const head=new THREE.SphereGeometry(0.034,8,6); head.translate(0,0.205,0);
-    const lam=new THREE.MeshLambertMaterial({color:0xffffff});
-    bodyMesh=new THREE.InstancedMesh(body,lam,160); headMesh=new THREE.InstancedMesh(head,lam.clone(),160);
-    crateMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(0.12,0.09,0.09),new THREE.MeshLambertMaterial({color:0xffffff}),90);
+    /* platform people: the same figure as the villagers (they were 0.24 tall, as tall as a coach side above the platform) */
+    const gb=new Geo(); personGeo(gb,1.12,true,null); const gh=new Geo(); personGeo(gh,1.12,false,new THREE.Color('#ffffff'));
+    const lam=new THREE.MeshLambertMaterial({color:0xffffff,vertexColors:true});
+    bodyMesh=new THREE.InstancedMesh(geoOf(gb),lam,160); headMesh=new THREE.InstancedMesh(geoOf(gh),lam.clone(),160);
+    crateMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(0.05,0.04,0.04),new THREE.MeshLambertMaterial({color:0xffffff}),90);
     const w=new THREE.Color(1,1,1); for(const m of [bodyMesh,headMesh,crateMesh]){ for(let i=0;i<m.instanceMatrix.count;i++) m.setColorAt(i,w); m.count=0; m.frustumCulled=false; scene.add(m); }
     crowd=[]; seenArr.clear();
   }
@@ -10574,19 +10777,19 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       const c=trailPoint(t,i*Lp+len/2), cx=c.x/TS, cz=c.y/TS;
       const a=(cx-F.cx)*F.along.x+(cz-F.cz)*F.along.z;                    // car position along the platform line
       if(a<F.a0-0.3||a>F.a1+0.3) continue;                                  // only coaches alongside the platform
-      const door=P(a,-0.2);
+      const door=P(a,-(SC3.platInner||0.21)-0.02);
       if(pax){
         const off=1+Math.floor(Math.random()*3), on=1+Math.floor(Math.random()*3);
         for(let k=0;k<off;k++) agents.push({kind:'p',col:CLOTHES[(Math.random()*CLOTHES.length)|0],skin:SKIN[(Math.random()*SKIN.length)|0],
-          from:P(a+(Math.random()-0.5)*0.4,-0.2), mid:P(a+(Math.random()-0.5)*0.3,-0.5), to:P((Math.random()-0.5)*0.5,-0.95), start:now+200+(kOff++)*120+Math.random()*200, dur:1300+Math.abs(a)*380+Math.random()*400});
-        for(let k=0;k<on;k++){ const wait=P(clamp(a+(Math.random()-0.5)*0.6,F.a0+0.1,F.a1-0.1),-0.58-Math.random()*0.12);
+          from:P(a+(Math.random()-0.5)*0.4,-0.23), mid:P(a+(Math.random()-0.5)*0.3,-0.33), to:P((Math.random()-0.5)*0.5,-0.46), start:now+200+(kOff++)*120+Math.random()*200, dur:1300+Math.abs(a)*380+Math.random()*400});
+        for(let k=0;k<on;k++){ const wait=P(clamp(a+(Math.random()-0.5)*0.6,F.a0+0.1,F.a1-0.1),-0.31-Math.random()*0.12);   /* on the platform (0.21-0.47 from the track), not inside the building */
           agents.push({kind:'p',col:CLOTHES[(Math.random()*CLOTHES.length)|0],skin:SKIN[(Math.random()*SKIN.length)|0],
-          from:wait, mid:P(a+(Math.random()-0.5)*0.3,-0.46), to:P(a+(Math.random()-0.5)*0.4,-0.2), start:now+2700+(kOn++)*170+Math.random()*200, dur:1300+Math.random()*400, wait:true}); }
+          from:wait, mid:P(a+(Math.random()-0.5)*0.3,-0.3), to:P(a+(Math.random()-0.5)*0.4,-0.23), start:now+2700+(kOn++)*170+Math.random()*200, dur:1300+Math.random()*400, wait:true}); }
       } else {
-        const pile=P(clamp(a,F.a0+0.2,F.a1-0.2)+(Math.random()-0.5)*0.3,-0.7);
+        const pile=P(clamp(a,F.a0+0.2,F.a1-0.2)+(Math.random()-0.5)*0.3,-0.42);
         const sack=kind==='open'&&(t.id+i)%3===1;
-        agents.push({kind:'c',col:sack?'#e8dcc0':'#8a6236',from:{x:door.x,z:door.z},mid:P(a,-0.45),to:pile,start:now+300+(kOff++)*220,dur:1500,lift:true});
-        agents.push({kind:'c',col:sack?'#e8dcc0':'#a87a44',from:P(clamp(a,F.a0+0.2,F.a1-0.2)+(Math.random()-0.5)*0.3,-0.75),mid:P(a,-0.45),to:{x:door.x,z:door.z},start:now+2800+(kOn++)*220,dur:1500,lift:true,wait:true});
+        agents.push({kind:'c',col:sack?'#e8dcc0':'#8a6236',from:{x:door.x,z:door.z},mid:P(a,-0.32),to:pile,start:now+300+(kOff++)*220,dur:1500,lift:true});
+        agents.push({kind:'c',col:sack?'#e8dcc0':'#a87a44',from:P(clamp(a,F.a0+0.2,F.a1-0.2)+(Math.random()-0.5)*0.3,-0.42),mid:P(a,-0.32),to:{x:door.x,z:door.z},start:now+2800+(kOn++)*220,dur:1500,lift:true,wait:true});
       }
     }
     if(!agents.length) return;
@@ -10641,8 +10844,8 @@ void main(){ gl_FragColor=texture2D(map,vUv);
         G.box(-0.1,0.0555,0,0.06,0.004,0.06,0,C('#4a3a2a')); G.cyl(0.03,0.24,0,0.008,0.38,'y',SPAR,5); G.box(-0.055,0.095,0,0.17,0.008,0.008,0,C('#8a7a5a'));   /* mast and boom */
         G.hexa([[0.02,0.1,-0.003],[-0.14,0.1,-0.003],[-0.14,0.1,0.003],[0.02,0.1,0.003],[0.02,0.41,-0.003],[0.01,0.41,-0.003],[0.01,0.41,0.003],[0.02,0.41,0.003]],WH);   /* mainsail and jib take the sail colour */
         G.hexa([[0.04,0.08,-0.002],[0.17,0.065,-0.002],[0.17,0.065,0.002],[0.04,0.08,0.002],[0.035,0.36,-0.002],[0.04,0.36,-0.002],[0.04,0.36,0.002],[0.035,0.36,0.002]],C('#e6e6e6')); wakeV(G,-0.16,0.06,0.008); },
-      villager:G=>{ G.cyl(0,0.05,0,0.025,0.1,'y',WH,6); G.cyl(0,0.115,0,0.018,0.03,'y',SK,6); },
-      child:G=>{ G.cyl(0,0.035,0,0.018,0.07,'y',WH,6); G.cyl(0,0.08,0,0.014,0.025,'y',SK,6); },
+      villager:G=>personGeo(G,1.12,true,SK),   /* 22 Nov 2026: a figure at the scale of the 55% trains (were two cylinders 0.13 tall that read as boxes) */
+      child:G=>personGeo(G,0.76,true,SK),
       stall:G=>{ G.box(0,0.05,0,0.2,0.1,0.12,0,WD); for(const x of [-0.1,0.1]) for(const z of [-0.07,0.07]) G.box(x,0.09,z,0.012,0.18,0.012,0,WD); G.taper(-0.12,0.12,0.18,0.18,0.02,0.18,0.02,0.04,WH); },
       puff:G=>{ G.dome(0,0,0,0.5,WH,8,3); G.dome(0,0,0,0.5,WH,8,3,-1); },
       pub:G=>{ G.box(0,0,0,0.16,0.08,0.02,0,C('#ffc870')); },
@@ -10657,7 +10860,10 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     const counts={car:0,lorry:0,tractor:0,duck:0,boat:0,sail:0,villager:0,child:0,stall:0,puff:200,pub:Life.pubs().length*2,narrowboat:0,fishing:0};
     for(const m of (Life.markets?Life.markets():[])) counts.stall+=m.spots.length;
     for(const a of Life.agents()) counts[a.kind==='car'&&a.lorry?'lorry':a.kind]++;
-    for(const k in shapes){ const G=new Geo(); shapes[k](G); const geo=new THREE.BufferGeometry();
+    /* 22 Nov 2026: vehicles, ducks, launches and stalls were sized next to the old trains: a car as long as a house, a duck
+       as long as a person. Shrink them with the trains (TRAIN_K); narrowboats and fishing boats were already in scale. */
+    const LIFE_SC={car:TRAIN_K,lorry:TRAIN_K,tractor:TRAIN_K,boat:TRAIN_K,sail:TRAIN_K,duck:0.45,stall:0.6};
+    for(const k in shapes){ const G=new Geo(); shapes[k](G); const sc=LIFE_SC[k]; if(sc) for(let i=0;i<G.p.length;i++) G.p[i]*=sc; const geo=new THREE.BufferGeometry();
       geo.setAttribute('position',new THREE.Float32BufferAttribute(G.p,3)); geo.setAttribute('normal',new THREE.Float32BufferAttribute(G.n,3)); geo.setAttribute('color',new THREE.Float32BufferAttribute(G.c,3));
       const nv=G.p.length/3, lk=new Float32Array(nv*2); for(let v=0;v<nv;v++){ const r=G.c[v*3], gg=G.c[v*3+1], bb=G.c[v*3+2]; lk[v*2]=r===gg&&gg===bb&&r>=0.5?1:0; }
       for(const [a0,a1] of (G.lit||[])) for(let v=a0;v<a1;v++){ lk[v*2]=0; lk[v*2+1]=1; }
@@ -10729,7 +10935,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     crowd=crowd.filter(e=>now<e.end);
     const dm=new THREE.Object3D(), col=new THREE.Color(); let np=0, nc=0;
     for(const e of crowd){
-      const base=railY(cX(e.st.c)+0.5,cY(e.st.c)+0.5)+0.155;
+      const base=railY(cX(e.st.c)+0.5,cY(e.st.c)+0.5,e.st.c)+(SC3.platTop||0.11)+0.004;   /* 22 Nov 2026: feet on the platform (it dropped with the smaller trains) */
       for(const g of e.agents){
         let x,z,u=(now-g.start)/g.dur;
         if(u>1) continue;
@@ -10738,13 +10944,13 @@ void main(){ gl_FragColor=texture2D(map,vUv);
         else { const k=(u-0.35)/0.65; x=lerp(g.mid.x,g.to.x,k); z=lerp(g.mid.z,g.to.z,k); }
         if(g.kind==='p'){
           if(np>=160) continue;
-          const walking=u>0, bob=walking?Math.abs(Math.sin((now-g.start)/90))*0.012:0;
+          const walking=u>0, bob=walking?Math.abs(Math.sin((now-g.start)/90))*0.005:0;
           dm.position.set(x,base+bob,z); dm.rotation.set(0,0,0); dm.scale.setScalar(1); dm.updateMatrix();
           bodyMesh.setMatrixAt(np,dm.matrix); headMesh.setMatrixAt(np,dm.matrix);
           col.set(g.col); bodyMesh.setColorAt(np,col); col.set(g.skin); headMesh.setColorAt(np,col); np++;
         } else {
           if(nc>=90) continue;
-          dm.position.set(x,base+0.05+(u>0?Math.sin(Math.PI*u)*0.14:0),z); dm.rotation.set(0,(g.start%7),0); dm.scale.setScalar(1); dm.updateMatrix();
+          dm.position.set(x,base+0.02+(u>0?Math.sin(Math.PI*u)*0.06:0),z); dm.rotation.set(0,(g.start%7),0); dm.scale.setScalar(1); dm.updateMatrix();
           crateMesh.setMatrixAt(nc,dm.matrix); col.set(g.col); crateMesh.setColorAt(nc,col); nc++;
         }
       }
@@ -11020,7 +11226,10 @@ void main(){ gl_FragColor=texture2D(map,vUv);
 
   /* ---------- UI ---------- */
   function status3(){
-    if(S.mode==='orbit') setStatus(touchUI?'Drag to turn · pinch to zoom · two fingers to move':'Arrows: move · OK: turn · ⏪ ⏩: zoom · Back: the 3D buttons (☰ Menu: views, drive, display)',[]);
+    const ns=trains.filter(t=>stuckPair(t)).length; S.nStuck=ns;
+    const hint=ns?` · ⚠ ${ns} trains stuck: ☰ Menu to fix`:'';
+    if(hint&&!S.display&&!S.watch){ if(S.mode==='orbit') setStatus('Arrows: move · OK: turn · ⏪ ⏩: zoom'+hint,[]); else if(camTrain) setStatus(`${S.mode==='cab'?'In the cab of':'Following'} ${camTrain.name}`+hint,[]); else setStatus(hint.slice(3),[]); }
+    else if(S.mode==='orbit') setStatus(touchUI?'Drag to turn · pinch to zoom · two fingers to move':'Arrows: move · OK: turn · ⏪ ⏩: zoom · Back: the 3D buttons (☰ Menu: views, drive, display)',[]);
     else if(camTrain) setStatus(`${S.mode==='cab'?'In the cab of':'Following'} ${camTrain.name} · ${trainStatus(camTrain)}`,[]);
     else setStatus('No trains yet — buy one from the Trains menu',[]);
     document.querySelectorAll('#bar3d [data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===S.mode));
@@ -11048,7 +11257,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     if(S.ver!==railVersion||S.world!==world||!scene){ $('loading').querySelector('.big').textContent='Building the 3D world…'; $('loading').classList.remove('hide'); setTimeout(go,40); }
     else go();
   }
-  function exit(){ stopWatch(); releaseFocus(); S.active=false; document.body.classList.remove('mode3d'); $('loading').querySelector('.big').textContent='Surveying the land…'; dirty=true; defaultStatus(); }
+  function exit(){ stopWatch(); releaseFocus(); S.active=false; document.body.classList.remove('mode3d'); $('loading').querySelector('.big').textContent='Surveying the land…'; dirty=true; defaultStatus();  setTimeout(stuckLater,400); }
   let rvGroup=null, rvTrack=null, rvVer=-1, rvLast=0, rvTrains=[], rvH=null, rvLabels=[];
   const rvStruct=c=>RV.kind[c]===BRIDGE||RV.kind[c]===VIADUCT;
   let NHv=null;
@@ -11163,12 +11372,13 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     for(const m of skipEmpty) m.visible=m.count>0;   /* an instanced mesh with nothing to draw still costs a draw call's set-up */
     if(PhotoMode.active||photoWas) applyPhoto();
     if(S.noDraw){ scene.updateMatrixWorld(); camera.updateMatrixWorld(); } else renderer.render(scene,camera);   /* tests only (V3.noDraw): step the 3D world without drawing it; SwiftShader takes 2-3 s a frame on a busy machine */
-    if(S.mode!=='orbit' && (performance.now()%1000)<20) status3();
+    if((S.mode!=='orbit'||(S.nStuck|0)!==trains.reduce((a,t)=>a+(stuckPair(t)?1:0),0)) && (performance.now()%1000)<20) status3();
   }
   // Menu button in 3D: the views and train choice from the 3D bar, as a list the remote can use.
   function menu3(){
     const V={orbit:['Overhead','Look over the whole railway'],chase:['Chase','Follow behind a train'],cab:['Cab','Ride in the driver’s seat']};
     const items=Object.entries(V).map(([m,[label,detail]])=>({label:(S.mode===m?'✓ ':'')+label,detail,fn:()=>setMode(m)}));
+    { const st=trains.find(t=>stuckPair(t)); if(st){ const b=stuckPair(st); items.unshift({label:'Trains stuck: fix it…',detail:`${st.name} and ${b.name} face each other on a single line`,fn:()=>{ st.stuckShow=b.stuckShow=false; openStuck(st,b); }}); } }
     if(trains.length>1) items.push({label:'Next train',detail:camTrain?`Now: ${camTrain.name}`:'',fn:()=>{ pickTrain(1); camPos=null; if(S.mode==='orbit') setMode('chase'); else status3(); }},
                                    {label:'Previous train',fn:()=>{ pickTrain(-1); camPos=null; if(S.mode==='orbit') setMode('chase'); else status3(); }});
     if(S.mode!=='orbit'&&camTrain) items.push(Drive.active()?{label:'Stop driving',detail:'The auto-driver takes over',fn:()=>Drive.stop()}:{label:`Drive this train ${isPro()?'':PRO_TAG}`,detail:'▲ power · ▼ brake · OK whistle · Back hands over · stop on the platform mark for stars',fn:()=>Drive.start(camTrain)});
@@ -11176,7 +11386,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     items.push({label:`Display mode ${isPro()?'':PRO_TAG}`,detail:'Your railway as a living picture: views change on their own, with the time and season · any button to stop',fn:()=>Display.start()});
     items.push({label:`Photo mode ${isPro()?'':PRO_TAG}`,detail:'Hide the controls and take pictures',fn:()=>$('v3photo').click()},
                {label:'Back to the map',fn:exit});
-    openModal({title:'3D view',items,idx:Math.max(0,Object.keys(V).indexOf(S.mode)),onCancel:()=>{}});
+    openModal({title:'3D view',items,idx:Math.max(0,items.findIndex(i=>i.label.startsWith('✓ '))),onCancel:()=>{}});
   }
   // display mode shots: a train (chase or cab), a slow orbit round a station, or a wide sweep over the countryside
   function shot(k){ S.display=true;
@@ -11270,10 +11480,12 @@ void main(){ gl_FragColor=texture2D(map,vUv);
         heroes:HERO.info.map((h,k)=>{ let wheelMat=null; const P=h.wheelIdx>=0&&[...HERO.pools.entries()].find(([n])=>h.wheelPool?n===h.wheelPool:n.startsWith('drvR|'));
         if(P){ P[1].m.getMatrixAt(h.wheelIdx,M); I.copy(HERO.bases[k]).invert(); M.premultiply(I); wheelMat=((-Math.atan2(M.elements[1],M.elements[0]))%TAU+TAU)%TAU; }
         return {...h, wheelMat}; }), wheels:HERO.wheels}; }, heroRange:v=>{ HERO.range=v==null?12:+v; },
-    get active(){return S.active;}, camDist:(x,z)=>camera?Math.hypot(camera.position.x-x,camera.position.z-z):999, cabTrain:()=>S.mode!=='orbit'?camTrain:null, enter, exit, frame, key, initPointers, dropTrain, snap:()=>{ try{ lodFrame(true); renderer.render(scene,camera); return canvas3.toDataURL('image/jpeg',0.92); }catch(e){ return null; } }, lightInfo:()=>({hemi:hemiL.color.toArray().map(v=>+v.toFixed(3)), hemiI:+hemiL.intensity.toFixed(3), sky:scene.background.toArray().map(v=>+v.toFixed(3)), win:winMat?winMat.color.toArray().map(v=>+v.toFixed(3)):null}), get mode(){return S.mode;}, get watching(){return !!S.watch;}, watchNext:()=>watchNext(), startWatch:()=>startWatch(), batchOff:false, wheelLog:false, wheelLift:WHEEL_LIFT,   /* (how far carriages ride above railY: rail heads) */ _boardAt:(x,y)=>{ const st=boardHit(new THREE.Vector2(x,y)); return st?st.id:null; },
+    get active(){return S.active;}, status:()=>{ if(S.active) status3(); }, camDist:(x,z)=>camera?Math.hypot(camera.position.x-x,camera.position.z-z):999, cabTrain:()=>S.mode!=='orbit'?camTrain:null, enter, exit, frame, key, initPointers, dropTrain, snap:()=>{ try{ lodFrame(true); renderer.render(scene,camera); return canvas3.toDataURL('image/jpeg',0.92); }catch(e){ return null; } }, lightInfo:()=>({hemi:hemiL.color.toArray().map(v=>+v.toFixed(3)), hemiI:+hemiL.intensity.toFixed(3), sky:scene.background.toArray().map(v=>+v.toFixed(3)), win:winMat?winMat.color.toArray().map(v=>+v.toFixed(3)):null}), get mode(){return S.mode;}, get watching(){return !!S.watch;}, watchNext:()=>watchNext(), startWatch:()=>startWatch(), batchOff:false, wheelLog:false, wheelLift:WHEEL_LIFT,   /* (how far carriages ride above railY: rail heads) */ _boardAt:(x,y)=>{ const st=boardHit(new THREE.Vector2(x,y)); return st?st.id:null; },
     _boardScreen:id=>{ const it=labelItems.find(i=>i.st&&i.st.id===id); if(!it) return null; camera.updateMatrixWorld(); const v=new THREE.Vector3(it.x,it.y,it.z).project(camera); return [v.x,v.y,v.z]; },   /* tests: tapping a departure board */ _cam:()=>camera?camera.position.toArray():null, _batch:()=>({batch:!!S.batch, pools:carPool.size, drawn:[...carPool].filter(([k,P])=>P.n).map(([k,P])=>k+' x'+P.n), labels:labelItems.length, pages:labelMeshes.length}), tunnelView:()=>!!tunnelOn, stats:()=>renderer?{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,pr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,buildMs:Math.round(S.buildMs||0),bldTris:S.bldTris}:null, mergeOff:false, _vilHouses:()=>vilLog.map(h=>h.join(',')), noDraw:v=>{ S.noDraw=!!v; }, /* far detail, live (the TV: no restart): */ lod:v=>{ LOD.on=v!==false; lodNow(); return lodInfo(); }, chunks:v=>{ LOD.cull=v!==false; if(camera&&fog) lodFar(); lodNow(); return lodInfo(); },
     farDist:v=>{ LOD.farLow=Math.max(0,+v||0); return lodInfo(); }, lodDist:(a,b,c)=>{ LOD.d=[+a||LOD.d[0],+b||LOD.d[1],+c||LOD.d[2]]; lodNow(); return lodInfo(); },
-    chunkSize:v=>{ LOD.cs=Math.max(2,Math.round(+v)||8); rebuild3(); return lodInfo(); }, rebuild:()=>{ rebuild3(); return lodInfo(); }, lodInfo:()=>lodInfo(), _lodLvl:()=>Array.from(LOD.lvl), _lodMissing:()=>{ let n=0; for(let c=0;c<LOD.n;c++) if(LOD.vis0[c]) for(const u of LOD.units) if(u.has[c]&&!u.built[c]) n++; return n; },   /* tests */ _parts:()=>{ const o=[]; scene.traverse(m=>{ if(!m.geometry||!(m.isMesh||m.isPoints||m.isLine)) return; const q=m.geometry, t=(q.index?q.index.count:q.attributes.position.count)/3*(m.isInstancedMesh?m.count:1); let v=true; for(let p=m;p;p=p.parent) if(!p.visible) v=false; o.push({name:m.name||(m.parent&&m.parent.name)||m.material.type, tris:Math.round(t), vis:v, cull:m.frustumCulled}); }); return o; }, _det:()=>{ const o={}; for(const k in DET){ const e=DET[k]; o[k]={n:e.n,tris:e.tris,win:e.win,max:e.max,parts:e.parts,geo:V3.detKeep?e.geo:undefined}; } return o; }, detailOff:false, detKeep:false, _vilHash:()=>{ let h=0; for(const k in chim3d) for(const p of chim3d[k]) h=(h*31+Math.round(p[0]*1000)+Math.round(p[2]*1000)*7)|0; return h; }, _sigCols:()=>signalObjs.map(s=>[s.lm?s.lm.color.getHex():(()=>{ const k=new THREE.Color(); sigLamps.getColorAt(s.i,k); return k.getHex(); })(), signalAspect(s.c,s.bit)?0x37e05a:0xff2a1a]),   /* tests: each lamp's colour and what it should show */ setPR:v=>{ if(renderer){ PR_OVERRIDE=v; resize3(); } }, railY:(x,z,c,ns)=>railY(x,z,c,ns), rivalY:(x,z)=>rvY(x,z), trainCars:t=>carPts(t).map(([p,a,b])=>{ const ax=a.x/TS, az=a.y/TS, bx=b.x/TS, bz=b.y/TS, ns=Math.abs(bz-az)>Math.abs(bx-ax); return {x:p.x/TS,y:(railY(ax,az,null,ns)+railY(bx,bz,null,ns))/2+WHEEL_LIFT,z:p.y/TS,ns}; }),   /* tests: where each carriage rides, worked out as updateTrains does (20 Nov: carriages out of view are no longer posed, so do not read the meshes) */ groundY:(x,z)=>TH?terrainH(x,z):null, tubeTop:()=>TUBE_TOP, cabEye:()=>CAB_EYE, scaleInfo:()=>({wheelZ:0.17*TRAIN_K, railZ:0.19*TRACK_K, carHalfW:0.42/2*TRAIN_K, carFloor:0.2*TRAIN_K, platInner:SC3.platInner, platTop:SC3.platTop, cabEye:CAB_EYE}), camY:()=>camera?camera.position.y:null, flyClear:()=>FLY_H-0.22, rivalTrack:()=>rvTrack, rivalCars:()=>rvTrains.filter(m=>m.visible).map(m=>({x:+m.position.x.toFixed(2),y:+m.position.y.toFixed(3),z:+m.position.z.toFixed(2),verts:m.geometry.attributes.position.count})) };
+    chunkSize:v=>{ LOD.cs=Math.max(2,Math.round(+v)||8); rebuild3(); return lodInfo(); }, rebuild:()=>{ rebuild3(); return lodInfo(); }, lodInfo:()=>lodInfo(), _lodLvl:()=>Array.from(LOD.lvl), _lodMissing:()=>{ let n=0; for(let c=0;c<LOD.n;c++) if(LOD.vis0[c]) for(const u of LOD.units) if(u.has[c]&&!u.built[c]) n++; return n; },   /* tests */ _parts:()=>{ const o=[]; scene.traverse(m=>{ if(!m.geometry||!(m.isMesh||m.isPoints||m.isLine)) return; const q=m.geometry, t=(q.index?q.index.count:q.attributes.position.count)/3*(m.isInstancedMesh?m.count:1); let v=true; for(let p=m;p;p=p.parent) if(!p.visible) v=false; o.push({name:m.name||(m.parent&&m.parent.name)||m.material.type, tris:Math.round(t), vis:v, cull:m.frustumCulled}); }); return o; }, _det:()=>{ const o={}; for(const k in DET){ const e=DET[k]; o[k]={n:e.n,tris:e.tris,win:e.win,max:e.max,parts:e.parts,geo:V3.detKeep?e.geo:undefined}; } return o; }, detailOff:false, detKeep:false, _vilHash:()=>{ let h=0; for(const k in chim3d) for(const p of chim3d[k]) h=(h*31+Math.round(p[0]*1000)+Math.round(p[2]*1000)*7)|0; return h; }, _sigCols:()=>signalObjs.map(s=>[s.lm?s.lm.color.getHex():(()=>{ const k=new THREE.Color(); sigLamps.getColorAt(s.i,k); return k.getHex(); })(), signalAspect(s.c,s.bit)?0x37e05a:0xff2a1a]),   /* tests: each lamp's colour and what it should show */ setPR:v=>{ if(renderer){ PR_OVERRIDE=v; resize3(); } }, railY:(x,z,c,ns)=>railY(x,z,c,ns), rivalY:(x,z)=>rvY(x,z), _lifeGeo:k=>{ const ms=k==='crowd'?[bodyMesh,headMesh]:k==='crate'?[crateMesh]:[lifeMeshes[k]]; if(ms.some(m=>!m)) return null; const b=new THREE.Box3(); let tris=0, cols=new Set();
+      for(const m of ms){ const g=m.geometry; g.computeBoundingBox(); b.union(g.boundingBox); tris+=(g.index?g.index.count:g.attributes.position.count)/3; const c=g.attributes.color; if(c) for(let i=0;i<c.count;i++) cols.add([c.getX(i),c.getY(i),c.getZ(i)].map(v=>v.toFixed(2)).join()); }
+      return {x0:b.min.x,x1:b.max.x,y0:b.min.y,y1:b.max.y,z0:b.min.z,z1:b.max.z,tris,cols:cols.size,count:ms.reduce((a,m)=>a+m.count,0)}; },   /* tests: the size of a countryside-life or platform figure (22 Nov 2026) */ _bloomClump:()=>{ const G=new Geo(); const k=BLOOM_COLS.map(col); bloomClump(G,0,0,0,0,k[0],k[1]); let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9; for(let i=0;i<G.p.length;i+=3){ x0=Math.min(x0,G.p[i]); x1=Math.max(x1,G.p[i]); y0=Math.min(y0,G.p[i+1]); y1=Math.max(y1,G.p[i+1]); z0=Math.min(z0,G.p[i+2]); z1=Math.max(z1,G.p[i+2]); } return {x0,x1,y0,y1,z0,z1,tris:G.p.length/9}; },   /* tests: one flower bed */ _carMeshes:t=>{ const o=trainObjs.get(t); return o?o.cars.map(m=>({x:m.position.x,y:m.position.y,z:m.position.z,ry:m.rotation.y})):null; },   /* tests: the 3D carriages as last posed (22 Nov 2026) */ trainCars:t=>carPts(t).map(([p,a,b])=>{ const ax=a.x/TS, az=a.y/TS, bx=b.x/TS, bz=b.y/TS, ns=Math.abs(bz-az)>Math.abs(bx-ax); return {x:p.x/TS,y:(railY(ax,az,null,ns)+railY(bx,bz,null,ns))/2+WHEEL_LIFT,z:p.y/TS,ns}; }),   /* tests: where each carriage rides, worked out as updateTrains does (20 Nov: carriages out of view are no longer posed, so do not read the meshes) */ groundY:(x,z)=>TH?terrainH(x,z):null, tubeTop:()=>TUBE_TOP, cabEye:()=>CAB_EYE, scaleInfo:()=>({wheelZ:0.17*TRAIN_K, railZ:0.19*TRACK_K, carHalfW:0.42/2*TRAIN_K, carFloor:0.2*TRAIN_K, platInner:SC3.platInner, platTop:SC3.platTop, cabEye:CAB_EYE}), camY:()=>camera?camera.position.y:null, flyClear:()=>FLY_H-0.22, rivalTrack:()=>rvTrack, rivalCars:()=>rvTrains.filter(m=>m.visible).map(m=>({x:+m.position.x.toFixed(2),y:+m.position.y.toFixed(3),z:+m.position.z.toFixed(2),verts:m.geometry.attributes.position.count})) };
 })();
 function enter3D(mode,train){ V3.enter(mode,train); }
 V3.initPointers();
