@@ -146,6 +146,22 @@ button.tb{border-radius:14px}
 #info,#legend{border-radius:20px}
 
 #modal .opt.toggle{background:transparent;border-style:dashed;font-weight:500;font-size:14px}
+/* real money kept apart from game money (Peter, 22 Nov 2026): a heading that is not a button, an outlined blue pill with a bag */
+#modal .opthead{margin:8px 4px 0;padding:12px 4px 2px;border-top:1px solid rgba(255,240,200,.18);font:700 15px Nunito,sans-serif;color:#cfe6f7}
+#modal .opthead small{display:block;font-weight:400;color:var(--muted);font-size:12.5px;margin-top:3px}
+#modal .opt .cost.real{background:transparent;border:1.5px solid #8fbfe3;color:#d6ebfa;display:inline-flex;align-items:center;gap:6px}
+#modal .opt .cost.real .rmt{font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;opacity:.85}
+#modal .tabs{display:flex;gap:4px;flex:none;border-bottom:1px solid rgba(255,240,200,.16);margin:6px 0 10px;padding:0 2px}
+#modal .tab{appearance:none;border:0;background:none;color:var(--muted);font:800 15px Nunito,sans-serif;padding:9px 12px 8px;border-bottom:3px solid transparent;border-radius:12px 12px 0 0;cursor:pointer;display:flex;gap:7px;align-items:center;min-height:40px}
+#modal .tab.on{color:#fbf1d6;border-bottom-color:var(--accent)}
+#modal .tab.shop.on{border-bottom-color:#7cc4ff}
+#modal .tab.sel{background:#365040;box-shadow:0 0 0 3px rgba(233,180,76,.4)}
+#modal .tab .tbadge{font-size:11px;font-weight:800;background:#16314a;color:#7cc4ff;border:1px solid #7cc4ff;border-radius:999px;padding:1px 7px}
+#modal .shopbanner{display:block;padding:9px 12px;border:1.5px solid #7cc4ff;background:#16314a;color:#d7ecff;border-radius:12px}
+#modal .opthead.sec{border-top:0;margin:4px 4px 0;padding:6px 2px 0;font:800 12px Nunito,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+#modal .opt .cost.owned{background:#2c4a33;color:#a8e0a0}
+#modal .opt.owned[disabled]{opacity:.8}
+#modal .realline{display:block;margin-top:10px;padding:8px 12px;border:1.5px solid rgba(143,191,227,.6);border-radius:12px;color:#d6ebfa}
 #modal .opt.toggle .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--muted);flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--accent-ink)}
 #modal .opt.toggle.on .box{background:var(--accent);border-color:var(--accent)}
 #modal .foot{margin-top:10px;font-size:12.5px;color:var(--muted)}
@@ -2171,18 +2187,28 @@ function openModal(cfg){
 }
 function renderModal(){
   const m=modal, card=$('modal').querySelector('.card');
-  card.innerHTML=`<h2>${m.title}${m.badge?`<span class="badge">${m.badge}</span>`:''}</h2>${m.text?`<p>${m.text}</p>`:''}<div class="opts"></div>${m.foot?`<div class="foot">${m.foot}</div>`:''}`;
+  const tabs=m.tabs?`<div class="tabs" role="tablist">${m.tabs.map((t,i)=>`<button class="tab${t.cls?' '+t.cls:''}${i===m.tab?' on':''}${i===m.tab&&m.tabFocus?' sel':''}" role="tab" aria-selected="${i===m.tab}">${t.label}${t.badge?`<span class="tbadge">${t.badge}</span>`:''}</button>`).join('')}</div>`:'';
+  card.innerHTML=`<h2>${m.title}${m.badge?`<span class="badge">${m.badge}</span>`:''}</h2>${tabs}${m.text?`<p>${m.text}</p>`:''}<div class="opts"></div>${m.foot?`<div class="foot">${m.foot}</div>`:''}`;
+  card.querySelectorAll('.tabs .tab').forEach((b,i)=>{ b.onclick=()=>{ if(i===m.tab){ m.tabFocus=false; renderModal(); } else modalTab(i,false); }; });
   const box=card.querySelector('.opts');
   m.items.forEach((it,i)=>{
-    const b=document.createElement('button'); b.className='opt'+(it.toggle?' toggle'+(it.checked?' on':''):'')+(i===m.idx?' sel':'');
+    if(it.heading){ const d=document.createElement('div'); d.className='opthead'+(it.sec?' sec':''); d.innerHTML=`${it.label}${it.detail?`<small>${it.detail}</small>`:''}`; box.appendChild(d); return; }   /* a section heading: not a button (it.disabled keeps the D-pad off it) */
+    const b=document.createElement('button'); b.className='opt'+(it.toggle?' toggle'+(it.checked?' on':''):'')+(it.owned?' owned':'')+(i===m.idx&&!m.tabFocus?' sel':'');
     if(it.disabled) b.disabled=true;
     b.innerHTML= it.toggle ? `<span class="box">${it.checked?'✓':''}</span><span style="flex:1">${it.label}</span>`
-      : `<span>${it.pre||''}${it.label}${it.detail?`<small>${it.detail}</small>`:''}</span>${it.cost?`<span class="cost">${it.cost}</span>`:''}`;
-    b.onclick=()=>{ m.idx=i; activateModal(); };
+      : `<span>${it.pre||''}${it.label}${it.detail?`<small>${it.detail}</small>`:''}</span>${it.cost?(it.owned?`<span class="cost owned">${it.cost}</span>`:it.real?`<span class="cost real"><span class="rmi">🛍️</span>${it.cost}${/\d/.test(it.cost)?'<span class="rmt">real money</span>':''}</span>`:`<span class="cost">${it.cost}</span>`):''}`;
+    b.onclick=()=>{ m.idx=i; m.tabFocus=false; activateModal(); };
     box.appendChild(b);
   });
-  const sel=box.children[m.idx]; if(sel) sel.scrollIntoView({block:'nearest'});
+  const sel=box.children[m.idx];
+  if(m.tabs&&(m.tabFocus||m.idx===m.items.findIndex(i=>!i.disabled))){ box.scrollTop=0; card.scrollTop=0; }   /* a tab's top: keep the tabs in view (on phones the whole card scrolls) */
+  else if(sel) sel.scrollIntoView({block:'nearest'});
 }
+/* Tabs (22 Nov 2026, "Choose a train"): a modal may carry tabs:[{label,badge,cls}], tab (the open one) and onTab(i), which
+   reopens the modal with that tab's items. Left/Right switch tabs; Up from the first item puts the focus on the tab bar
+   (m.tabFocus), Down or OK goes back into the list; a tap on a tab switches. */
+function modalTab(i,focus){ const m=modal; if(!m||!m.tabs||!m.onTab||i<0||i>=m.tabs.length||i===m.tab) return;
+  const keep=focus==null?!!m.tabFocus:focus; Sound.tick(); m.onTab(i); if(modal&&modal.tabs){ modal.tabFocus=keep; renderModal(); } }
 function activateModal(){
   const m=modal, it=m.items[m.idx]; if(!it||it.disabled)return;
   if(it.toggle){ it.checked=!it.checked; renderModal(); return; }
@@ -2192,6 +2218,10 @@ function closeModal(){ modal=null; $('modal').classList.remove('open'); }
 function modalKey(e){
   const m=modal, k=e.key; e.preventDefault();
   const move=d=>{ let i=m.idx; for(let n=0;n<m.items.length;n++){ i=(i+d+m.items.length)%m.items.length; if(!m.items[i].disabled){m.idx=i;break;} } Sound.tick(); renderModal(); };
+  if(m.tabs&&m.tabs.length>1){ const first=m.items.findIndex(i=>!i.disabled);
+    if(k==='ArrowLeft'||k==='ArrowRight'){ modalTab(m.tab+(k==='ArrowRight'?1:-1)); return; }
+    if(m.tabFocus){ if(k==='ArrowUp') return; if(k==='ArrowDown'||k==='Enter'||k===' '){ m.tabFocus=false; if(first>=0) m.idx=first; Sound.tick(); renderModal(); return; } }
+    else if(k==='ArrowUp'&&m.idx===first){ m.tabFocus=true; Sound.tick(); renderModal(); return; } }
   if(k==='ArrowDown'||k==='ArrowRight') move(1);
   else if(k==='ArrowUp'||k==='ArrowLeft') move(-1);
   else if(k==='Enter'||k===' ') activateModal();
@@ -3719,17 +3749,48 @@ function openTrains(idx){
   items.push({label:'Close',fn:()=>{}});
   openModal({title:'Trains & timetables',text:`${trains.length?`${trains.length} train${trains.length===1?'':'s'} on the network`:'No trains yet.'} · ${clockTxt(sim.time)}, ${dayTxt(sim.time)}${money()&&trains.length?` · running costs ${fmt(trains.reduce((a,t)=>a+TRAIN_TYPES[t.type].run,0))} an hour`:''}${trains.length>1?'<br>Two trains on one line need a passing loop (Signals tool) to get past each other.':''}`,items,idx,onCancel:()=>{}});
 }
-function buyTrain(idx){
-  const items=[];
-  for(const g of ['Steam','Diesel','High speed','Freight']){
-    for(const [k,ty] of Object.entries(TRAIN_TYPES)){ if(ty.group!==g)continue; if(ENGINE_SKUS[k]&&ENGINE_SKUS[k].soon&&engineLocked(k)) continue;   /* not on sale yet */
-      const n=ty.consist.length-ty.consist.filter(NOT_PAY).length, lock=heritageLocked(k), shop=!lock&&engineLocked(k);   /* shop: a store engine not bought yet (E1); lock: Heritage without Pro or the pack */
-      items.push({pre:`<small style="display:inline-block;min-width:76px;color:var(--accent);font-weight:700">${g}</small>`,label:ty.name,
-        detail:`${ty.era} · ${ty.heritage?'Heritage Collection · ':''}${ty.desc} · ${n} ${ty.goods?'wagons':'coaches'} · ${Math.round(ty.speed*20)} mph${money()?` · ${fmt(ty.run)}/hr to run`:''}`,
-        cost:lock?(EDITION==='web'?'On Fire TV':EngineStore.price(HERITAGE_SKUS[k]||HERITAGE_SKU)||'Buy'):shop?(EDITION==='web'?'On Fire TV':EngineStore.price(ENGINE_SKUS[k].sku)||'Buy'):price(ty.cost),disabled:!lock&&!shop&&money()&&ty.cost>rail.money,fn:lock?(m,j)=>openHeritageCard(k,j):shop?(m,j)=>openEngineCard(k,j):()=>pickStops({type:k},[])}); }
+let trainTab=0;   /* the last tab of "Choose a train", remembered for this session */
+function buyTrain(idx,tab){
+  /* Peter, 22 Nov 2026: real money must never look like game money ("The tabbed approach is much better. Build it.").
+     Two tabs: "Your engines" lists every engine the player can buy with game money, in its group (store engines already
+     bought included, at their game-money price); "Add more engines" (a blue Store badge) holds only store items, bought with
+     real money: the single engines, the Heritage Collection (the whole pack first, then each engine; not for Pro or pack owners)
+     and Pro (not for Pro owners), with the store's own prices. Owned shows "Owned" and opens nothing. Choosing an item opens
+     its buy card; nothing is bought from the list itself. The Pro (browser) edition sells nothing: one list, no tabs.
+     tab: 0 or 1, or an engine's key (the tab that engine is on); left out, the last tab used. */
+  const web=EDITION==='web', tabbed=EDITION!=='pro';
+  if(typeof tab==='string') tab=tabbed&&typeLocked(tab)?1:0;
+  if(!tabbed) tab=0; else if(tab!==0&&tab!==1) tab=trainTab;
+  if(tabbed) trainTab=tab;
+  const GROUPS=['Steam','Diesel','High speed','Freight'], items=[];
+  const shown=g=>Object.entries(TRAIN_TYPES).filter(([k,ty])=>ty.group===g&&!(ENGINE_SKUS[k]&&ENGINE_SKUS[k].soon&&engineLocked(k)));   /* soon: not on sale yet, unless already owned */
+  const sec=label=>items.push({heading:true,sec:true,disabled:true,label});
+  if(tab===0){
+    for(const g of GROUPS){ const list=shown(g).filter(([k])=>!typeLocked(k)); if(!list.length) continue; sec(g);
+      for(const [k,ty] of list){ const n=ty.consist.length-ty.consist.filter(NOT_PAY).length;
+        items.push({type:k,label:ty.name,cost:price(ty.cost),disabled:money()&&ty.cost>rail.money,fn:()=>pickStops({type:k},[]),
+          detail:`${ty.era} · ${tabbed&&ENGINE_SKUS[k]?'Bought in the store · ':''}${ty.heritage?'Heritage Collection · ':''}${ty.desc} · ${n} ${ty.goods?'wagons':'coaches'} · ${Math.round(ty.speed*20)} mph${money()?` · ${fmt(ty.run)}/hr to run`:''}`}); } }
+  } else {
+    const cost=sku=>web?'On Fire TV / Android':EngineStore.price(sku)||'Buy';
+    const row=(k,ty,g,sku,owned,fn)=>({type:k,label:ty.name,detail:`${g} · ${ty.era} · ${ty.desc}`,...(owned?{owned:true,disabled:true,cost:'Owned'}:{real:true,cost:cost(sku),fn})});
+    const famous=[], her=[];
+    for(const g of GROUPS) for(const [k,ty] of shown(g)){
+      if(ENGINE_SKUS[k]) famous.push(row(k,ty,g,ENGINE_SKUS[k].sku,!engineLocked(k),(m,j)=>openEngineCard(k,j)));
+      else if((ty.pro||ty.heritage)&&!heritageOwned()) her.push(row(k,ty,g,HERITAGE_SKUS[k]||HERITAGE_SKU,!heritageLocked(k),(m,j)=>openHeritageCard(k,j))); }
+    if(famous.length){ sec('Famous engines, one at a time'); items.push(...famous); }
+    if(!heritageOwned()){ sec('Heritage Collection');
+      items.push({label:'The whole Heritage Collection',detail:`Seven famous engines in one purchase: ${HERITAGE_NAMES}`,real:true,cost:cost(HERITAGE_SKU),fn:(m,j)=>openHeritageCard(null,j)},...her); }
+    if(!isPro()){ sec('Train Masters Pro');
+      items.push({label:'Train Masters Pro',detail:'The Heritage Collection plus sandbox, scenarios, driving, replays and more',real:true,cost:cost(PRO_SKU),fn:(m,j)=>openUpsell(()=>buyTrain(j))}); }
+    if(!items.some(i=>i.real)) items.unshift({heading:true,disabled:true,label:'You have every engine in the shop. More are on the way.'});
   }
   items.push({label:'Back',fn:()=>openTrains()});
-  openModal({title:'Choose a train',text:'Classic British favourites and a couple of world-famous giants.',items,idx,onCancel:()=>openTrains()});
+  const banner=web?'🛍️ These are bought with <b>real money</b> in the Fire TV and Android versions of Train Masters. Nothing is sold in this browser version.'
+    :`🛍️ These are bought with <b>real money</b> through ${storeLabel()}, once. They're yours on all your railways, then you buy each train with game money like any other.`;
+  const text=!tabbed?'Classic British favourites and a couple of world-famous giants.':tab===1?`<span class="shopbanner">${banner}</span>`
+    :money()?'Prices on this tab are in your railway’s game money.':'Classic British favourites and a couple of world-famous giants.';
+  openModal({title:'Choose a train',text,items,idx,onCancel:()=>openTrains(),
+    ...(tabbed?{tabs:[{label:'Your engines'},{label:'Add more engines',badge:'Store',cls:'shop'}],tab,onTab:i=>buyTrain(undefined,i)}:{})});
 }
 function pickStops(draft,stops,idx){
   // Only stations joined by track to the first stop can be added (before the first pick: any station with track to another).
@@ -5761,7 +5822,7 @@ const ProStore={
   restore(){ if(EDITION==='web'){ openGetIt(); return; } if(this.available()){ this.send('restore'); toast('Checking your purchases…'); } else toast('Purchases can be restored in the store version of Train Masters'); },
   // start-up check: silent. Never the button's restore, which reports problems (8 Nov 2026: "Could not reach the store" on every start)
   check(){ if(EDITION==='web') return; const b=this.bridge(); try{ if(b==='android'){ if(window.TMAndroid.check) window.TMAndroid.check();
-        if(window.TMAndroid.prices) window.TMAndroid.prices(JSON.stringify(allSkus())); }   /* the store's own localised prices come back through tmPrices (E1) */   /* older wrappers check quietly by themselves on resume */
+        if(window.TMAndroid.prices) window.TMAndroid.prices(JSON.stringify(allSkus().map(toStoreSku))); }   /* the store's own localised prices come back through tmPrices (E1) */   /* older wrappers check quietly by themselves on resume */
       else if(b==='vega') window.ReactNativeWebView.postMessage(JSON.stringify({type:'tm-store',action:'check',sku:PRO_SKU,skus:allSkus()})); }catch(_){} },
   unlock(){ const was=isPro(); try{ localStorage.setItem('tm-pro','1'); }catch(_){} Recorder.reset(); document.body.classList.toggle('pro',isPro()); if(!was){ Sound.fanfare(); toast('🎉 Train Masters Pro unlocked — thank you!'); } },
   revoke(){ try{ localStorage.removeItem('tm-pro'); }catch(_){} document.body.classList.toggle('pro',isPro()); }
@@ -5790,6 +5851,20 @@ const HERITAGE_NAMES='the Duchess and its Streamliner, the Merchant Navy, the 9F
    duchessS has a capital letter: fine on Amazon (its item exists and SKUs are permanent), but Google Play product ids must be
    lower case, so the Play edition will need a lower-case SKU mapped to this one engine. */
 const HERITAGE_SKUS={duchess:'trainmasters.engine.duchess',duchessS:'trainmasters.engine.duchessS',mn:'trainmasters.engine.mn',f9:'trainmasters.engine.f9',terrier:'trainmasters.engine.terrier',c47:'trainmasters.engine.c47',croc:'trainmasters.engine.croc'};
+/* Google Play (21 Nov 2026): Play product ids must be lower case, so the Streamliner is trainmasters.engine.duchesss there
+   (Amazon keeps trainmasters.engine.duchessS). The game keeps its own SKU names inside (owned list, prices) and translates
+   only at the wrapper boundary, when the Android wrapper says its store is Google Play (TMAndroid.storeName()). */
+const PLAY_SKUS={'trainmasters.engine.duchessS':'trainmasters.engine.duchesss'};
+function onPlay(){ return ProStore.storeName()==='Google Play'; }
+/* real-money wording (22 Nov 2026): the store by the wrapper's own name ("Google Play", "the Amazon Appstore"); Vega is Amazon;
+   otherwise a neutral "your app store". storeShort is for buttons: "Buy with real money: £0.99 (Google Play)". */
+function storeLabel(){ const n=ProStore.storeName(); if(n&&n!=='the store') return n; if(ProStore.bridge()==='vega') return 'the Amazon Appstore'; return 'your app store'; }
+function storeShort(){ return storeLabel().replace(/^(the|your) /,''); }
+function realBuy(what,pr){ return `${what} with real money${pr?`: ${pr}`:''} (${storeShort()})`; }
+const REAL_PRE='<span class="rmi">🛍️</span> ';
+function realLine(){ return `<span class="realline">🛍️ This is a real purchase through ${storeLabel()}. Your game money is not used.</span>`; }
+function toStoreSku(s){ return (onPlay()&&PLAY_SKUS[s])||s; }
+function fromStoreSku(s){ if(onPlay()) for(const k in PLAY_SKUS) if(PLAY_SKUS[k]===s) return k; return s; }
 function heritageOwned(){ return isPro()||EngineStore.owns(HERITAGE_SKU); }
 function heritageLocked(k){ const ty=TRAIN_TYPES[k]; return !!ty&&!!(ty.pro||ty.heritage)&&!heritageOwned()&&!(HERITAGE_SKUS[k]&&EngineStore.owns(HERITAGE_SKUS[k])); }
 function allSkus(){ return [PRO_SKU,HERITAGE_SKU,...Object.values(HERITAGE_SKUS),...Object.values(ENGINE_SKUS).filter(e=>!e.soon).map(e=>e.sku)]; }
@@ -5810,12 +5885,12 @@ const EngineStore={
   /* the store's localised price ("£0.99", "$0.99", "0,99 €"), or '' when not known yet */
   price(sku){ if(EDITION==='web') return ''; return String(this._prices()[sku]||''); },
   setPrices(m){ if(typeof m==='string'){ try{ m=JSON.parse(m); }catch(_){ return; } } if(!m||typeof m!=='object') return;
-    const P=this._prices(); for(const [k,v] of Object.entries(m)) if(v) P[k]=String(v); try{ localStorage.setItem('tm-prices',JSON.stringify(P)); }catch(_){} },
+    const P=this._prices(); for(const [k,v] of Object.entries(m)) if(v) P[fromStoreSku(k)]=String(v); try{ localStorage.setItem('tm-prices',JSON.stringify(P)); }catch(_){} },
   buy(sku){ if(EDITION==='web'){ openGetIt(engineForSku(sku)); return; }
     if((sku===HERITAGE_SKU||Object.values(HERITAGE_SKUS).includes(sku))&&heritageOwned()){ toast(isPro()?'The Heritage Collection is already in your Pro':'You already have the Heritage Collection'); return; }
     if(this.owns(sku)){ toast('You already have this engine'); return; }
     const b=ProStore.bridge();
-    try{ if(b==='android'){ if(!window.TMAndroid.buy){ toast(`Please update Train Masters from ${ProStore.storeName()} to buy engines`); return; } window.TMAndroid.buy(sku); }
+    try{ if(b==='android'){ if(!window.TMAndroid.buy){ toast(`Please update Train Masters from ${ProStore.storeName()} to buy engines`); return; } window.TMAndroid.buy(toStoreSku(sku)); }
       else if(b==='vega') window.ReactNativeWebView.postMessage(JSON.stringify({type:'tm-store',action:'buy',sku}));
       else if(b==='custom') window.TMIAP.buy(sku);
       else { toast('Engines are bought in the store version of Train Masters'); return; } }catch(e){ toast('The store could not be reached',true); return; }
@@ -5828,9 +5903,9 @@ const EngineStore={
   _testAdd(k,o){ const base=TRAIN_TYPES[o.base||'black5']; TRAIN_TYPES[k]={...base,name:o.name||k,short:o.short||o.name||k,era:o.era||base.era,desc:o.desc||base.desc,heritage:false,pro:false};
     ENGINE_SKUS[k]={sku:o.sku}; delete EnginePic.cache[k]; }
 };
-window.tmOwned=list=>{ if(typeof list==='string'){ try{ list=JSON.parse(list); }catch(_){ list=String(list).split(','); } } for(const s of list||[]) if(s) EngineStore.add(String(s).trim(),false); };
-window.tmUnlocked=sku=>EngineStore.add(String(sku||''),true);
-window.tmRevoked=sku=>EngineStore.remove(String(sku||''));
+window.tmOwned=list=>{ if(typeof list==='string'){ try{ list=JSON.parse(list); }catch(_){ list=String(list).split(','); } } for(const s of list||[]) if(s) EngineStore.add(fromStoreSku(String(s).trim()),false); };
+window.tmUnlocked=sku=>EngineStore.add(fromStoreSku(String(sku||'')),true);
+window.tmRevoked=sku=>EngineStore.remove(fromStoreSku(String(sku||'')));
 window.tmPrices=m=>EngineStore.setPrices(m);
 /* the engine's own 2D picture (engine, tender and a coach, as drawn on the map), for its buy card */
 const EnginePic={cache:{},
@@ -5853,19 +5928,19 @@ const EnginePic={cache:{},
 function openEngineCard(k,idx){ const ty=TRAIN_TYPES[k], e=ENGINE_SKUS[k]; if(!ty||!e) return;
   if(EDITION==='web'){ openGetIt(k,()=>buyTrain(idx)); return; }
   const pr=EngineStore.price(e.sku), pic=EnginePic.get(k), back=()=>buyTrain(idx);
-  openModal({title:ty.name,text:`${pic?`<img class="engpic" src="${pic}" alt="">`:''}<b>${ty.era}</b> · ${ty.desc}`,items:[
-    {label:pr?`Buy this engine (${pr})`:'Buy this engine',detail:'A one-off purchase · yours on all your railways',fn:()=>EngineStore.buy(e.sku)},
+  openModal({title:ty.name,text:`${pic?`<img class="engpic" src="${pic}" alt="">`:''}<b>${ty.era}</b> · ${ty.desc}${realLine()}`,items:[
+    {pre:REAL_PRE,real:true,label:realBuy('Buy',pr),detail:'A one-off purchase · yours on all your railways',fn:()=>EngineStore.buy(e.sku)},
     {label:'Back',fn:back}],idx:0,onCancel:back}); }
 /* the Heritage Collection card, for a Heritage engine chosen by a player without Pro or the pack: calm, two choices and Back.
    Prices only from the store (EngineStore.price); no amount until it reports one. Web edition: nothing is sold, it points to Fire TV. */
-function openHeritageCard(k,idx){ const ty=TRAIN_TYPES[k]; if(!ty) return; const back=()=>buyTrain(idx), pic=EnginePic.get(k);
-  const head=`${pic?`<img class="engpic" src="${pic}" alt="">`:''}<b>${ty.name}</b> · ${ty.era} · `;
+function openHeritageCard(k,idx){ const ty=k?TRAIN_TYPES[k]:null; if(k&&!ty) return; const back=()=>buyTrain(idx), pic=ty?EnginePic.get(k):'';   /* k null: the whole pack (shop tab) */
+  const head=ty?`${pic?`<img class="engpic" src="${pic}" alt="">`:''}<b>${ty.name}</b> · ${ty.era} · `:'';
   if(EDITION==='web'){ openGetIt(k,back); return; }   /* web demo: nothing is sold, the Fire TV card instead */
-  const sku=HERITAGE_SKUS[k], pe=sku?EngineStore.price(sku):'', pr=EngineStore.price(HERITAGE_SKU), pp=EngineStore.price(PRO_SKU);
-  openModal({title:'Heritage Collection',text:head+`One of seven famous engines in fine detail: ${HERITAGE_NAMES}.`,items:[
-    ...(sku?[{label:pe?`Buy this engine (${pe})`:'Buy this engine',detail:'A one-off purchase · yours on all your railways',fn:()=>EngineStore.buy(sku)}]:[]),
-    {label:pr?`Buy the whole Heritage Collection (${pr})`:'Buy the whole Heritage Collection',detail:'All seven engines · a one-off purchase',fn:()=>EngineStore.buy(HERITAGE_SKU)},
-    {label:pp?`Or get Pro (${pp})`:'Or get Pro',detail:'All of these plus sandbox, scenarios, driving, replays and more',fn:()=>ProStore.buy()},
+  const sku=k&&HERITAGE_SKUS[k], pe=sku?EngineStore.price(sku):'', pr=EngineStore.price(HERITAGE_SKU), pp=EngineStore.price(PRO_SKU);
+  openModal({title:'Heritage Collection',text:head+`${ty?'One of seven':'Seven'} famous engines in fine detail: ${HERITAGE_NAMES}.${realLine()}`,items:[
+    ...(sku?[{pre:REAL_PRE,real:true,label:realBuy('Buy this engine',pe),detail:'A one-off purchase · yours on all your railways',fn:()=>EngineStore.buy(sku)}]:[]),
+    {pre:REAL_PRE,real:true,label:realBuy('Buy the whole Heritage Collection',pr),detail:'All seven engines · a one-off purchase',fn:()=>EngineStore.buy(HERITAGE_SKU)},
+    {pre:REAL_PRE,real:true,label:realBuy('Or get Pro',pp),detail:'All of these plus sandbox, scenarios, driving, replays and more',fn:()=>ProStore.buy()},
     {label:'Back',fn:back}],idx:0,onCancel:back}); }
 // Back button in the Android wrapper. At the top level ask before leaving; otherwise it acts as Esc.
 function askLeave(){ openModal({title:'Leave Train Masters?',text:'Your railway is saved.',items:[
@@ -5881,11 +5956,11 @@ window.tmBack=()=>{
 };
 window.tmCanExit=()=>!Offers.peeking&&!trackEdit&&!AutoNet.planning&&!AutoNet.building&&!modal&&!board&&!Editor.active&&!Replay.active&&!PhotoMode.active&&!V3.active&&!autoRun&&!pen&&!following&&focusMode==='map';
 function proGate(fn){ return (...a)=>{ if(isPro()) return fn(...a); openUpsell(); }; }
-function openUpsell(){
-  if(EDITION==='web'){ openGetIt(); return; }
+function openUpsell(back){   /* back: where Not now and Back go (the shop tab); left out, the card just closes */
+  if(EDITION==='web'){ openGetIt(undefined,back); return; }
   const pp=EngineStore.price(PRO_SKU);
-  openModal({title:`Train Masters ${PRO_TAG}`,text:`Upgrade once to unlock:<br>🏡 <b>Countryside life</b> — villages, traffic, boats and canals<br>🖼️ <b>Display mode</b> — your railway as a living picture<br>🚂 <b>Drive it yourself</b> — take the controls in the cab<br>🏛️ <b>Heritage Collection</b> included — famous engines in fine detail: ${HERITAGE_NAMES}${EngineStore.owns(HERITAGE_SKU)?' (already yours)':''}<br>🏗️ <b>Sandbox</b> — unlimited money, instant building<br>🗺️ <b>Map editor</b> — paint your own landscape<br>🎯 <b>Scenarios</b> — challenges with star ratings<br>⏯️ Replays · 📷 Photo mode · 🕰️ Exact timetables`,
-    items:[{label:pp?`Upgrade to Pro (${pp})`:'Upgrade to Pro',detail:'One-off purchase · keeps all your railways',fn:()=>ProStore.buy()},{label:'Restore a previous purchase',fn:()=>ProStore.restore()},{label:'Not now',fn:()=>{}}],onCancel:()=>{}});
+  openModal({title:`Train Masters ${PRO_TAG}`,text:`Upgrade once to unlock:<br>🏡 <b>Countryside life</b> — villages, traffic, boats and canals<br>🖼️ <b>Display mode</b> — your railway as a living picture<br>🚂 <b>Drive it yourself</b> — take the controls in the cab<br>🏛️ <b>Heritage Collection</b> included — famous engines in fine detail: ${HERITAGE_NAMES}${EngineStore.owns(HERITAGE_SKU)?' (already yours)':''}<br>🏗️ <b>Sandbox</b> — unlimited money, instant building<br>🗺️ <b>Map editor</b> — paint your own landscape<br>🎯 <b>Scenarios</b> — challenges with star ratings<br>⏯️ Replays · 📷 Photo mode · 🕰️ Exact timetables${realLine()}`,
+    items:[{pre:REAL_PRE,real:true,label:realBuy('Upgrade to Pro',pp),detail:'One-off purchase · keeps all your railways',fn:()=>ProStore.buy()},{label:'Restore a previous purchase',fn:()=>ProStore.restore()},{label:'Not now',fn:back||(()=>{})}],onCancel:back||(()=>{})});
 }
 /* The free web demo (backlog S1, 21 Nov 2026): no buying at all. Where the store edition would sell Pro or an engine,
    a friendly card says where they are and links to the Amazon page (opens in a new tab). Cozy: shown only when the player
@@ -7434,6 +7509,13 @@ const V3=(()=>{
   const FLY_H=1.12, FLY_RAMP=5; /* 9 Nov 2026: was 0.85, the cab camera on the lower line went through the deck */ const WIN_WHITE=new THREE.Color(1,1,1), WIN_GLOW=new THREE.Color(0xffc45e);
   const GOLD_SKY=new THREE.Color(0xf3c08a), NIGHT_SKY=new THREE.Color(0x5d6f9e), GOLD_HEMI=new THREE.Color(0xffd9a8), NIGHT_HEMI=new THREE.Color(0x8f9fd0), GOLD_SUN=new THREE.Color(0xffb060), NIGHT_SUN=new THREE.Color(0x9fb0ff);
   let PR_OVERRIDE=0;   // measuring on the TV: V3.setPR(x)   // flyover: the north–south line runs this high over the east–west one
+  /* road overbridges (22 Nov 2026, Peter: "Bridge over roads are way too steep"): the road deck was 1.08 above the rails with the
+     road left flat on the ground either side, so it went straight up the abutments. Now the arch's underside is OB_SOFFIT above
+     the rails (clears the cab camera, CAB_EYE+0.08, and the tallest engine) and the road climbs to it on embankments over up to
+     OB_RAMP tiles of straight road either side (about 1 in 5). obRef/obRef2: road tile -> the overbridge it ramps up to (or -1);
+     obLen[f*2+side]: that ramp's length in tiles (side 0 west/north, 1 east/south); -1 where another overbridge carries on. */
+  const OB_SOFFIT=0.64, OB_RAMP=4, OB_HW=0.3, OB_AB=0.12, OB_EPS=0.012, OB_RW=0.14;   /* OB_RW: half the road's width on the map */
+  let obRef=null, obRef2=null, obLen=null;
   let flyRef=null, flyRef2=null, flyLen=null;   /* tile -> flyover it ramps up to (or -1); a second flyover where two ramps meet; flyLen[f*2+side]: ramp length in tiles (side 0 north, 1 south) */   // cab camera height above the rails; height of the tunnel bore above the rails
   const have=()=>typeof THREE!=='undefined';
   const hFrom=v=>Math.pow(v,1.55)*7.5+v*1.2+0.15;
@@ -7547,7 +7629,29 @@ const V3=(()=>{
           if(flyRef[t]<0) flyRef[t]=c; else if(flyRef[t]!==c) flyRef2[t]=c; L=k; if(!(m&on)){ L=k-0.5; break; } }
         flyLen[c*2+(sgn>0?1:0)]=L; } }
     NHr=netHeights(rail.bits,rail.kind,0.09,c=>!plat[c]&&flyRef[c]<0,true); railH=NHr.H;
+    obCompute();
   }
+  const isOB=c=>c>=0&&c<world.N&&rail.bits[c]&&rail.kind[c]===OVERBRIDGE&&!!world.road[c];
+  const obRH=c=>{ const rm=world.road[c]; return (rm&10)!==0&&!((rm&5)&&(rail.bits[c]&10)); };   /* the road runs east-west over it */
+  function obCompute(){
+    const N=world.N, W=world.W; obRef=new Int32Array(N).fill(-1); obRef2=new Int32Array(N).fill(-1); obLen=new Float32Array(N*2);
+    for(let c=0;c<N;c++){ if(!isOB(c)) continue; const rh=obRH(c), axis=rh?10:5, step=rh?1:W;
+      for(const sd of [-1,1]){ let L=0;
+        for(let k=1;k<=OB_RAMP;k++){ const t=c+sd*k*step; if(t<0||t>=N||(rh&&Math.floor(t/W)!==Math.floor(c/W))) break;
+          if(k===1&&isOB(t)&&obRH(t)===rh){ L=-1; break; }   /* the road goes on over the next line: the deck carries on */
+          if(world.road[t]!==axis||rail.bits[t]||world.water[t]||world.river[t]||world.lake[t]||world.sea[t]||world.vid[t]>=0||world.indAt[t]>=0) break;
+          if(obRef[t]<0) obRef[t]=c; else if(obRef[t]!==c) obRef2[t]=c; L=k; }
+        obLen[c*2+(sd>0?1:0)]=L; } }
+  }
+  const obDeckY=c=>terrainH(cX(c)+0.5,cY(c)+0.5)+0.09+OB_SOFFIT+BR_CROWN;   /* the road surface on the bridge */
+  /* the road's surface on overbridge f's ramp at (x,z), or null off it: straight down from the deck to the ground at the ramp's foot */
+  function obRampY(f,x,z){ const rh=obRH(f), d=rh?x-(cX(f)+0.5):z-(cY(f)+0.5), sd=d>0?1:-1, L=obLen[f*2+(sd>0?1:0)], s=Math.abs(d)-0.5;
+    if(L<=0||s<0||s>L) return null; const fx=rh?cX(f)+0.5+sd*(0.5+L):x, fz=rh?z:cY(f)+0.5+sd*(0.5+L);
+    return Math.max(lerp(obDeckY(f),terrainH(fx,fz),s/L),terrainH(x,z)); }
+  /* the road's height at (x,z): over a road bridge and up its ramps; elsewhere the ground */
+  function roadY(x,z){ const xi=clamp(Math.floor(x),0,world.W-1), zi=clamp(Math.floor(z),0,world.H-1), c=zi*world.W+xi;
+    if(obRef&&world.road[c]){ if(isOB(c)) return obDeckY(c); let y=null; for(const f of [obRef[c],obRef2[c]]) if(f>=0){ const v=obRampY(f,x,z); if(v!=null) y=y==null?v:Math.max(y,v); } if(y!=null) return y; }
+    return terrainH(x,z); }
   /* height of flyover f's ramp above the ground at z: full at the flyover's edge, down to nothing over the ramp's length */
   function flyRampH(f,z){ const d=z-(cY(f)+0.5), L=flyLen[f*2+(d>0?1:0)]||1; return FLY_H*clamp(1-(Math.abs(d)-0.5)/L,0,1); }
   function railY(x,z,c,ns){   // ns: the car runs north-south (on the bridge) rather than east-west (underneath); otherwise guessed from position
@@ -7754,6 +7858,44 @@ const V3=(()=>{
         for(const sx of [-1,1]) G.quad([x,y,ez],[x+sx*FLY_BW,y,ez],[x+sx*reach,terrainH(x+sx*reach,ez)-0.03,ez],[x,terrainH(x,ez)-0.03,ez],flyEmb,[0,0,sd]); } } }
     info.tris=(G.p.length-t0)/9; return info;
   }
+  /* ---------- road overbridges (22 Nov 2026) ----------
+     The road crosses the line on a brick arch (brickRun, as the flyovers: abutments either side of the track, spandrel walls
+     with an arch ring, parapets with a stone coping, the road on top), just high enough to clear the trains. Where the road
+     runs on straight, it climbs to the deck on a grassy embankment over up to OB_RAMP tiles (roadY), held back beside the
+     line by brick wing walls. detail: the arch and parapets (building detail); without, a plain deck on two abutments.
+     All in the merged track mesh. Returns what it built (tests: V3._obGeo). */
+  const OB_ROAD=new THREE.Color('#d6caa3'), OB_STONE=new THREE.Color('#9a907f');
+  function obBuild(G,c,detail,det){   /* det: count the arch and parapets as building detail (V3._det; the ramps and wing walls are not detail) */
+    const W=world.W, rh=obRH(c), step=rh?1:W, cx=cX(c)+0.5, cz=cY(c)+0.5, Yd=obDeckY(c), tint=tileTint(c), t0=G.p.length, hw=OB_HW;
+    const P=(u,v,y)=>rh?[cx+u,y,cz+v]:[cx+v,y,cz+u], gr=(u,v)=>{ const q=P(u,v,0); return terrainH(q[0],q[2]); }, XZ=q=>({x:q[0],z:q[2]});
+    const L={'-1':obLen[c*2],'1':obLen[c*2+1]}, info={c,rh,hw,deckY:Yd,ramps:[Math.max(0,L[-1]),Math.max(0,L[1])],arch:false,feet:[],wings:0,open:1-2*OB_AB,spring:0,rise:0,tris:0};
+    const pts=[-0.5,0,0.5].map(u=>XZ(P(u,0,0))), end=sd=>L[sd]!==0?'pier':'abut';
+    if(detail){ const arch=()=>{ const r=brickRun(G,pts,()=>Yd+0.015,{hw,end0:end(-1),end1:end(1),abW:OB_AB,arch:true,par:true,cap:true,tint,deck:OB_ROAD});
+        info.arch=r.arch; info.feet.push(...r.feet); bdPart('arch'); bdPart('parapets'); }; if(det) detRun('overbridge',G,arch); else arch();
+      const yc=Yd-BR_CROWN, g=terrainH(cx,cz); info.rise=Math.min(info.open/2*0.95,yc-g-0.04); info.spring=yc-info.rise; }   /* as brickRun works it out: the opening is clear below here */
+    else { const g=terrainH(cx,cz);
+      G.box(cx,Yd-0.06,cz,rh?1:hw*2,0.12,rh?hw*2:1,0,OB_ROAD);
+      for(const sd of [-1,1]){ const q=P(sd*(0.5-OB_AB/2),0,0); G.box(q[0],(Yd-0.12+g-0.12)/2,q[2],rh?OB_AB:hw*2,Yd-g,rh?hw*2:OB_AB,0,OB_STONE); info.feet.push({x:q[0],z:q[2],y:g-0.12}); }
+      info.spring=g; info.rise=Yd-0.12-g; }
+    const brick=v=>{ const f=tint*(0.74+0.3*clamp((v[1]-terrainH(cx,cz))/1.0,0,1)); return {r:Math.min(1,BRK.r*f),g:Math.min(1,BRK.g*f),b:Math.min(1,BRK.b*f)}; };
+    for(const sd of [-1,1]){ if(!(L[sd]>0)) continue; info.wings++;
+      /* wing walls in the plane of the tile edge, facing the line, their top following the embankment's slope down to the ground */
+      const ue=sd*0.5, h=Yd-gr(ue,0), reach=hw-BR_PT+FLY_SL*Math.max(0,h)+0.02, fz=rh?[-sd,0,0]:[0,0,-sd], co=ue+sd*(BR_PT+BR_OV), ci=ue-sd*BR_OV;
+      for(const sv of [-1,1]){ const a=hw-BR_PT, b=reach+0.04, ya=Yd+0.01, yb=gr(ue,sv*b)+0.03, ga=gr(ue,sv*a)-0.12, gb=gr(ue,sv*b)-0.12;
+        G.quad(P(ue,sv*a,ga),P(ue,sv*b,gb),P(ue,sv*b,yb),P(ue,sv*a,ya),brick,fz);
+        G.quad(P(ci,sv*a,ya+BR_CT),P(ci,sv*b,yb+BR_CT),P(co,sv*b,yb+BR_CT),P(co,sv*a,ya+BR_CT),BRK_COPE,[0,1,0]);   /* coping, and its lip towards the line */
+        G.quad(P(ci,sv*a,ya),P(ci,sv*b,yb),P(ci,sv*b,yb+BR_CT),P(ci,sv*a,ya+BR_CT),BRK_COPE,fz);
+        G.quad(P(ue,sv*b,gb),P(co,sv*b,gb),P(co,sv*b,yb+BR_CT),P(ue,sv*b,yb+BR_CT),brick,rh?[0,0,sv]:[sv,0,0]);   /* the wall's outer end */
+        info.feet.push({...XZ(P(ue,sv*a,0)),y:ga},{...XZ(P(ue,sv*b,0)),y:gb}); }
+      /* the ramp: the road on top, grassy slopes down either side (one stretch a half tile; where two ramps meet, the first bridge builds it) */
+      for(let k=1;k<=L[sd];k++){ const t=c+sd*k*step; if(obRef[t]!==c) continue;
+        /* the road narrows from the deck's width to the road's own (as painted on the map) at the foot; a hair over that paint there */
+        const R=[0,1].map(f=>{ const u=(k-1+f)/L[sd], q=XZ(P(sd*(0.5+k-1+f),0,0)); return {u:sd*(0.5+k-1+f),y:roadY(q.x,q.z)+OB_EPS*u,w:lerp(hw-BR_PT,OB_RW,u)}; });
+        const [A,B]=R; G.quad(P(A.u,-A.w,A.y),P(A.u,A.w,A.y),P(B.u,B.w,B.y),P(B.u,-B.w,B.y),OB_ROAD,[0,1,0]);
+        for(const sv of [-1,1]){ const foot=p=>{ const w=p.w+FLY_SL*Math.max(0,p.y-gr(p.u,sv*p.w))+0.02; return P(p.u,sv*w,gr(p.u,sv*w)-0.03); };
+          G.quad(P(A.u,sv*A.w,A.y),P(B.u,sv*B.w,B.y),foot(B),foot(A),flyEmb,rh?[0,0.8,sv]:[sv,0.8,0]); } } }
+    info.tris=(G.p.length-t0)/9; return info;
+  }
   let tunnelG=null, lampG=null, xray=[]; const TUN1=new THREE.Color('#3b3732'), TUN2=new THREE.Color('#47423b'), LAMP=new THREE.Color('#ffd27a');
   /* stations (19 Nov 2026, Peter: "stations need more texture and details"): a little country station like a model railway.
      Paved platforms (pale coping, a yellow line, slab joints, a brick face), a brick or stone building with windows, door,
@@ -7897,15 +8039,7 @@ const V3=(()=>{
           acc+=l; } G.lv=0;
         G.lv=1; for(const off of [-0.19*TRACK_K,0.19*TRACK_K]){ G.ribbon(s,off,0.028*TRACK_K,0.09*TRACK_K,RAIL,0.05*TRACK_K); } G.lv=0;   /* rails: left out far away (far detail) */
       }
-      if(k===OVERBRIDGE&&BD_ON) detRun('overbridge',G,()=>{ const rm=world.road[c], rh=(rm&10)!==0&&!((rm&5)&&(m&10)), top=ry+1.08;
-        /* 20 Nov 2026: a brick arch over the line (brickRun, as the river bridges and flyovers): abutments either side of the track,
-           a dark soffit, spandrel walls with an arch ring, parapets with a stone coping, the road on top. Was a stone slab on two piers. */
-        const pts=rh?[{x:cx0-0.65,z:cz0},{x:cx0,z:cz0},{x:cx0+0.65,z:cz0}]:[{x:cx0,z:cz0-0.65},{x:cx0,z:cz0},{x:cx0,z:cz0+0.65}];
-        brickRun(G,pts,()=>top,{hw:0.3,end0:'abut',end1:'abut',arch:true,par:true,cap:true,tint:tileTint(c),deck:ROAD}); bdPart('arch'); bdPart('parapets'); });
-      else if(k===OVERBRIDGE){ const rm=world.road[c]; const rh=(rm&10)!==0&&!((rm&5)&&(m&10)); const top=ry+1.0;
-        G.box(cx0,top,cz0,rh?1.3:0.55,0.16,rh?0.55:1.3,0,ROAD);
-        for(const s of [-1,1]){ G.box(cx0+(rh?s*0.58:0),(top+terrainH(cx0,cz0))/2,cz0+(rh?0:s*0.58),rh?0.18:0.6,top-terrainH(cx0,cz0),rh?0.6:0.18,0,STONE); }
-        G.box(cx0+(rh?0:-0.25),top+0.12,cz0+(rh?-0.25:0),rh?1.3:0.05,0.1,rh?0.05:1.3,0,STONE); G.box(cx0+(rh?0:0.25),top+0.12,cz0+(rh?0.25:0),rh?1.3:0.05,0.1,rh?0.05:1.3,0,STONE); }
+      if(k===OVERBRIDGE&&world.road[c]) obBuild(G,c,BD_ON,true);   /* road bridges: an arch just over the trains, ramps up to it (22 Nov 2026) */
       // buffer stop
       if(bitCount(m)===1){ G.box(cx0,ry+0.15*TRAIN_K,cz0,vert?0.7*TRACK_K:0.12,0.25*TRAIN_K,vert?0.12:0.7*TRACK_K,0,RED); }
     }
@@ -10404,7 +10538,9 @@ void main(){ gl_FragColor=texture2D(map,vUv);
   function updateSmoke(){
     const now=performance.now(), dummy=new THREE.Object3D(); let n=0;
     for(const p of smoke){ if(n>=400)break; const u=(now-p.t0)/1700; if(u>=1)continue;
-      const x=(p.x+p.dx*u*3)/TS, z=(p.y+p.dy*u*3)/TS; dummy.position.set(x,railY(p.x/TS,p.y/TS)+0.7*TRAIN_K+u*1.4,z); const s=(0.09+0.32*u)*(0.6+0.4*TRAIN_K); dummy.scale.set(s,s,s); dummy.updateMatrix(); smokeMesh.setMatrixAt(n++,dummy.matrix); }
+      /* 22 Nov 2026 (backlog 2d): size, rise and drift at the trains' scale (TRAIN_K); they were nearly full size, a ball three times
+         the engine's width rising 1.4 tiles, and hid the train in the chase view */
+      const x=(p.x+p.dx*u*3*TRAIN_K)/TS, z=(p.y+p.dy*u*3*TRAIN_K)/TS; dummy.position.set(x,railY(p.x/TS,p.y/TS)+0.7*TRAIN_K+u*1.1*TRAIN_K,z); const s=(0.07+0.24*u)*TRAIN_K; dummy.scale.set(s,s,s); dummy.updateMatrix(); smokeMesh.setMatrixAt(n++,dummy.matrix); }
     /* 20 Nov 2026: draw only the live puffs (it drew all 400, most shrunk to nothing), and none at all when there are none */
     smokeMesh.count=n; smokeMesh.visible=n>0; if(n) smokeMesh.instanceMatrix.needsUpdate=true;
   }
@@ -10539,6 +10675,9 @@ void main(){ gl_FragColor=texture2D(map,vUv);
         G.box(x+co*0.62,y/2,z+si*0.62,1.05,y+0.1,0.26,-H0.ang,STONE); }
       if(G.p.length) g.add(G.mesh()); }
     return g; }
+  /* the height a villager, vehicle or boat stands at: on the water, or the ground; vehicles on the road go up and over road bridges (22 Nov 2026) */
+  function lifeY(a,c){ if(c==null){ const cx=Math.max(0,Math.min(world.W-1,Math.floor(a.x))), cy=Math.max(0,Math.min(world.H-1,Math.floor(a.y))); c=cy*world.W+cx; }
+    return world.lake[c]?hFrom(world.filled[c])-0.05:world.sea[c]?0.04:world.road[c]?roadY(a.x,a.y):terrainH(a.x,a.y); }
   function updateLife3D(){
     if(!lifeG) return; const on=Life.on(); lifeG.visible=on; if(!on) return; lifeG.userData.night.value=dayPhase(sim.time).night;   /* lamps glow after dark */
     const n={}; for(const k in lifeMeshes) n[k]=0;
@@ -10552,7 +10691,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     for(const a of Life.agents()){ if((a.kind==='villager'||a.kind==='tractor'||a.kind==='child')&&!a.out) continue;
       const k=a.kind==='car'&&a.lorry?'lorry':a.kind, m=lifeMeshes[k]; if(!m||n[k]>=m.instanceMatrix.count) continue;
       const cx=Math.max(0,Math.min(world.W-1,Math.floor(a.x))), cy=Math.max(0,Math.min(world.H-1,Math.floor(a.y))), c=cy*world.W+cx;
-      const y=world.lake[c]?hFrom(world.filled[c])-0.05:world.sea[c]?0.04:terrainH(a.x,a.y);
+      const y=lifeY(a,c);
       lifeDummy.position.set(a.x,y+(k==='duck'||k==='boat'||k==='sail'?Math.sin(performance.now()/600+a.x)*0.01:0),a.y); lifeDummy.rotation.set(0,-a.ang,0); lifeDummy.updateMatrix();
       m.setMatrixAt(n[k],lifeDummy.matrix); let col=lifeCols.get(a.col); if(!col){ col=new THREE.Color(a.col); lifeCols.set(a.col,col); } m.setColorAt(n[k],col); n[k]++; }
     for(const k in lifeMeshes){ const m=lifeMeshes[k]; m.count=n[k]; m.instanceMatrix.needsUpdate=true; if(m.instanceColor) m.instanceColor.needsUpdate=true; } }
@@ -11118,6 +11257,8 @@ void main(){ gl_FragColor=texture2D(map,vUv);
   return { _sc3:()=>SC3, _orbit:orbit, _chase:chase, _stationGeo:st=>{ const G=new Geo(), W=new Geo(); buildStation3D(G,W,st); return {G,W}; },   /* tests: station geometry counts, and the overhead camera's angles */
     surround:()=>surroundInfo, pins:()=>pinSprites.length, shot, endShot,
     _flyGeo:()=>{ const G=new Geo(), tiles=[]; for(let c=0;c<world.N;c++) if(rail.bits[c]&&rail.kind[c]===FLYOVER) tiles.push(flyBuild(G,c)); return {p:G.p,c:G.c,tiles}; },   /* tests: the flyovers alone, as built into the track mesh */
+    _obGeo:()=>{ obCompute(); const G=new Geo(), tiles=[]; for(let c=0;c<world.N;c++) if(isOB(c)) tiles.push(obBuild(G,c,BD_ON)); return {p:G.p,c:G.c,tiles}; },   /* tests: the road bridges alone, as built into the track mesh */
+    roadY:(x,z)=>roadY(x,z), _lifeY:a=>lifeY(a), _scene:()=>scene, _smoke:()=>smokeMesh,
     _bridgeGeo:()=>{ const G=new Geo(), tiles=[]; for(let c=0;c<world.N;c++) if(isBrick(c)) tiles.push(brickTile(G,c,segments(c))); return {p:G.p,c:G.c,tiles}; },   /* tests: the brick bridges alone, as built into the track mesh */
     _rvBridgeGeo:()=>{ rvComputeH(); const G=new Geo(), tiles=[]; for(let c=0;c<world.N;c++) if(RV.bits[c]&&rvStruct(c)) tiles.push(rvBrickTile(G,c)); return {p:G.p,c:G.c,tiles}; },
     _waterY:c=>world.lake[c]?hFrom(world.filled[c])-0.06:null,
