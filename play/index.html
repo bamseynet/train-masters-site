@@ -187,6 +187,24 @@ button.tb{border-radius:14px}
 #modal .mclose:hover{background:rgba(255,240,200,.16)}
 #modal .mclose:active{transform:scale(.92)}
 #modal .cbody{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}
+/* Search in "Choose a train" (Peter, 23 Nov 2026): a field and quick chips in the fixed header, under the tabs */
+#modal .card.wide{width:min(520px,calc(100vw - 24px))}
+#modal .msearch{flex:none;margin:0 0 8px}
+#modal .mfind{display:flex;align-items:center;gap:6px;background:#1c2b22;border:2px solid rgba(255,240,200,.14);border-radius:14px;padding:0 5px 0 12px;transition:border-color .12s,box-shadow .12s}
+#modal .mfind.sel,#modal .mfind:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px rgba(233,180,76,.28)}
+#modal .mfind .mfi{opacity:.7;font-size:14px;flex:none}
+#modal .mfind input{flex:1;min-width:0;height:38px;border:0;outline:0;background:transparent;color:var(--ink);font:600 15px Nunito,sans-serif;padding:0}
+#modal .mfind input::placeholder{color:var(--muted);opacity:.8}
+#modal .mclear{display:none;flex:none;width:30px;height:30px;padding:0;border-radius:999px;border:0;background:rgba(255,240,200,.1);color:#fbf1d6;font:800 14px/1 Nunito,sans-serif;cursor:pointer;align-items:center;justify-content:center}
+#modal .mclear:hover{background:rgba(255,240,200,.2)}
+#modal .mfind.has .mclear{display:flex}
+#modal .mchips{display:flex;gap:5px;margin-top:8px;overflow-x:auto;scrollbar-width:none;padding:3px 2px}
+#modal .mchips::-webkit-scrollbar{display:none}
+#modal .chip{flex:none;appearance:none;border:1.5px solid rgba(255,240,200,.2);background:transparent;color:var(--muted);font:700 13px Nunito,sans-serif;border-radius:999px;padding:4px 9px;min-height:30px;cursor:pointer;white-space:nowrap;transition:background .12s,box-shadow .12s}
+#modal .chip:hover{background:rgba(255,240,200,.08)}
+#modal .chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#modal .chip.sel{border-color:#fff;box-shadow:0 0 0 3px rgba(233,180,76,.45);color:#fbf1d6}
+#modal .chip.on.sel{color:var(--accent-ink)}
 #view3d{position:fixed;inset:0;width:100%;height:100%;display:none;z-index:2;touch-action:none}
 #bar3d{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:6;display:none;gap:6px;align-items:center;background:var(--panel);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:6px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 #bar3d .tb.active{background:var(--accent);color:var(--accent-ink);border-color:#f6d68c}
@@ -345,6 +363,11 @@ body.driving.ptr #drivepad{display:flex}
 .touch button.tb{min-height:44px;min-width:44px}
 .touch #modal .opt{min-height:48px}
 .touch #modal .mclose{width:44px;height:44px}
+.touch #modal .mfind input{height:44px;font-size:16px}
+.touch #modal .chip{min-height:38px;padding:4px 11px}
+.touch #modal .card.wide{width:min(580px,calc(100vw - 24px))}
+@media (max-height:420px){ .touch #modal .msearch{display:flex;gap:8px;align-items:center} .touch #modal .mfind{flex:0 1 250px;min-width:170px} .touch #modal .mchips{margin-top:0;flex:1 1 0;min-width:0} }   /* very short phone screens: field and chips share a row (the chips swipe sideways) */
+.touch #modal .mclear{width:36px;height:36px}
 .touch .clock #clock{min-height:44px;display:inline-flex;align-items:center}
 .touch .seed input{min-height:44px}
 .touch #status button{min-height:44px;padding:6px 14px}
@@ -374,6 +397,7 @@ body.driving.ptr #drivepad{display:flex}
   .touch #modal .card{overflow:hidden;padding:14px 16px;max-height:calc(100vh - 12px)} .touch #modal .cbody{overflow-y:auto}   /* the body scrolls, the title and close button stay */
   .touch #modal .opts{overflow:visible} .touch #modal p{font-size:13px;margin-bottom:8px} .touch #modal h2{font-size:20px}
   .touch #modal .opt{padding:8px 14px}
+  .touch #modal .tabs{margin:2px 0 6px} .touch #modal .msearch{margin-bottom:4px} .touch #modal .mchips{margin-top:5px}   /* the search header: a little tighter on short screens */
 }
 </style>
 </head>
@@ -2213,34 +2237,98 @@ function openModal(cfg){
 function renderModal(){
   const m=modal, card=$('modal').querySelector('.card');
   const tabs=m.tabs?`<div class="tabs" role="tablist">${m.tabs.map((t,i)=>`<button class="tab${t.cls?' '+t.cls:''}${i===m.tab?' on':''}${i===m.tab&&m.tabFocus?' sel':''}" role="tab" aria-selected="${i===m.tab}">${t.label}${t.badge?`<span class="tbadge">${t.badge}</span>`:''}</button>`).join('')}</div>`:'';
-  card.innerHTML=`<div class="chead"><h2>${m.title}${m.badge?`<span class="badge">${m.badge}</span>`:''}</h2><button class="mclose" type="button" tabindex="-1" aria-label="Close (same as Back)" title="Close">✕</button></div>${tabs}<div class="cbody">${m.text?`<p>${m.text}</p>`:''}<div class="opts"></div>${m.foot?`<div class="foot">${m.foot}</div>`:''}</div>`;
+  const S=m.search;
+  const find=S?`<div class="msearch"><div class="mfind${m.findFocus==='field'?' sel':''}"><span class="mfi" aria-hidden="true">🔍</span><input type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="40" placeholder="${S.placeholder||'Search'}" aria-label="${S.placeholder||'Search'}"><button class="mclear" type="button" tabindex="-1" aria-label="Clear search" title="Clear search">✕</button></div>${S.chips?`<div class="mchips" role="toolbar">${S.chips.map(([id,l],i)=>`<button type="button" tabindex="-1" class="chip${S.chip===id?' on':''}${m.findFocus==='chips'&&m.chipIdx===i?' sel':''}" data-chip="${id}">${l}</button>`).join('')}</div>`:''}</div>`:'';
+  const html=`<div class="chead"><h2>${m.title}${m.badge?`<span class="badge">${m.badge}</span>`:''}</h2><button class="mclose" type="button" tabindex="-1" aria-label="Close (same as Back)" title="Close">✕</button></div>${tabs}${find}<div class="cbody">${m.text?`<p>${m.text}</p>`:''}<div class="opts"></div>${m.foot?`<div class="foot">${m.foot}</div>`:''}</div>`;
+  /* the player is typing in the search field: keep that field (and the device keyboard) and redraw everything around it */
+  const ae=document.activeElement, keep=S&&ae&&ae.tagName==='INPUT'&&ae.closest('#modal .mfind');
+  card.classList.toggle('wide',!!S);
+  if(keep){ const ms=keep.parentNode; for(const n of [...card.childNodes]) if(n!==ms) n.remove(); for(const n of [...ms.childNodes]) if(n!==keep) n.remove();
+    const tmp=document.createElement('div'); tmp.innerHTML=html; const nms=tmp.querySelector('.msearch'); let before=true;
+    for(const n of [...tmp.childNodes]){ if(n===nms){ before=false; continue; } if(before) card.insertBefore(n,ms); else card.appendChild(n); }
+    const nch=nms.querySelector('.mchips'); if(nch) ms.appendChild(nch); }
+  else card.innerHTML=html;
+  if(S){ const mf=card.querySelector('.mfind'), inp=mf.querySelector('input');
+    if(inp.value!==(S.q||'')) inp.value=S.q||'';   /* typing: they are the same already, so the caret stays put */
+    mf.classList.toggle('has',!!inp.value); mf.classList.toggle('sel',m.findFocus==='field');
+    inp.oninput=()=>modalFind(inp.value,null);
+    inp.onkeydown=e=>{ const k=e.key; if(k==='Escape'||k==='Enter'||k==='ArrowUp'||k==='ArrowDown'||k==='Tab'||k==='GoBack'||k==='BrowserBack') return; e.stopPropagation(); };   /* letters, Backspace, Left/Right edit the text; the rest goes to modalKey */
+    inp.onclick=e=>e.stopPropagation();
+    inp.onfocus=()=>{ const M=modal; if(M&&M.search&&M.findFocus!=='field'){ M.findFocus='field'; M.tabFocus=false; renderModal(); } };
+    mf.querySelector('.mclear').onclick=e=>{ e.stopPropagation(); modalFind('',null); };
+    card.querySelectorAll('.mchips .chip').forEach((b,i)=>{ b.onclick=e=>{ e.stopPropagation(); const M=modal; if(M) M.chipIdx=i; modalFind(null,b.dataset.chip); }; });
+    const cs=m.findFocus==='chips'&&card.querySelector('.mchips .chip.sel'); if(cs) try{ cs.scrollIntoView({inline:'nearest',block:'nearest'}); }catch(_){} }
   card.querySelector('.mclose').onclick=e=>{ e.stopPropagation(); modalBack(); };
   card.querySelectorAll('.tabs .tab').forEach((b,i)=>{ b.onclick=()=>{ if(i===m.tab){ m.tabFocus=false; renderModal(); } else modalTab(i,false); }; });
   const box=card.querySelector('.opts');
   m.items.forEach((it,i)=>{
     if(it.heading){ const d=document.createElement('div'); d.className='opthead'+(it.sec?' sec':''); d.innerHTML=`${it.label}${it.detail?`<small>${it.detail}</small>`:''}`; box.appendChild(d); return; }   /* a section heading: not a button (it.disabled keeps the D-pad off it) */
-    const b=document.createElement('button'); b.className='opt'+(it.toggle?' toggle'+(it.checked?' on':''):'')+(it.owned?' owned':'')+(i===m.idx&&!m.tabFocus?' sel':'');
+    const b=document.createElement('button'); b.className='opt'+(it.toggle?' toggle'+(it.checked?' on':''):'')+(it.owned?' owned':'')+(i===m.idx&&!m.tabFocus&&!m.findFocus?' sel':'');
     if(it.disabled) b.disabled=true;
     b.innerHTML= it.toggle ? `<span class="box">${it.checked?'✓':''}</span><span style="flex:1">${it.label}</span>`
       : `<span>${it.pre||''}${it.label}${it.detail?`<small>${it.detail}</small>`:''}</span>${it.cost?(it.owned?`<span class="cost owned">${it.cost}</span>`:it.real?`<span class="cost real"><span class="rmi">🛍️</span>${it.cost}${/\d/.test(it.cost)?'<span class="rmt">real money</span>':''}</span>`:`<span class="cost">${it.cost}</span>`):''}`;
-    b.onclick=()=>{ m.idx=i; m.tabFocus=false; activateModal(); };
+    b.onclick=()=>{ m.idx=i; m.tabFocus=false; m.findFocus=null; activateModal(); };
     box.appendChild(b);
   });
   const sel=box.children[m.idx];
-  if(m.tabs&&(m.tabFocus||m.idx===m.items.findIndex(i=>!i.disabled))){ box.scrollTop=0; card.scrollTop=0; card.querySelector('.cbody').scrollTop=0; }   /* a tab's top: keep the tabs in view (on phones the whole card scrolls) */
+  if((m.tabs||m.search)&&(m.tabFocus||m.findFocus||m.idx===m.items.findIndex(i=>!i.disabled))){ box.scrollTop=0; card.scrollTop=0; card.querySelector('.cbody').scrollTop=0; }   /* a tab's top: keep the tabs in view (on phones the whole card scrolls) */
   else if(sel) sel.scrollIntoView({block:'nearest'});
 }
 /* Tabs (22 Nov 2026, "Choose a train"): a modal may carry tabs:[{label,badge,cls}], tab (the open one) and onTab(i), which
    reopens the modal with that tab's items. Left/Right switch tabs; Up from the first item puts the focus on the tab bar
    (m.tabFocus), Down or OK goes back into the list; a tap on a tab switches. */
 function modalTab(i,focus){ const m=modal; if(!m||!m.tabs||!m.onTab||i<0||i>=m.tabs.length||i===m.tab) return;
-  const keep=focus==null?!!m.tabFocus:focus; Sound.tick(); m.onTab(i); if(modal&&modal.tabs){ modal.tabFocus=keep; renderModal(); } }
+  const keep=focus==null?!!m.tabFocus:focus, ff=focus==null?m.findFocus||null:null, ci=m.chipIdx; Sound.tick(); m.onTab(i);
+  if(modal&&modal.tabs){ modal.tabFocus=keep; modal.findFocus=ff; modal.chipIdx=ci; renderModal(); } }
+/* Search (23 Nov 2026, "Choose a train"): a modal may carry search:{q,chip,chips:[[id,label]],placeholder,onChange(q,chip)},
+   which reopens it with the matching items. The D-pad goes tab bar -> field -> chips -> list (Up/Down); m.findFocus is 'field'
+   or 'chips' while the focus is up there. OK on the field focuses the input (the device keyboard); Left/Right move along the
+   chips and OK picks one. Back: out of the input, then clears the search, then closes as before. Typing a letter in the list
+   starts a search. q or chip left null: unchanged. */
+function modalFind(q,chip){ const m=modal; if(!m||!m.search) return; const S=m.search;
+  q=q==null?S.q||'':String(q); chip=chip==null?S.chip||'all':chip; if(q===(S.q||'')&&chip===(S.chip||'all')) return;
+  const f=m.findFocus||null, ci=m.chipIdx; if(chip!==(S.chip||'all')) Sound.tick();
+  S.onChange(q,chip); if(modal&&modal.search){ modal.findFocus=f; modal.chipIdx=ci; modal.tabFocus=false; renderModal(); } }
+function findKey(e){   /* modalKey for a card with a search: true when the key was used here */
+  const m=modal, S=m.search, k=e.key, card=$('modal'), inp=card.querySelector('.mfind input'); if(!inp) return false;
+  const back=k==='Escape'||k==='GoBack'||k==='BrowserBack'||k==='Backspace';
+  const first=m.items.findIndex(i=>!i.disabled), hasTabs=!!(m.tabs&&m.tabs.length>1), nch=S.chips?S.chips.length:0, busy=!!(S.q||(S.chip&&S.chip!=='all'));
+  const go=z=>{ m.tabFocus=z==='tabs'; m.findFocus=z==='field'||z==='chips'?z:null;
+    if(z==='chips'&&!Number.isInteger(m.chipIdx)) m.chipIdx=Math.max(0,S.chips.findIndex(c=>c[0]===S.chip));
+    if(z==='list'&&first>=0) m.idx=first; Sound.tick(); renderModal(); };
+  if(document.activeElement===inp){   /* typing (Backspace and letters never get here) */
+    if(back){ inp.blur(); go('field'); return true; }
+    if(k==='Enter'){ inp.blur(); go(first>=0?'list':'field'); return true; }
+    if(k==='ArrowDown'){ inp.blur(); go(nch?'chips':'list'); return true; }
+    if(k==='ArrowUp'){ inp.blur(); go(hasTabs?'tabs':'field'); return true; }
+    return true; }
+  if(k&&k.length===1&&k!==' '&&!e.ctrlKey&&!e.metaKey&&!e.altKey){   /* a letter in the list: start a search with it */
+    m.findFocus='field'; m.tabFocus=false; inp.focus(); inp.value+=k; modalFind(inp.value,null); return true; }
+  const clear=()=>{ modalFind('','all'); };
+  if(m.findFocus==='field'){
+    if(k==='ArrowUp'){ if(hasTabs) go('tabs'); return true; }
+    if(k==='ArrowDown'){ go(nch?'chips':'list'); return true; }
+    if(k==='Enter'||k===' '){ inp.focus(); try{ inp.click(); }catch(_){} return true; }
+    if(k==='ArrowLeft'||k==='ArrowRight'){ if(hasTabs) modalTab(m.tab+(k==='ArrowRight'?1:-1)); return true; }
+    if(back&&busy){ clear(); return true; }
+    return false; }
+  if(m.findFocus==='chips'){
+    if(k==='ArrowUp'){ go('field'); return true; }
+    if(k==='ArrowDown'){ go('list'); return true; }
+    if(k==='ArrowLeft'||k==='ArrowRight'){ const i=Math.max(0,Math.min(nch-1,m.chipIdx+(k==='ArrowRight'?1:-1))); if(i!==m.chipIdx){ m.chipIdx=i; Sound.tick(); renderModal(); } return true; }
+    if(k==='Enter'||k===' '){ modalFind(null,S.chips[m.chipIdx][0]); return true; }
+    if(back&&busy){ clear(); return true; }
+    return false; }
+  if(m.tabFocus){ if(k==='ArrowDown'||k==='Enter'||k===' '){ go('field'); return true; } }
+  else if(k==='ArrowUp'&&m.idx===first){ go(nch?'chips':'field'); return true; }
+  if(back&&busy){ clear(); return true; }
+  return false; }
 function activateModal(){
   const m=modal, it=m.items[m.idx]; if(!it||it.disabled)return;
   if(it.toggle){ it.checked=!it.checked; renderModal(); return; }
   const idx=m.idx; closeModal(); it.fn&&it.fn(m,idx);
 }
-function closeModal(){ modal=null; $('modal').classList.remove('open'); }
+function closeModal(){ modal=null; const md=$('modal'), ae=document.activeElement; if(ae&&ae!==document.body&&md.contains(ae)&&ae.blur) ae.blur(); md.classList.remove('open'); }   /* blur: a search field must not keep the focus (and the keyboard) */
 /* Back for the open card: what Escape, the remote's Back, the close button and a tap on the backdrop all do (the card's onCancel:
    up one level, "decide later" for a contract offer, "Not now" for a buy card; never a purchase). */
 function modalBack(){ const m=modal; if(!m) return; const cb=m.onCancel; closeModal(); cb&&cb(); }
@@ -2253,6 +2341,7 @@ $('modal').addEventListener('click',e=>{ const d=modalDown; modalDown=null;
   e.preventDefault(); modalBack(); });
 function modalKey(e){
   const m=modal, k=e.key; e.preventDefault();
+  if(m.search&&findKey(e)) return;
   const move=d=>{ let i=m.idx; for(let n=0;n<m.items.length;n++){ i=(i+d+m.items.length)%m.items.length; if(!m.items[i].disabled){m.idx=i;break;} } Sound.tick(); renderModal(); };
   if(m.tabs&&m.tabs.length>1){ const first=m.items.findIndex(i=>!i.disabled);
     if(k==='ArrowLeft'||k==='ArrowRight'){ modalTab(m.tab+(k==='ArrowRight'?1:-1)); return; }
@@ -2631,7 +2720,7 @@ const TRAIN_TYPES={
   f9:{name:'9F 2-10-0',short:'9F',group:'Freight',era:'1954',desc:'The last steam class built: ten coupled wheels for the heaviest coal trains, yet quick enough to stand in on expresses',cost:90000,speed:2.2,steam:true,run:950,fare:5.8,goods:true,heritage:true,pro:true,
     consist:['engF','engR','tender','open','open','open','open','open','open','open','open','van'],liv:{body:'#2a2a2a',lining:'#2a2a2a',chimney:'#2a2a2a',dome:'#2a2a2a',smokebox:'#222222',wheel:'#2a2a2a'}},
   /* Heritage (Pro, step 2b): two snouts on their own driving frames and a centre cab, articulated; runs fine without wires in the game. lining: the frames */
-  croc:{name:'Crocodile',short:'Crocodile',group:'Freight',era:'1919',desc:'Swiss articulated electric with two long snouts and flashing rods, built to drag heavy goods over the mountains',cost:95000,speed:1.8,steam:false,run:950,fare:6,goods:true,heritage:true,pro:true,
+  croc:{name:'Crocodile',short:'Crocodile',group:'Freight',electric:true,era:'1919',desc:'Swiss articulated electric with two long snouts and flashing rods, built to drag heavy goods over the mountains',cost:95000,speed:1.8,steam:false,run:950,fare:6,goods:true,heritage:true,pro:true,
     consist:['engF','engR','van','van','van','van','van','van','van','van'],liv:{body:'#5b3a22',lining:'#151515',roof:'#6e7174',wheel:'#1a1a1a',ends:'#5b3a22'}},
   /* E2 (21 Nov 2026): the first engine sold on its own (ENGINE_SKUS.c08), not Pro and not Heritage. hero: it has a detailed
      hero model near the camera, like the Heritage engines. One carriage place (engT), a short goods train; ends: the yellow
@@ -2667,7 +2756,7 @@ const TRAIN_TYPES={
     consist:['power','coach','coach','coach','coach','coach','coach','power'],liv:{body:'#c9c7bf',band:'#34373c',ends:'#f2c230',stripe:'#c8102e',roof:'#9a9c9f',wheel:'#222',coachLo:'#c9c7bf',coachHi:'#34373c',roof2:'#9a9c9f'}},
   c66:{name:'Class 66 Heavy Hauler',short:'Class 66',group:'Freight',era:'1998',desc:'Modern 3,300 hp freight giant hauling long container trains',cost:120000,speed:3.0,steam:false,run:1300,fare:6.5,goods:true,
     consist:['diesel66','flat','flat','flat','flat','flat','flat','flat','flat','flat'],liv:{body:'#7a1e2b',ends:'#e3b23c',roof:'#5b2028',stripe:'#e3b23c',wheel:'#222'}},
-  bullet:{name:'0 Series Bullet Train',short:'Bullet Train',group:'High speed',era:'1964',desc:'The original high-speed train, with its famous round bullet nose',cost:220000,speed:6.6,steam:false,run:2200,fare:11,goods:false,pushpull:true,
+  bullet:{name:'0 Series Bullet Train',short:'Bullet Train',group:'High speed',electric:true,era:'1964',desc:'The original high-speed train, with its famous round bullet nose',cost:220000,speed:6.6,steam:false,run:2200,fare:11,goods:false,pushpull:true,
     consist:['nose','emu','emu','emu','emu','emu','nose'],liv:{body:'#f4f4ef',stripe:'#1d4f9a',roof:'#d9dbd8',wheel:'#333',band:'#1d4f9a'}},
 };
 const LEGACY_TYPES={puffer:'pannier',express:'c55',goods:'f8'};
@@ -4101,7 +4190,7 @@ function signalAspect(c,bit){   // true = clear (green) for trains heading `bit`
 function openTrains(idx){
   const items=[];
   const canBuy=rail.stations.length>=2;
-  items.push({label:'Buy a new train',detail:canBuy?'Choose a type, its stops and how long it waits':'Build at least two stations on connected track first',disabled:!canBuy,fn:()=>buyTrain()});
+  items.push({label:'Buy a new train',detail:canBuy?'Choose a type, its stops and how long it waits':'Build at least two stations on connected track first',disabled:!canBuy,fn:()=>{ trainFind.q=''; trainFind.chip='all'; buyTrain(); }});
   const stars=Ledger.stars();
   for(const t of trains) items.push({pre:`<span class="dot" style="background:${t.color}"></span>`,label:t.name+(stars.includes(t)?' <span class="star" title="One of the best earners today">★</span>':''),detail:`${trainStatus(t)}<br>${t.stops.map(id=>(stationById(id)||{}).name).filter(Boolean).join(t.pattern==='loop'?' → ':' ⇄ ')}`,fn:()=>trainMenu(t)});
   items.push({label:`Replay ${isPro()?'':PRO_TAG}`,detail:(()=>{ const S=Recorder.span(); return S?`Rewind and watch the last ${Math.round((S.t1-S.t0)/60*10)/10} game hours again`:'Recording starts when your trains run'; })(),fn:proGate(()=>{ const S=Recorder.span(); Replay.start({from:S?S.t0:0,at:S?Math.max(S.t0,S.t1-60):0}); })});
@@ -4125,7 +4214,27 @@ function buyTrain(idx,tab){
   if(typeof tab==='string') tab=tabbed&&typeLocked(tab)?1:0;
   if(!tabbed) tab=0; else if(tab!==0&&tab!==1) tab=trainTab;
   if(tabbed) trainTab=tab;
-  const GROUPS=['Steam','Diesel','High speed','Freight'], items=[];
+  const F=trainFind, on=EngineFind.active(F.q,F.chip), all=trainItems(tab);
+  const items=on?EngineFind.filter(all,F.q,F.chip):all;
+  if(on){   /* a search: say when nothing matches, and how many match on the other tab */
+    const other=tabbed?EngineFind.filter(trainItems(1-tab),F.q,F.chip).filter(i=>i.type).length:0, chipL=(EngineFind.CHIPS.find(c=>c[0]===F.chip)||[])[1];
+    const none=!items.length, qq=EngineFind.esc(F.q.trim());
+    if(none) items.push({heading:true,disabled:true,label:qq?`No engines match “${qq}”${chipL&&F.chip!=='all'?` in ${chipL}`:''}`:`No ${chipL} engines here`});
+    if(other) items.push({label:`${other} more in ${tab?'Your engines':'Add more engines'}`,detail:none?'Show them':'Matching engines on the other tab',fn:()=>buyTrain(undefined,1-tab)});
+    if(none) items.push({label:'Clear search',fn:()=>{ trainFind.q=''; trainFind.chip='all'; buyTrain(undefined,tab); }}); }
+  items.push({label:'Back',fn:()=>openTrains()});
+  const banner=web?'🛍️ These are bought with <b>real money</b> in the Fire TV and Android versions of Train Masters. Nothing is sold in this browser version.'
+    :`🛍️ These are bought with <b>real money</b> through ${storeLabel()}, once. They're yours on all your railways, then you buy each train with game money like any other.`;
+  const text=!tabbed?'Classic British favourites and a couple of world-famous giants.':tab===1?`<span class="shopbanner">${banner}</span>`
+    :money()?'Prices on this tab are in your railway’s game money.':'Classic British favourites and a couple of world-famous giants.';
+  openModal({title:'Choose a train',text,items,idx,onCancel:()=>openTrains(),
+    search:{q:F.q,chip:F.chip,chips:EngineFind.CHIPS,placeholder:'Search engines (name, era, type…)',onChange:(q,chip)=>{ trainFind.q=q; trainFind.chip=chip; buyTrain(undefined,tab); }},
+    ...(tabbed?{tabs:[{label:'Your engines'},{label:'Add more engines',badge:'Store',cls:'shop'}],tab,onTab:i=>buyTrain(undefined,i)}:{})});
+}
+/* one tab of "Choose a train" (0 Your engines, 1 Add more engines), before any search and without Back */
+function trainItems(tab){
+  const web=EDITION==='web', tabbed=EDITION!=='pro';
+  const GROUPS=['Steam','Diesel','Electric','High speed','Freight'], items=[];
   const shown=g=>Object.entries(TRAIN_TYPES).filter(([k,ty])=>ty.group===g&&!(ENGINE_SKUS[k]&&ENGINE_SKUS[k].soon&&engineLocked(k)));   /* soon: not on sale yet, unless already owned */
   const sec=label=>items.push({heading:true,sec:true,disabled:true,label});
   if(tab===0){
@@ -4142,19 +4251,42 @@ function buyTrain(idx,tab){
       else if((ty.pro||ty.heritage)&&!heritageOwned()) her.push(row(k,ty,g,HERITAGE_SKUS[k]||HERITAGE_SKU,!heritageLocked(k),(m,j)=>openHeritageCard(k,j))); }
     if(famous.length){ sec('Famous engines, one at a time'); items.push(...famous); }
     if(!heritageOwned()){ sec('Heritage Collection');
-      items.push({label:'The whole Heritage Collection',detail:`Seven famous engines in one purchase: ${HERITAGE_NAMES}`,real:true,cost:cost(HERITAGE_SKU),fn:(m,j)=>openHeritageCard(null,j)},...her); }
+      items.push({label:'The whole Heritage Collection',detail:`Seven famous engines in one purchase: ${HERITAGE_NAMES}`,real:true,cost:cost(HERITAGE_SKU),find:'heritage pack',tags:['heritage'],fn:(m,j)=>openHeritageCard(null,j)},...her); }
     if(!isPro()){ sec('Train Masters Pro');
-      items.push({label:'Train Masters Pro',detail:'The Heritage Collection plus sandbox, scenarios, driving, replays and more',real:true,cost:cost(PRO_SKU),fn:(m,j)=>openUpsell(()=>buyTrain(j))}); }
+      items.push({label:'Train Masters Pro',detail:'The Heritage Collection plus sandbox, scenarios, driving, replays and more',real:true,cost:cost(PRO_SKU),find:'pro upgrade',tags:[],fn:(m,j)=>openUpsell(()=>buyTrain(j))}); }
     if(!items.some(i=>i.real)) items.unshift({heading:true,disabled:true,label:'You have every engine in the shop. More are on the way.'});
   }
-  items.push({label:'Back',fn:()=>openTrains()});
-  const banner=web?'🛍️ These are bought with <b>real money</b> in the Fire TV and Android versions of Train Masters. Nothing is sold in this browser version.'
-    :`🛍️ These are bought with <b>real money</b> through ${storeLabel()}, once. They're yours on all your railways, then you buy each train with game money like any other.`;
-  const text=!tabbed?'Classic British favourites and a couple of world-famous giants.':tab===1?`<span class="shopbanner">${banner}</span>`
-    :money()?'Prices on this tab are in your railway’s game money.':'Classic British favourites and a couple of world-famous giants.';
-  openModal({title:'Choose a train',text,items,idx,onCancel:()=>openTrains(),
-    ...(tabbed?{tabs:[{label:'Your engines'},{label:'Add more engines',badge:'Store',cls:'shop'}],tab,onTab:i=>buyTrain(undefined,i)}:{})});
+  return items;
 }
+/* Search in "Choose a train" (Peter, 23 Nov 2026: "As you add more engines scrolling to find a specific one gets
+   cumbersome"). Every word typed must appear in the engine's words: name, short name, group, era and its decade ("1950s"),
+   description, "heritage", "pro", "electric", "freight goods". Case, accents and extra spaces do not matter. Chips pick a
+   kind of engine and combine with the words. Rows that are not engines (the Heritage pack, Pro) match their own label and
+   detail, and a chip only through their tags. Each engine's words are built once (WeakMap on its type). */
+let trainFind={q:'',chip:'all'};   /* this session's search; cleared when the card is opened from Trains */
+const EngineFind={
+  CHIPS:[['all','All'],['steam','Steam'],['diesel','Diesel'],['electric','Electric'],['high speed','High speed'],['freight','Freight'],['heritage','Heritage']],
+  _hay:new WeakMap(),
+  esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); },
+  norm(s){ return String(s||'').replace(/<[^>]*>/g,' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’‘`]/g,"'").replace(/[“”]/g,'"'); },
+  words(q){ return this.norm(q).split(/\s+/).filter(Boolean); },
+  electric(ty){ return ty.group==='Electric'||!!ty.electric; },
+  hay(k){ const ty=TRAIN_TYPES[k]; if(!ty) return ''; let h=this._hay.get(ty);
+    if(h==null){ const era=String(ty.era||''), dec=/^\d{4}$/.test(era)?era.slice(0,3)+'0s':'';
+      h=this.norm([ty.name,ty.short,ty.group,era,dec,ty.desc,ty.heritage||ty.pro?'heritage':'',ty.pro?'pro':'',this.electric(ty)?'electric':'',ty.goods?'freight goods':''].join(' ')); this._hay.set(ty,h); }
+    return h; },
+  chipHas(k,chip){ const ty=TRAIN_TYPES[k]; if(!ty) return false;
+    switch(chip){ case 'steam': return ty.group==='Steam'; case 'diesel': return ty.group==='Diesel'; case 'electric': return this.electric(ty);
+      case 'high speed': return ty.group==='High speed'; case 'freight': return ty.group==='Freight'||!!ty.goods; case 'heritage': return !!(ty.heritage||ty.pro); default: return true; } },
+  match(k,q,chip){ const W=Array.isArray(q)?q:this.words(q); if(chip&&chip!=='all'&&!this.chipHas(k,chip)) return false; const h=this.hay(k); return W.every(w=>h.includes(w)); },
+  _row(it,W,chip){ if(it.type) return this.match(it.type,W,chip); if(it.find==null) return false;
+    if(chip&&chip!=='all'&&!(it.tags||[]).includes(chip)) return false; const h=it._h||(it._h=this.norm(it.label+' '+(it.detail||'')+' '+it.find)); return W.every(w=>h.includes(w)); },
+  active(q,chip){ return this.words(q).length>0||(!!chip&&chip!=='all'); },
+  /* the matching rows, each under its section heading; headings with nothing under them are left out */
+  filter(items,q,chip){ const W=this.words(q); if(!W.length&&(!chip||chip==='all')) return items.slice(); const out=[]; let head=null;
+    for(const it of items){ if(it.heading){ head=it; continue; } if(!this._row(it,W,chip)) continue; if(head){ out.push(head); head=null; } out.push(it); }
+    return out; }
+};
 function pickStops(draft,stops,idx){
   // Only stations joined by track to the first stop can be added (before the first pick: any station with track to another).
   const first=stops.length?stationById(stops[0]):null, joined=(a,b)=>a===b||!!trackRoute(a.c,b.c);
