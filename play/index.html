@@ -118,6 +118,20 @@ button.tb.primary .st{color:inherit}
 /* contract offer card (18 Nov 2026) */
 #modal .offer-from{opacity:.75;font-size:.92em}
 #modal .offer-title{display:inline-block;font:600 1.18em/1.3 Fraunces,Georgia,serif;margin:4px 0 6px}
+#modal .mline{display:block;margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(240,212,138,.12);color:#f3e2b4}
+#modal .mline .mm{display:block;font-weight:700}
+#modal .mline .mt{display:block;font-size:.92em;opacity:.9;margin-top:2px}
+#modal .mhint{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:10px;background:rgba(240,212,138,.12);color:#f3e2b4}
+#modal .fares{display:block}
+#modal .fare{display:flex;gap:10px;align-items:flex-start;margin:6px 0}
+#modal .fare .fi{font-size:20px;line-height:1.2;width:28px;text-align:center;flex:none}
+#modal .fare small{opacity:.85}
+#modal .mcard{display:block}
+#modal .mcard .ml{display:block;margin:6px 0}
+#modal .mcard small{opacity:.85}
+#modal .star{color:#f0c040;margin-left:4px}
+.funds{cursor:pointer}
+#info .mline-i{color:#f3e2b4}
 #modal .offer-hint{display:inline-block;margin-top:6px;font-style:italic;opacity:.8}
 :root.tv #btnUnder .uw{display:none}   /* 19 Nov 2026 (on the TV): "📜 2 · 9h left", so ☰ Game stays inside the safe area; the ☰ Game list says it in full */
 #btnUnder{color:#f6d68c;border-color:rgba(242,194,48,.45)} #btnUnder.off{display:none} #btnUnder.urgent{color:#ffb0a0;border-color:rgba(255,120,95,.6)}   /* "📜 2 under way · 6h left" (19 Nov 2026) */
@@ -1138,8 +1152,9 @@ const fmt=n=>(n<0?'−£':'£')+Math.round(Math.abs(n)).toLocaleString('en-GB');
 /* ---------------- settings (remembered in this browser) ---------------- */
 const AUTO_SPEEDS=[{name:'Slow',ms:600},{name:'Normal',ms:360},{name:'Fast',ms:180},{name:'Very fast',ms:70}];
 if(isTV) document.documentElement.classList.add('tv');   // no blurred panels on TV: they drop a Fire TV Stick to ~4 fps
-let settings={q3d:isTV?'low':'high', autoSpeed:1, money:true, sound:true, grid:false, labels:true, shake:true, chimes:true, aboard:true, weather:true, advisor:false};
+let settings={q3d:isTV?'low':'high', autoSpeed:1, money:true, sound:true, grid:false, labels:true, shake:true, chimes:true, aboard:false, weather:true, advisor:false, postcard:false};   /* aboard: "All aboard!" starts Off (22 Nov 2026, Peter) */
 try{ Object.assign(settings, JSON.parse(localStorage.getItem('tm-settings')||'{}')); }catch(_){}
+if(!settings.aboardV2){ settings.aboard=false; settings.aboardV2=true; try{ localStorage.setItem('tm-settings',JSON.stringify(settings)); }catch(_){} }   /* players who still had the old default (on) get it switched off once; nobody chose it. Turning it on later is kept */
 function saveSettings(){ try{ localStorage.setItem('tm-settings',JSON.stringify(settings)); }catch(_){} }
 if(settings.plays==null){ try{ if(localStorage.getItem('tm-last')) settings.plays=3; }catch(_){} }   /* played before the count existed (a railway is remembered): an experienced player, no map key by itself */
 settings.plays=(settings.plays||0)+1; saveSettings();   /* 19 Nov 2026: the map key shows by itself for the first few plays only */
@@ -1430,7 +1445,7 @@ function gameData(){
     flyVer:1, playedAt:Date.now(), ind:rail.ind.map(o=>({s:o.stock,m:Math.round(o.made),v:Math.round(o.moved),r:Math.round(o.recv)})),delivered:rail.delivered,contracts:rail.contracts,offers:rail.offers||[],goalsDone:rail.goalsDone,stats:rail.stats,nextContract:rail.nextContract,nextOffer:rail.nextOffer,linked:rail.linked,wx:rail.wx,company:rail.company,rival:RV?(()=>{ const t=[]; for(let i=0;i<world.N;i++) if(RV.bits[i]) t.push(i,RV.bits[i],RV.kind[i]); const {bits,kind,clear,ver,...o}=RV; return {...o,t,lines:RV.lines.map(({P,...l})=>l),building:RV.building?(({P,...b})=>b)(RV.building):null}; })():null,
     seed:state.seed,size:state.size,coast:state.coast,region:world.regionName,mode:state.mode,mapId:state.mapId,scnId:state.scnId,scenario:rail.scenario||null,sandbox:!!rail.sandbox,wxOff:!!rail.wxOff,rivalOff:!!rail.rivalOff,
     wear:(()=>{ const a=[]; for(let i=0;i<world.N;i++) if(rail.wear[i]>0.005) a.push(i,Math.round(rail.wear[i]*1000)); return a; })(),
-    depots:rail.depots,nextDepot:rail.nextDepot,decor:rail.decor||[],bloomed:rail.bloomed||[],autoRepair:rail.autoRepair,wearOn:!!rail.wearOn,wearWarned:!!rail.wearWarned,wearNag:rail.wearNag||null,crews:crews.map(c=>({id:c.id,depot:c.depot}))};
+    ledger:rail.ledger||null,depots:rail.depots,nextDepot:rail.nextDepot,decor:rail.decor||[],bloomed:rail.bloomed||[],autoRepair:rail.autoRepair,wearOn:!!rail.wearOn,wearWarned:!!rail.wearWarned,wearNag:rail.wearNag||null,crews:crews.map(c=>({id:c.id,depot:c.depot}))};
   return data;
 }
 function saveNowStore(data){
@@ -1454,7 +1469,7 @@ function loadRail(){
       if(Array.isArray(d.ind)) d.ind.forEach((o,i)=>{ if(rail.ind[i]) rail.ind[i]={stock:o.s||{},made:o.m||0,moved:o.v||0,recv:o.r||0}; });
       rail.delivered=d.delivered||{};
       rail.contracts=d.contracts||[]; rail.offers=d.offers||[]; rail.goalsDone=d.goalsDone||{}; rail.stats=d.stats; rail.nextContract=d.nextContract; rail.nextOffer=d.nextOffer; rail.linked=d.linked||[]; contractInit(rail); rail.wx=d.wx; wxInit(rail); rail.company=d.company; companyInit(rail); rivalInit(rail,d.rival||null);
-      rail.scenario=d.scenario||null;
+      rail.scenario=d.scenario||null; rail.ledger=d.ledger&&d.ledger.t?d.ledger:null;
       widenOldBridges();   /* 19 Nov 2026: one-tile river bridges from older saves get their bank spans (free) */
       if(d.fresh&&opts) applyNewGame(opts);
       return d.fresh?null:{pieces:d.t.length,trains:trains.length};
@@ -2313,6 +2328,7 @@ function openSettings(idx=0){
     {label:`Countryside life: ${settings.life!==false?'On':'Off'} ${isPro()?'':PRO_TAG}`,detail:'Villagers, cars and lorries, tractors, ducks, boats and yachts',fn:proGate(()=>{ settings.life=settings.life===false; saveSettings(); Life.rebuild(); dirty=true; openSettings(14); }),cost:'Change'},
     {label:`Display mode: start now ${isPro()?'':PRO_TAG}`,detail:'Your railway as a living picture on the TV · any button to stop',fn:()=>Display.start()},
     {label:`Display mode when idle: ${settings.displayIdle?settings.displayIdle+' min':'Off'} ${isPro()?'':PRO_TAG}`,detail:'Starts by itself when nobody has pressed a button for a while',fn:proGate(()=>{ const o=[0,5,10,20]; settings.displayIdle=o[(o.indexOf(settings.displayIdle||0)+1)%o.length]; saveSettings(); openSettings(16); }),cost:'Change'},
+    {label:`End-of-day postcard: ${settings.postcard?'On':'Off'}`,detail:'A cheerful card at the end of each game day: passengers, goods and a favourite moment',fn:()=>{ settings.postcard=!settings.postcard; again(17)(); },cost:'Change'},
     {label:'Sound credits',detail:'The real steam recordings in the game',fn:()=>openModal({title:'Sound credits',text:'Steam exhaust beats: GWR 2800-class no. 2807 leaving Toddington, recorded by David J. Pitt (radio aporee, public domain).<br><br>Drain-cock steam: locomotive 06-018, Work With Sounds / Technical Museum of Slovenia, recorded by Boštjan Troha (CC BY 4.0).',items:[{label:'Back',fn:()=>openSettings()}],onCancel:()=>openSettings()})},
     {label:'How to play',fn:openHowTo},
     {label:'Done',fn:()=>{}},
@@ -2329,7 +2345,8 @@ function openWelcome(){
 }
 function openHowTo(){
   openModal({title:'How to play',text:'<b>1.</b> Lay track between two towns, or let <b>Auto lay</b> plan it for you.<br><b>2.</b> Put a station at each town.<br><b>3.</b> Buy a train and choose its stops.<br><b>4.</b> Passengers and goods pay fares: spend them on more lines, signals and passing loops.<br><br>Prefer to just play with trains? Turn <b>Money</b> off in Settings for free building.',
-    items:[{label:"Let's go",fn:()=>{ settings.welcomed=true; saveSettings(); }},{label:legendOn()?'Hide the map key':'Show the map key',detail:'What the colours on the map mean',fn:()=>{ settings.welcomed=true; toggleLegend(); }}],onCancel:()=>{ settings.welcomed=true; saveSettings(); }});
+    items:[{label:"Let's go",fn:()=>{ settings.welcomed=true; saveSettings(); }},{label:legendOn()?'Hide the map key':'Show the map key',detail:'What the colours on the map mean',fn:()=>{ settings.welcomed=true; toggleLegend(); }},
+      {label:'How fares work',detail:'What makes a train pay well, in seven plain rules',fn:()=>{ settings.welcomed=true; saveSettings(); openFares(openHowTo); }}],onCancel:()=>{ settings.welcomed=true; saveSettings(); }});
 }
 function refreshAll(){ refreshButtons(); updateFunds(false); updateInfo(); defaultStatus(); dirty=true; }
 
@@ -2714,27 +2731,43 @@ function pathPoint(P,s){
 }
 const BIT_I={1:0,2:1,4:2,8:3}, I_BIT=[1,2,4,8];
 // shortest route along the track: no reversing mid-line, straight over diamond crossings, optional blocked tiles
+/* 22 Nov 2026 (bigger-maps research): the search keeps its working arrays between calls. It used to allocate and clear
+   arrays of 5x and a heap of 20x the map's tiles on every call (~2 MB on Medium) even for a two-tile hop, which made the
+   8x simulation 3.5x slower on Medium. Now a stamp (gen) says which entries belong to this search; the arrays are only
+   made again when the map size changes. Same search, same heap order, so exactly the same routes. A search started from
+   inside another (a callback) gets arrays of its own. */
+const ROUTE_BUF={N:-1,gen:0,busy:false,prev:null,dist:null,seen:null,done:null,hk:new Float64Array(1024),hv:new Int32Array(1024)};
 function trackRoute(start,goal,entryBit=0,blocked=null,penal=null){
   if(!rail.bits[start]||!rail.bits[goal]) return null;
   if(blocked && blocked(goal)) return null;
-  const N=world.N, prev=new Int32Array(N*5).fill(-2), dist=new Float32Array(N*5).fill(Infinity), done=new Uint8Array(N*5);
-  const sid=start*5+(entryBit?BIT_I[entryBit]:4);
-  prev[sid]=-1; dist[sid]=0; const hp=new Heap(N*20); hp.push(0,sid);
-  while(hp.n){
-    const id=hp.pop(); if(done[id])continue; done[id]=1;
-    const c=(id/5)|0, e=id%5, m=rail.bits[c];
-    if(c===goal && id!==sid){ const tiles=[]; for(let s=id;s!==-1;s=prev[s]) tiles.push((s/5)|0); return tiles.reverse(); }
-    for(let i=0;i<4;i++){
-      const bit=I_BIT[i]; if(!(m&bit))continue;
-      if(e<4){ const eb=I_BIT[e]; if(bit===eb)continue; if(bitCount(m)===4 && bit!==OPP[eb])continue; }
-      const n=nb(c,bit); if(n<0||n>=N||!(rail.bits[n]&OPP[bit]))continue;
-      if(blocked && n!==goal && blocked(n))continue;
-      const nid=n*5+BIT_I[OPP[bit]]; if(done[nid])continue;
-      const nd=dist[id]+1+(penal&&n!==goal?penal(n):0);
-      if(nd<dist[nid]){ dist[nid]=nd; prev[nid]=id; hp.push(nd,nid); }
+  const N=world.N; let R=ROUTE_BUF;
+  if(R.busy) R={N:-1,gen:0,busy:false,hk:new Float64Array(1024),hv:new Int32Array(1024)};
+  if(R.N!==N||R.gen>=0xfffffff0){ R.N=N; R.gen=0; R.prev=new Int32Array(N*5); R.dist=new Float32Array(N*5); R.seen=new Uint32Array(N*5); R.done=new Uint32Array(N*5); }
+  const g=++R.gen, prev=R.prev, dist=R.dist, seen=R.seen, done=R.done;
+  let hk=R.hk, hv=R.hv, hn=0;
+  R.busy=true;
+  try{
+    const push=(key,val)=>{ if(hn>=hk.length){ const k2=new Float64Array(hk.length*2), v2=new Int32Array(hk.length*2); k2.set(hk); v2.set(hv); hk=R.hk=k2; hv=R.hv=v2; }
+      let i=hn++; while(i>0){ const q=(i-1)>>1; if(hk[q]<=key)break; hk[i]=hk[q]; hv[i]=hv[q]; i=q; } hk[i]=key; hv[i]=val; };
+    const pop=()=>{ const top=hv[0], n=--hn; if(n>0){ const key=hk[n], val=hv[n]; let i=0; for(;;){ let l=2*i+1; if(l>=n)break; const r=l+1; if(r<n&&hk[r]<hk[l])l=r; if(hk[l]>=key)break; hk[i]=hk[l]; hv[i]=hv[l]; i=l; } hk[i]=key; hv[i]=val; } return top; };
+    const sid=start*5+(entryBit?BIT_I[entryBit]:4);
+    seen[sid]=g; prev[sid]=-1; dist[sid]=0; push(0,sid);
+    while(hn){
+      const id=pop(); if(done[id]===g)continue; done[id]=g;
+      const c=(id/5)|0, e=id%5, m=rail.bits[c];
+      if(c===goal && id!==sid){ const tiles=[]; for(let s=id;s!==-1;s=prev[s]) tiles.push((s/5)|0); return tiles.reverse(); }
+      for(let i=0;i<4;i++){
+        const bit=I_BIT[i]; if(!(m&bit))continue;
+        if(e<4){ const eb=I_BIT[e]; if(bit===eb)continue; if(bitCount(m)===4 && bit!==OPP[eb])continue; }
+        const n=nb(c,bit); if(n<0||n>=N||!(rail.bits[n]&OPP[bit]))continue;
+        if(blocked && n!==goal && blocked(n))continue;
+        const nid=n*5+BIT_I[OPP[bit]]; if(done[nid]===g)continue;
+        const nd=dist[id]+1+(penal&&n!==goal?penal(n):0);
+        if(nd<(seen[nid]===g?dist[nid]:Infinity)){ seen[nid]=g; dist[nid]=nd; prev[nid]=id; push(nd,nid); }
+      }
     }
-  }
-  return null;
+    return null;
+  } finally { R.busy=false; }
 }
 function stationPop(st){ const {v,d}=nearestVillage(st.c); return v&&d<10 ? v.cells.length*3*(v.kind==='town'?1.4:1) : 4; }
 function stationFarms(st){
@@ -2936,14 +2969,14 @@ function platform2Plan(st){
   const cost=money()?side.reduce((a,t)=>a+tileCost(t,GROUND),0)+PLAT2_COST:0;
   return {ok:true,kind,run,side,plat,alt,pieces,cost,k};
 }
-function buildPlatform2(st,pl){
-  if(money()&&pl.cost>rail.money){ Sound.blocked(); toast(`Not enough money — it costs ${fmt(pl.cost)}`,true); return false; }
+function buildPlatform2(st,pl,quiet=false){   /* quiet: AutoNet builds it (no sound or message) */
+  if(money()&&pl.cost>rail.money){ if(quiet) return false; Sound.blocked(); toast(`Not enough money — it costs ${fmt(pl.cost)}`,true); return false; }
   const g=++groupSeq, before=rail.money;
   for(const [a,b] of pl.pieces){ const r=placePiece(a,b,{group:g,silent:true,batch:true}); if(!r.ok){ toast(r.reason,true); afterChange(); return false; } }
   if(money()) rail.money-=PLAT2_COST;
   undoStack.push({group:g,tiles:[],money:before});
   st.alt={c:pl.alt,kind:pl.kind,tiles:pl.side.slice(),plat:pl.plat.slice(),cost:pl.cost};
-  Sound.clunk(GROUND,3); Sound.signal(); toast(`Second platform built at ${st.name} — trains take whichever platform is free`); afterChange(); return true;
+  if(!quiet){ Sound.clunk(GROUND,3); Sound.signal(); toast(`Second platform built at ${st.name} — trains take whichever platform is free`); } afterChange(); return true;
 }
 function removePlatform2(st){
   const a=st.alt; if(!a) return false;
@@ -3205,6 +3238,19 @@ const AutoNet={
   FAR_END:9,     // ...and more than this many tiles (a long train and a bit) from the shared line's other end
   THROAT:10,     // lines into a shared station join within this many tiles of it (a short shared stretch: no long single-track bottleneck)
   SITE_LINES:2,  // most lines one station serves (one platform). 22 Nov 2026: 2, was 3 (queue study: waiting 52% -> 31%, trips an hour +51%)
+  /* 22 Nov 2026 (lines walled places off, tests/autonet_reach.py): the last-resort links (a goods link that failed, a group
+     of towns cut off) may cross another line LATE_NEAR+1 or more tiles from a station (others: 9+), but never within
+     LATE_END tiles of either end of the crossed line, where a train standing at its platform would sit on the crossing.
+     Most places walled off were behind a line running past a station a few tiles away: every crossing of it was within
+     8 tiles of that station, though no train ever stands there. Nor within LATE_NEAR tiles of the link's own new station
+     (allowing that reached a few more places, but its train at the platform blocked the crossing: Small 22 waited 18% -> 33%).
+     With AUTO_PLAT2, over 26 maps: places unreached but for hills 23 -> 19, waiting 23.8% -> 23.1%, trips an hour +1.7%.
+     A third line at a full station (tried) reached 3 more but doubled waiting on Medium 6 and starved a train on 422468. */
+  LATE_NEAR:4,
+  LATE_END:10,
+  /* 22 Nov 2026: after building, a station two or more lines share gets a second platform where one fits (platform2Plan:
+     plain straight track out of the station, clear flat ground beside it). Alone, over 26 maps: waiting 23.8% -> 23.3%. */
+  AUTO_PLAT2:true,
   CROSS:60,      // extra route cost of a flat crossing: go a long way round first
   DETOUR:2,     // a link whose route is longer than this times the walk along the grid (at least MIN_LINE, +10) is not worth building (round mountains, sea inlets)
   HIGH:0.4,     // nor one with more than this share of its route climbing over hills on the surface (a hill tile counts half)
@@ -3231,7 +3277,7 @@ const AutoNet={
     return Q.unreachable.length<P.unreachable.length||(Q.unreachable.length===P.unreachable.length&&Q.lines.length>P.lines.length)?Q:P;
   },
   async planOnce(onProgress,signal,o={}){
-    const L=this.links(), N=world.N, W=world.W, planned=new Uint8Array(N), taken=new Uint8Array(N), forbid=new Int32Array(N), nojunc=new Uint8Array(N), nocross=new Uint8Array(N), crossNear=new Uint8Array(N), crossNear4=new Uint8Array(N), useBy=new Array(N);
+    const L=this.links(), N=world.N, W=world.W, planned=new Uint8Array(N), taken=new Uint8Array(N), forbid=new Int32Array(N), nojunc=new Uint8Array(N), nocross=new Uint8Array(N), crossNear=new Uint8Array(N), crossNear4=new Uint8Array(N), useBy=new Array(N), near4=new Uint8Array(N), shareT=new Uint8Array(N), endT=new Uint8Array(N);
     const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y), lines=[], unreachable=new Set(); let id=1;
     const goodsJobs=L.goods.map(g=>({kind:'goods',cargo:g.cargo,a:g.from,b:g.to})).sort((p,q)=>d(p.a,p.b)-d(q.a,q.b));
     const paxJobs=L.pax.map(e=>({kind:'pax',a:e.a,b:e.b})).sort((p,q)=>d(p.a,p.b)-d(q.a,q.b));
@@ -3246,7 +3292,7 @@ const AutoNet={
       const i=node.ref; return i.x+1>=x0-CATCH&&i.x<=x0+CATCH&&i.y+1>=y0-CATCH&&i.y<=y0+CATCH; };          // stationIndustries reach
     const mark=(c,R,arr,v)=>{ for(let dy=-R;dy<=R;dy++) for(let dx=-R;dx<=R;dx++){ const x=cX(c)+dx, y=cY(c)+dy; if(x>=0&&y>=0&&x<W&&y<world.H) arr[y*W+x]=v; } };
     const addSite=c=>{ const s={i:sites.length,c,town:townOf(c),n:0}; sites.push(s); sp.push(s.i); taken[c]=1;
-      mark(c,1,forbid,c+1); mark(c,3,nojunc,1); mark(c,8,nocross,1); return s; };   /* no junction by the platforms, no crossing within a long train of a station */
+      mark(c,1,forbid,c+1); mark(c,3,nojunc,1); mark(c,8,nocross,1); mark(c,this.LATE_NEAR,near4,1); return s; };   /* no junction by the platforms, no crossing within a long train of a station */
     // A and B: shared stations, or null for a new spot by the place
     /* 20 Nov 2026 (tests/autonet_fixes.py): a new station whose line crosses a river or lake within END_DRY tiles of it gets a
        bridge right by its platform (the deck has to come down low there, tests/bridge_station_ramps.py). Such a link is planned
@@ -3277,7 +3323,9 @@ const AutoNet={
          line crossed another a few tiles from its own new platform and shared that line's other station; its train,
          standing at its platform, sat on the crossing, so the other line's train (whose one block ran over the crossing
          into the shared station) waited all day. */
-      const nA=lateA||(!A&&!relaxOK), nB=lateB||(!B&&!relaxOK); let nc=nocross; if(nA||nB){ nc=nocross.slice(); if(nA) mark(a,8,nc,1); if(nB) mark(b,8,nc,1); }
+      const nA=lateA||(!A&&!relaxOK), nB=lateB||(!B&&!relaxOK); let nc=nocross;
+      if(relaxOK&&job.late){ nc=new Uint8Array(N); for(let c=0;c<N;c++) nc[c]=near4[c]|shareT[c]|endT[c]; if(!A) mark(a,this.LATE_NEAR,nc,1); if(!B) mark(b,this.LATE_NEAR,nc,1); }   /* a last-resort link: see LATE_NEAR (its own new stations too) */
+      if(nA||nB){ nc=nc.slice(); if(nA) mark(a,8,nc,1); if(nB) mark(b,8,nc,1); }
       /* a line may share only the throat of a station it shares: its other lines' track out to THROAT tiles from the platform */
       const ride=new Uint8Array(N), join=new Uint8Array(N), R=this.THROAT;
       for(const L of lines) for(const e of [a,b]){ if(L.a.anchor!==e&&L.b.anchor!==e) continue; const p=L.a.anchor===e?L.path:L.path.slice().reverse();
@@ -3329,7 +3377,8 @@ const AutoNet={
       for(let i=0;i+1<p.length;i++){ const bit=dirBit(p[i],p[i+1]); planned[p[i]]|=bit; planned[p[i+1]]|=OPP[bit]; }
       for(const c of p) if(planned[c]===15){ mark(c,8,crossNear,1); mark(c,4,crossNear4,1); }   /* no new station within a long train of a flat crossing (at the end, as a last resort, 4 tiles) */
       const line={id:id++,kind:job.kind,cargo:job.cargo,a:{name:job.a.name,anchor:A.c},b:{name:job.b.name,anchor:B.c},path:p};
-      for(const c of p){ (useBy[c]||(useBy[c]=[])).push(line); if(useBy[c].length>1) nocross[c]=1; }   /* never cross shared track */
+      for(const c of p){ (useBy[c]||(useBy[c]=[])).push(line); if(useBy[c].length>1){ nocross[c]=1; shareT[c]=1; } }   /* never cross shared track */
+      for(let i=0;i<p.length;i++) if(i<=this.LATE_END||i>=p.length-1-this.LATE_END) endT[p[i]]=1;   /* nor a line near its ends (LATE_NEAR) */
       sp[root(A.i)]=root(B.i); A.n++; B.n++;
       lines.push(line);
     };
@@ -3362,9 +3411,9 @@ const AutoNet={
     /* o.paxFirst: the passenger tree before the goods lines (see plan) */
     for(const pass of o.paxFirst?[paxPass,goodsPass]:[goodsPass,paxPass]) if(!await pass()) return null;
     relaxOK=true; total+=late.length+cut.length*3;
-    for(const job of late){ job.full=null; const r=await route(job); if(r){ commit(job,r); unreachable.delete(job.a.name); } if(!await tick()) return null; }
+    for(const job of late){ job.full=null; job.late=true; const r=await route(job); if(r){ commit(job,r); unreachable.delete(job.a.name); } if(!await tick()) return null; }
     for(const g of cut){ const pairs=[]; for(const a of g) for(const b of vs) pairs.push([d(a,b),a,b]); pairs.sort((p,q)=>p[0]-q[0]);
-      for(const [,a,b] of pairs.slice(0,3)){ const job={kind:'pax',a:{kind:'town',ref:a,x:a.x,y:a.y,name:a.name},b:{kind:'town',ref:b,x:b.x,y:b.y,name:b.name}}, r=await route(job); if(!await tick()) return null;
+      for(const [,a,b] of pairs.slice(0,3)){ const job={kind:'pax',late:true,a:{kind:'town',ref:a,x:a.x,y:a.y,name:a.name},b:{kind:'town',ref:b,x:b.x,y:b.y,name:b.name}}, r=await route(job); if(!await tick()) return null;
         if(r){ commit(job,r); for(const v of g){ unreachable.delete(v.name); vs.push(v); } break; } } }
     const crossings=[], junctions=[], used=new Uint8Array(N), shared=[];
     for(let c=0;c<N;c++){ if(planned[c]===15) crossings.push(c); else if(bitCount(planned[c])===3) junctions.push(c); }
@@ -3514,7 +3563,7 @@ const AutoNet={
   },
   // Work runs in ~12 ms slices with a frame drawn in between; changing the map cancels it at the next pause.
   async build(plan,choices,o={}){
-    const sum={lines:plan.lines.length,stations:0,loops:0,trains:0,unreachable:plan.unreachable.slice(),thinned:!!(choices&&choices.some(c=>c.trimmed))};
+    const sum={lines:plan.lines.length,stations:0,loops:0,plat2:0,trains:0,unreachable:plan.unreachable.slice(),thinned:!!(choices&&choices.some(c=>c.trimmed))};
     if(!plan.lines.length){ openModal({title:'Nothing to link',text:'This map has no towns or industries the railway can join.',items:[{label:'OK',fn:()=>{}}],onCancel:()=>{}}); return sum; }
     const gen=this.gen; this.building=true; this.skip=!!o.skip; this.queue=[]; this.t0=performance.now();
     let done=false;
@@ -3547,6 +3596,7 @@ const AutoNet={
         for(let k=0;k<c.count;k++) this.queue.push({type:c.type,stops:e}); sum.trains+=c.count; }
       setStatus('Placing trains…',skipBtn);
       while(this.spawnQueued(1)) await this.pause(gen,true);   // each train works out its route: one per frame
+      if(this.AUTO_PLAT2) for(const [c,n] of lineAt){ const st=stationAt(c); if(n<2||!st||st.alt) continue; const pl=platform2Plan(st); if(pl.ok&&buildPlatform2(st,pl,true)) sum.plat2++; }   /* see AUTO_PLAT2 */
       done=true;
     } finally {
       if(gen===this.gen){ this.building=false; this.skip=false; if(rail){ defaultStatus(); afterChange(); } }
@@ -3555,7 +3605,7 @@ const AutoNet={
     const towns=new Set(plan.lines.filter(L=>L.kind==='pax').flatMap(L=>[L.a.name,L.b.name]));
     const inds=new Set(plan.lines.filter(L=>L.kind==='goods').flatMap(L=>[L.a.name,L.b.name]).filter(x=>!towns.has(x)&&!world.villages.some(v=>v.name===x)));
     openModal({title:'Your network is ready',text:[
-      `${towns.size} towns linked · ${inds.size} industries served · ${sum.stations} stations · ${sum.loops} passing loops${choices?` · ${sum.trains} trains`:''}.`,
+      `${towns.size} towns linked · ${inds.size} industries served · ${sum.stations} stations${sum.plat2?` (${sum.plat2} with a second platform)`:''} · ${sum.loops} passing loops${choices?` · ${sum.trains} trains`:''}.`,
       sum.unreachable.length?`Couldn't reach: ${sum.unreachable.join(', ')}${[(plan.hills||[]).length?`${plan.hills.join(', ')}: hills and mountains`:'',(plan.noRoom||[]).length?`${plan.noRoom.join(', ')}: no flat spot left for a station`:''].filter(Boolean).map(x=>` (${x})`).join('')}.`:'',
       sum.thinned?'Some lines run fewer trains to keep things smooth.':''].filter(Boolean).join(' '),
       items:[{label:'OK',fn:()=>{}}],onCancel:()=>{}});
@@ -3755,6 +3805,7 @@ function arrive(t){
   if(st && TRAIN_TYPES[t.type].goods){ const ex=cargoExchange(t,st); cargoDone=ex.delivered.length>0||loadTotal(t)>0; t.lastCargo=ex;
     const p=centrePt(st.c);
     if(ex.delivered.length){ const txt=ex.delivered.map(([k,a])=>`${Math.round(a)}t ${CARGO[k].name.toLowerCase()}`).join(' · ');
+      { Ledger.trip(t,'goods',ex.from&&ex.from!==st?ex.from:null,st,`${ex.delivered.map(([k,a])=>`${Math.round(a)}t ${CARGO[k].name.toLowerCase()}`).join(' and ')} to ${st.name}`,money()?ex.earn:0,ex.delivered.reduce((a,[,v])=>a+v,0),ex.dist||0); }
       if(money()&&ex.earn>0){ rail.money+=ex.earn; updateFunds(false); floaters.push({x:p.x,y:p.y-TS*0.6,text:'+'+fmt(ex.earn),t0:performance.now()}); if(isOnScreen(p)) Sound.cash(); }
       floaters.push({x:p.x,y:p.y-TS*1.2,text:txt,t0:performance.now()+250,small:true}); }
     if(ex.loaded.length) floaters.push({x:p.x,y:p.y+TS*0.9,text:'Loaded '+ex.loaded.map(([k,a])=>`${a}t ${CARGO[k].name.toLowerCase()}`).join(' · '),t0:performance.now()+500,small:true}); }
@@ -3767,11 +3818,174 @@ function arrive(t){
       contractEvent('trip',{from,to:st,pax}); scnTrip(from,st);
     }
     if(!money()) earn=0;
+    if(from && from!==st){ if(!ty.goods) Ledger.trip(t,'pax',from,st,`${pax} passenger${pax===1?'':'s'} from ${from.name} to ${st.name}`,earn,pax,t.tripTiles||0);
+      else if(!cargoDone) Ledger.trip(t,'goods',from,st,`Farm produce from ${from.name} to ${st.name}`,earn,0,t.tripTiles||0); }
     if(earn>0){ rail.money+=earn; const p=centrePt(st.c); floaters.push({x:p.x,y:p.y-TS*0.6,text:'+'+fmt(earn),t0:performance.now()}); updateFunds(false); if(isOnScreen(p)) Sound.cash(); }
   }
   if(st) t.lastStation=st.id;
   if(t.hold) t.state='held';
 }
+/* ---------------- money made clear, the cozy way (M1-M7: Peter, 21-22 Nov 2026) ----------------
+   Rule for all of this: explain, don't pressure. No tables, no red, no pop-ups about money (except the end-of-day
+   postcard, which is off unless the player turns it on). Plain words and kind suggestions.
+   rail.ledger (saved with the railway): day (the game day it counts), start (money when the day began),
+   t (today: pax, goods, contracts takings; run, repairs, fees costs; people, tonnes, st {station: passengers}, longest
+   {from,to,tiles}), y (the same for yesterday, with build), tr {train id: {e,r,p today, ey,ry,py yesterday, last trip}},
+   tipDay (the day of the last Advisor money tip). Building and new trains are whatever else the money did today:
+   start + takings - running - repairs - fees - money now (so undo and refunds net out, and nothing is missed). */
+const MILE_TILES=3;   /* a map square is about 1/3 mile (see the scale note by tilesLong) */
+const Ledger={
+  blank(){ return {pax:0,goods:0,contracts:0,run:0,repairs:0,fees:0,people:0,tonnes:0,trips:0,st:{},longest:null}; },
+  day(){ return Math.floor(sim.time/1440); },
+  ensure(){ if(!rail) return null; let L=rail.ledger;
+    if(!L||typeof L!=='object'||!L.t){ L=rail.ledger={day:this.day(),start:rail.money,t:this.blank(),y:null,tr:{},tipDay:-1}; }
+    if(!L.tr) L.tr={};
+    return L; },
+  tr(t){ const L=this.ensure(); return L.tr[t.id]||(L.tr[t.id]={e:0,r:0,p:0,ey:0,ry:0,py:0,last:null}); },
+  add(kind,amt){ if(!rail||!money()||!amt) return; const L=this.ensure(); L.t[kind]=(L.t[kind]||0)+amt; },
+  takings(d){ return d?d.pax+d.goods+d.contracts:0; },
+  build(){ const L=this.ensure(), d=L.t; return Math.max(0,Math.round(L.start+this.takings(d)-d.run-d.repairs-(d.fees||0)-rail.money)); },
+  /* a train reached a station: kind 'pax' | 'goods'; what = the words for the trip, earn = what it paid */
+  trip(t,kind,from,to,what,earn,n,tiles){ const L=this.ensure(), s=this.tr(t), d=L.t;
+    if(money()&&earn>0){ s.e+=earn; d[kind]+=earn; }
+    if(kind==='pax'){ s.p+=n; d.people+=n; if(from) d.st[from.name]=(d.st[from.name]||0)+n; if(to) d.st[to.name]=(d.st[to.name]||0)+n; }
+    else d.tonnes+=n;
+    d.trips++;
+    if(from&&to&&tiles>0&&(!d.longest||tiles>d.longest.tiles)) d.longest={from:from.name,to:to.name,tiles,train:t.name};
+    s.last={txt:what,earn:money()?Math.round(earn):0,kind,at:Math.round(sim.time)}; },
+  /* called every game minute: a new game day moves today to yesterday. Returns the day that ended (for the postcard) */
+  roll(){ const L=this.ensure(); if(!L) return null; const day=this.day(); if(day===L.day) return null;
+    const one=day===L.day+1, ended={...L.t,build:money()?this.build():0,day:L.day};
+    L.y=one?ended:null;
+    for(const id of Object.keys(L.tr)){ const s=L.tr[id]; if(!trainById(+id)){ delete L.tr[id]; continue; } s.ey=one?s.e:0; s.ry=one?s.r:0; s.py=one?s.p:0; s.e=s.r=s.p=0; }
+    L.day=day; L.start=rail.money; L.t=this.blank();
+    return ended; },
+  /* the trains that earned most today (yesterday early in the morning), best first: 1 to 3 of them */
+  stars(){ if(!rail||!money()||!trains.length) return []; const L=this.ensure();
+    let key='e'; if(!trains.some(t=>(L.tr[t.id]||{}).e>0)) key='ey';
+    const k=trains.length<4?1:trains.length<8?2:3;
+    return trains.filter(t=>(L.tr[t.id]||{})[key]>0).sort((a,b)=>L.tr[b.id][key]-L.tr[a.id][key]).slice(0,k); },
+  best(){ if(!rail||!trains.length) return null; const L=this.ensure(); let b=null;
+    for(const t of trains){ const s=L.tr[t.id]; if(s&&s.e>0&&(!b||s.e>L.tr[b.id].e)) b=t; } return b; }
+};
+const tilesMiles=n=>{ const m=n/MILE_TILES; return m<1?'under a mile':m<1.5?'about a mile':`about ${Math.round(m)} miles`; };
+/* M1: one friendly line about how a train is doing. Never red; the weakest words still carry a kind suggestion. */
+function moneyVerdict(t,e,r){ const ty=TRAIN_TYPES[t.type];
+  if(r<=0||e>=r*3) return e>0?'doing really well':'';
+  if(e>=r*1.5) return 'doing nicely';
+  if(e>=r) return 'paying its way';
+  if(e>=r*0.6) return ty.goods?'only just paying its way: a stop that takes its cargo, or a longer run, could help':'only just paying its way: more coaches or a longer route could help';
+  return ty.goods?'still finding its feet: a stop that takes what it carries would help':'still finding its feet: bigger towns or a longer route would help';
+}
+function trainMoneyLine(t){ if(!rail) return ''; const s=Ledger.tr(t), ty=TRAIN_TYPES[t.type];
+  if(!money()) return s.p?`Carried ${s.p.toLocaleString('en-GB')} passengers today`:'';
+  let e=s.e, r=s.r, when='today';
+  if(r<ty.run*1.5&&s.ry>0){ e=s.ey; r=s.ry; when='yesterday'; }   /* early in the day: yesterday says more */
+  if(e<=0&&r<ty.run*0.75) return 'Just setting off: its first fares are on the way';
+  const v=moneyVerdict(t,e,r);
+  return `Earned ${fmt(e)} ${when} · ${when==='today'?'costs':'cost'} ${fmt(r)} to run${v?' · '+v:''}`;
+}
+function trainMoneyHtml(t){ const a=trainMoneyLine(t), b=lastTripLine(t); if(!a&&!b) return '';
+  return `<span class="mline">${a?`<span class="mm">🪙 ${a}</span>`:''}${b?`<span class="mt">Last trip: ${b}</span>`:''}</span>`; }
+function lastTripLine(t){ const s=rail&&rail.ledger&&rail.ledger.tr[t.id]; const l=s&&s.last; if(!l) return '';
+  return `${l.txt}${money()&&l.earn>0?': '+fmt(l.earn):''}`; }
+/* M2: how fares work, in plain words (How to play, a train's menu, the money card) */
+function openFares(back){ const bk=back||(()=>{});
+  const ex=TRAIN_TYPES.black5, perPax=Math.round(10*MILE_TILES*ex.fare/10), coal=Math.round(CARGO.coal.pay*10*MILE_TILES/3);
+  const rules=[['🛤️','Longer trips pay more',`Every passenger pays for each mile they ride: about ${fmt(perPax)} for 10 miles on a Black Five.`],
+    ['🏘️','Bigger towns send more passengers','A busy town at each end fills the coaches.'],
+    ['🚃','More coaches carry more people','Bigger engines pull more coaches.'],
+    ['💨','Faster engines make more trips','More trips in a day means more fares, and express engines charge a little more.'],
+    ['🤝','The rival nearby takes a few passengers','About 3 in 10 go with them where your stations are close to theirs.'],
+    ['📦','Goods pay by the tonne and the distance',`Coal pays about ${fmt(coal)} a tonne for every 10 miles. See Industries & cargo for the rest.`],
+    ['🚦','Waiting at a stuck signal costs nothing','A train that can’t move doesn’t pay to run.']];
+  openModal({title:'How fares work',text:`<span class="fares">${rules.map(([i,h,d])=>`<span class="fare"><span class="fi">${i}</span><span><b>${h}</b><br><small>${d}</small></span></span>`).join('')}</span>`,
+    items:[{label:'Back',fn:bk}],onCancel:bk});
+}
+/* M4: tap the money (or ☰ Game → Money today): a few lines, nothing more */
+function moneyCardText(){
+  if(!rail) return '';
+  if(rail.sandbox) return 'This is a sandbox: building is free and there is no money to count. Enjoy the trains!';
+  if(!money()) return 'Money is off on this railway, so building is free and there are no fares or costs to show. You can turn it on in Settings.';
+  const L=Ledger.ensure(), d=L.t, b=Ledger.build(), best=Ledger.best();
+  const take=Ledger.takings(d), cost=d.run+d.repairs+(d.fees||0)+b;
+  const part=(arr)=>arr.filter(([,v])=>v>=1).map(([k,v])=>`${k} ${fmt(v)}`).join(' · ')||'nothing yet';
+  const lines=[`<b>Taken today: ${fmt(take)}</b><br><small>${part([['passengers',d.pax],['goods',d.goods],['contracts',d.contracts]])}</small>`,
+    `<b>Spent today: ${fmt(cost)}</b><br><small>${part([['running trains',d.run],['track repairs',d.repairs],['a late contract',d.fees||0],['building and new trains',b]])}</small>`];
+  if(best) lines.push(`⭐ Best train today: <b>${best.name}</b>, ${fmt(L.tr[best.id].e)}`);
+  if(L.y) lines.push(`<small>Yesterday: took ${fmt(Ledger.takings(L.y))}, spent ${fmt(L.y.run+L.y.repairs+(L.y.fees||0)+(L.y.build||0))}</small>`);
+  return `<span class="mcard">${lines.map(x=>`<span class="ml">${x}</span>`).join('')}</span>`;
+}
+function openMoney(){ if(!rail||!world) return;
+  const back=()=>openMoney();
+  openModal({title:`💰 Money · ${dayTxt(sim.time)}`,text:moneyCardText(),
+    items:[...(money()?[{label:'How fares work',detail:'Seven plain rules',fn:()=>openFares(back)}]:[]),{label:'Close',fn:()=>{}}],onCancel:()=>{}});
+}
+/* M3: one gentle hint about a new line, from the towns' sizes, the trip length and the engine. Never blocks anything. */
+function lineEstimate(type,stops,dwell=3){ const ty=TRAIN_TYPES[type]; if(!ty||stops.length<2) return null;
+  let earn=0, mins=0, tiles=0, legs=0, pops=[];
+  for(const id of stops){ const s=stationById(id); if(s) pops.push(stationPop(s)); }
+  for(let i=0;i<stops.length-1;i++){ const a=stationById(stops[i]), b=stationById(stops[i+1]); if(!a||!b) continue;
+    const r=trackRoute(a.c,b.c); const n=r?r.length-1:Math.abs(cX(a.c)-cX(b.c))+Math.abs(cY(a.c)-cY(b.c));
+    const pax=Math.sqrt(stationPop(a)*stationPop(b))*Math.max(1,paxCars({type}))*0.9*(rivalNear(a.c)?0.7:1)*(rivalNear(b.c)?0.7:1);
+    earn+=pax*n*ty.fare/10; mins+=n/(ty.speed*0.84)+dwell+1; tiles+=n; legs++; }
+  if(!legs) return null;
+  return {perHour:earn/mins*60, run:ty.run, ratio:earn/mins*60/ty.run, avgTiles:tiles/legs, popMin:Math.min(...pops), popMax:Math.max(...pops)};
+}
+function lineHint(type,stops){ const ty=TRAIN_TYPES[type]; if(!ty||!money()||stops.length<2) return '';
+  const sts=stops.map(stationById).filter(Boolean);
+  if(ty.goods){ const pairs=[]; for(const a of sts) for(const k of stationSupplies(a)) for(const b of sts) if(b!==a&&stationAccepts(b).has(k)) pairs.push([k,a,b]);
+    if(pairs.length){ const [k,a,b]=pairs[0]; return `Good goods line: ${CARGO[k].name.toLowerCase()} from ${a.name} to ${b.name} should pay its way nicely`; }
+    if(sts.some(s=>stationSupplies(s).size)) return 'None of these stops takes what the others make: add a stop that does, and the goods will pay';
+    return 'No industries by these stops yet: a passenger train might suit this line better'; }
+  const E=lineEstimate(type,stops); if(!E) return '';
+  const short=E.avgTiles<12, small=E.popMax<40;
+  if(E.ratio>=6&&!short) return E.popMin>=60?'Busy route between two towns: this train should pay its way nicely':'A good long run: this train should pay its way nicely';
+  if(E.ratio>=3) return short?'A short hop, but it should pay its way: longer trips pay more for each passenger':'This train should pay its way nicely';
+  if(small&&short) return ty.run>500?'Small villages close together: a little tank engine costs less to run here, or a longer line to a bigger town would do better':'Small villages close together: it should just about pay its way. A longer line to a bigger town would do better';
+  if(short) return 'A short hop: it should pay its way, and a longer route would pay more for each trip';
+  return 'Quiet towns: it should just about pay its way. A bigger town at one end would help';
+}
+/* M5: one kind Advisor tip about money, at most once a game day (Advisor on, Pro, money on) */
+const MoneyTip={ current:null,
+  busy(){ return !!(modal||board||autoRun||pen||trackEdit||V3.active||Editor.active||Replay.active||AutoNet.building||AutoNet.planning||following||Offers.current||Offers.peeking||Display.active()||($('status')&&$('status').classList.contains('sticky'))); },
+  check(){ if(!settings.advisor||!isPro()||!money()||!rail||!world||rail.sandbox||!trains.length) return false;
+    const L=Ledger.ensure(); if(L.tipDay===L.day||this.busy()) return false;
+    const tip=this.find(); if(!tip) return false;
+    L.tipDay=L.day; this.current=tip;
+    setStatus(`💡 ${tip.text}`,[{label:'Show me',fn:()=>this.show()},{label:'Not now',fn:()=>this.notNow()}]); dirty=true; return true; },
+  find(){ const L=Ledger.ensure(); let worst=null;
+    for(const t of trains){ const s=L.tr[t.id]; if(!s) continue; const ty=TRAIN_TYPES[t.type];
+      const [e,r]=s.ry>=ty.run*6?[s.ey,s.ry]:s.r>=ty.run*3?[s.e,s.r]:[0,0]; if(r<=0) continue;
+      const q=e/r; if(q<1.5&&(!worst||q<worst.q)) worst={t,q}; }
+    if(!worst) return null;
+    const t=worst.t, ty=TRAIN_TYPES[t.type], sts=t.stops.map(stationById).filter(Boolean); if(sts.length<2) return null;
+    const line=`${sts[0].name}–${sts[sts.length-1].name}`, who=`The ${t.name} on the ${line} line`;
+    if(ty.goods){ const sup=new Set(); for(const s of sts) for(const k of stationSupplies(s)) sup.add(k);
+      const k=[...sup][0]; return {t,text:k?`${who} has little to deliver: a stop that takes its ${CARGO[k].name.toLowerCase()} would help`:`${who} has no goods to carry: a stop by an industry would help`}; }
+    const small=sts.reduce((a,s)=>stationPop(s)<stationPop(a)?s:a,sts[0]), sp=stationPop(small);
+    let big=null; for(const v of world.villages){ if(v.kind==='hamlet') continue; const p=v.cells.length*3*(v.kind==='town'?1.4:1), d=Math.hypot(v.x-cX(small.c),v.y-cY(small.c));
+      if(p>sp*1.5&&d<16&&(!big||p>big.p)) big={v,p}; }
+    if(big&&stationVillage(small)!==big.v) return {t,text:`${who} is carrying few passengers: ${big.v.name} is bigger and close by`};
+    if((t.tripTiles||0)<12) return {t,text:`${who} runs a short hop: a longer route would pay more for each trip`};
+    return {t,text:`${who} is only just paying its way: a longer route or a bigger town would help`}; },
+  show(){ const i=this.current; this.current=null; defaultStatus(); if(i&&trains.includes(i.t)) trainMenu(i.t); },
+  notNow(){ this.current=null; defaultStatus(); dirty=true; }
+};
+/* M7: the end-of-day postcard (Settings, off by default). Waits until nothing else is open; never in 3D or while driving. */
+const Postcard={ pending:null,
+  ended(d){ if(!settings.postcard||!d) return; if(d.trips||d.people||d.tonnes) this.pending={d,until:sim.time+6*60}; },
+  free(){ return Offers.free()&&!Offers.current&&!Offers.queue.length&&!Drive.active()&&!(typeof Display!=='undefined'&&Display.active())&&!MoneyTip.current; },
+  tick(){ const p=this.pending; if(!p) return; if(!settings.postcard||sim.time>p.until){ this.pending=null; return; } if(this.free()){ this.pending=null; this.open(p.d); } },
+  text(d){ const lines=[];
+    if(d.people) lines.push(`🚃 <b>${Math.round(d.people).toLocaleString('en-GB')}</b> passengers carried`);
+    if(d.tonnes) lines.push(`📦 <b>${Math.round(d.tonnes).toLocaleString('en-GB')}t</b> of goods delivered`);
+    const take=Ledger.takings(d); if(money()&&take>0) lines.push(`💰 <b>${fmt(take)}</b> taken in fares${d.contracts?' and contracts':''}`);
+    const top=Object.entries(d.st||{}).sort((a,b)=>b[1]-a[1])[0]; if(top) lines.push(`🏡 Busiest station: <b>${top[0]}</b> (${Math.round(top[1]).toLocaleString('en-GB')} passengers)`);
+    if(d.longest) lines.push(`🛤️ Longest trip: <b>${d.longest.from}</b> to <b>${d.longest.to}</b>, ${tilesMiles(d.longest.tiles)}`);
+    return `<span class="mcard post">${lines.map(x=>`<span class="ml">${x}</span>`).join('')}</span>`; },
+  open(d){ openModal({title:`📮 A postcard from Day ${d.day+1}`,text:this.text(d),items:[{label:'Lovely!',detail:'Off in Settings → End-of-day postcard',fn:()=>{}}],onCancel:()=>{}}); }
+};
 function trainStatus(t){
   const nx=t.stops.length>=2?stationById(t.stops[nextStopIndex(t)]):null, cur=stationById(t.stops[t.stopIdx]);
   const b=t.blocker?trainById(t.blocker):null;
@@ -3794,7 +4008,9 @@ function simUpdate(rdt){
   sim.time+=gdt;
   if(Math.floor(sim.time)!==before){
     $('clock').textContent=clockTxt(sim.time); $('clock').title=dayTxt(sim.time);
-    if(money() && trains.length){ let run=0; for(const t of trains) if(!t.stuck) run+=TRAIN_TYPES[t.type].run/60;   /* stuck trains don't charge (the stuck window tells you) */ rail.money-=run*(Math.floor(sim.time)-before); updateFunds(false); }
+    { const ended=Ledger.roll(); if(ended) Postcard.ended(ended); }   /* M1/M7: a new game day */
+    if(money() && trains.length){ const mins=Math.floor(sim.time)-before; let run=0; for(const t of trains) if(!t.stuck){ const c=TRAIN_TYPES[t.type].run/60*mins; run+=c; Ledger.tr(t).r+=c; }   /* stuck trains don't charge (the stuck window tells you) */ rail.money-=run; Ledger.add('run',run); updateFunds(false); }
+    if(Math.floor(sim.time)%60===45) MoneyTip.check();
     industryTick(Math.floor(sim.time)-before);
     contractsTick(); wxTick(); updateWxBadge(); scnTick(); scnUpdateUI();
     if(Math.floor(sim.time)%5===0) scheduleSave();
@@ -3886,7 +4102,8 @@ function openTrains(idx){
   const items=[];
   const canBuy=rail.stations.length>=2;
   items.push({label:'Buy a new train',detail:canBuy?'Choose a type, its stops and how long it waits':'Build at least two stations on connected track first',disabled:!canBuy,fn:()=>buyTrain()});
-  for(const t of trains) items.push({pre:`<span class="dot" style="background:${t.color}"></span>`,label:t.name,detail:`${trainStatus(t)}<br>${t.stops.map(id=>(stationById(id)||{}).name).filter(Boolean).join(t.pattern==='loop'?' → ':' ⇄ ')}`,fn:()=>trainMenu(t)});
+  const stars=Ledger.stars();
+  for(const t of trains) items.push({pre:`<span class="dot" style="background:${t.color}"></span>`,label:t.name+(stars.includes(t)?' <span class="star" title="One of the best earners today">★</span>':''),detail:`${trainStatus(t)}<br>${t.stops.map(id=>(stationById(id)||{}).name).filter(Boolean).join(t.pattern==='loop'?' → ':' ⇄ ')}`,fn:()=>trainMenu(t)});
   items.push({label:`Replay ${isPro()?'':PRO_TAG}`,detail:(()=>{ const S=Recorder.span(); return S?`Rewind and watch the last ${Math.round((S.t1-S.t0)/60*10)/10} game hours again`:'Recording starts when your trains run'; })(),fn:proGate(()=>{ const S=Recorder.span(); Replay.start({from:S?S.t0:0,at:S?Math.max(S.t0,S.t1-60):0}); })});
   items.push({label:`Your company: ${rail.company.name}`,detail:'Rename it and choose company colours for your trains',fn:()=>openCompany()});
   if(rivalOn()) items.push({label:`Rival: ${RV.name}`,detail:`${RV.lines.length} line${RV.lines.length===1?'':'s'} · league table`,fn:()=>openRival()});
@@ -3949,13 +4166,15 @@ function pickStops(draft,stops,idx){
     for(let i=0;i<stops.length-1;i++){ const a=stationById(stops[i]), b=stationById(stops[i+1]); if(!trackRoute(a.c,b.c)){ Sound.blocked(); toast(`No track joins ${a.name} and ${b.name}`,true); pickStops(draft,stops,rail.stations.length); return; } }
     pickPattern(draft,stops); }});
   items.push({label:'Cancel',fn:()=>draft.edit?trainMenu(draft.edit):openTrains()});
-  openModal({title:draft.edit?`${draft.edit.name}: stops`:'Choose the stops',text:'Pick stations in the order the train should call at them.',items,idx,onCancel:()=>draft.edit?trainMenu(draft.edit):openTrains()});
+  const hint=stops.length>=2?lineHint(draft.edit?draft.edit.type:draft.type,stops):'';
+  openModal({title:draft.edit?`${draft.edit.name}: stops`:'Choose the stops',text:'Pick stations in the order the train should call at them.'+(hint?`<br><span class="mhint">💡 ${hint}</span>`:''),items,idx,onCancel:()=>draft.edit?trainMenu(draft.edit):openTrains()});
 }
 function pickPattern(draft,stops){
   const names=stops.map(id=>stationById(id).name);
   const a=stationById(stops[stops.length-1]), b=stationById(stops[0]);
   const loopOk=stops.length>2 && !!trackRoute(a.c,b.c);
-  openModal({title:'How should it run?',items:[
+  const hint=lineHint(draft.edit?draft.edit.type:draft.type,stops);
+  openModal({title:'How should it run?',text:hint?`<span class="mhint">💡 ${hint}</span>`:'',items:[
     {label:'Back and forth',detail:stops.length>2?`${names.join(' → ')} → ${names.slice(0,-1).reverse().join(' → ')} …`:`${names[0]} ⇄ ${names[1]}, all day`,fn:()=>pickDwell(draft,stops,'pingpong')},
     {label:'Round in a loop',detail:loopOk?`${names.join(' → ')} → ${names[0]} …`:stops.length<3?'Needs three or more stops':`No track from ${a.name} back to ${b.name}`,disabled:!loopOk,fn:()=>pickDwell(draft,stops,'loop')},
     {label:'Back',fn:()=>pickStops(draft,stops)}],onCancel:()=>pickStops(draft,stops)});
@@ -3993,7 +4212,7 @@ function finishTrain(draft,stops,pattern,dwell){
 }
 function trainMenu(t){
   const sb=stuckPair(t);
-  openModal({title:`<span class="dot" style="background:${t.color};width:16px;height:16px"></span>${t.name}`,text:trainStatus(t)+(TRAIN_TYPES[t.type].goods?` · carrying ${loadText(t)} (${capacityOf(t)}t max)`:'')+(t.lastPax&&money()?` · last trip carried ${t.lastPax} passengers`:''),items:[
+  openModal({title:`<span class="dot" style="background:${t.color};width:16px;height:16px"></span>${t.name}`,text:trainStatus(t)+(TRAIN_TYPES[t.type].goods?` · carrying ${loadText(t)} (${capacityOf(t)}t max)`:'')+trainMoneyHtml(t),items:[
     ...(sb?[{label:'Get unstuck…',detail:`It is facing ${sb.name} on a single line: build a passing loop, or sell one of them`,fn:()=>{ t.stuckShow=sb.stuckShow=false; openStuck(t,sb); }}]:[]),
     {label:'Departure board',detail:'At its next station',fn:()=>{ const st=stationById(t.nextStationId||t.stops[t.stopIdx]); if(st) openBoard(st); }},
     {label:'Ride in the cab (3D)',detail:'See the line from the driver’s seat',fn:()=>enter3D('cab',t)},
@@ -4004,6 +4223,7 @@ function trainMenu(t){
     {label:'Change timetable',detail:`${t.stops.map(id=>(stationById(id)||{}).name).join(' → ')} · ${t.pattern==='loop'?'loop':'back and forth'} · ${t.dwell} min stops`,fn:()=>pickStops({edit:t},t.stops.slice())},
     {label:t.hold||t.state==='held'?'Release from the station':'Hold at the next station',detail:t.hold?'It will set off again on its timetable':'Keeps it waiting until you release it',fn:()=>{ t.hold=!t.hold; if(!t.hold&&t.state==='held'){ t.state='dwell'; t.departAt=sim.time+0.5; } scheduleSave(); }},
     {label:'Sell',detail:money()?`Get back ${fmt(TRAIN_TYPES[t.type].cost*0.5)}`:'Remove it from the line',fn:()=>{ removeTrain(t); if(money()){ rail.money+=TRAIN_TYPES[t.type].cost*0.5; updateFunds(); } toast(`${t.name} sold`); scheduleSave(); defaultStatus(); }},
+    ...(money()?[{label:'How fares work',detail:'What makes a train pay well',fn:()=>openFares(()=>trainMenu(t))}]:[]),
     {label:'Back',fn:()=>openTrains()}],onCancel:()=>openTrains()});
 }
 function departures(st,max=4){
@@ -4268,7 +4488,21 @@ function drawStations(list,top){
 const RC={map:new Map(), px:0, LIMIT:9e6, frame:0, gsig:-1, off:false, renders:0};
 function rcScale(){ return Math.pow(2,Math.ceil(Math.log2(view.dpr*cam.z)*4-1e-6)/4); }   /* zoom steps of 19%; never blurrier than the screen */
 function rcUsable(){ return !RC.off && view.dpr*cam.z<=3.4; }   /* closer in, squares get too big for the stick's memory (and it is fast there anyway) */
+/* 22 Nov 2026 (bigger-maps research): the whole-map fingerprint walked every tile on every 2D frame (0.1-0.6 ms here,
+   ~2-4 ms on the stick on bigger maps). It is now worked out again only when the track may have changed: railVersion
+   moves on every edit, undo, AutoNet step, replay step and load, and a new railway, map, station list, depot list or
+   roundhouse list (replays and undo swap these) counts as a change too. Anything that changes rail.bits/kind/clear must
+   bump railVersion (afterChange does). As a backstop it is also walked again every 120 frames (~4 s), so a change that
+   forgot to say so still shows. RC.walks counts the full walks. */
+const RCG={v:-1,r:null,w:null,st:null,ns:-1,dp:null,nd:-1,dc:null,nc:-1,h:0,f:0};
 function rcGlobalSig(){
+  const r=rail, G=RCG, dp=r.depots||null, dc=r.decor||null;
+  if(RC.frame-G.f<120&&G.v===railVersion&&G.r===r&&G.w===world&&G.st===r.stations&&G.ns===r.stations.length&&G.dp===dp&&G.nd===(dp?dp.length:-1)&&G.dc===dc&&G.nc===(dc?dc.length:-1)) return G.h;
+  G.f=RC.frame; G.v=railVersion; G.r=r; G.w=world; G.st=r.stations; G.ns=r.stations.length; G.dp=dp; G.nd=dp?dp.length:-1; G.dc=dc; G.nc=dc?dc.length:-1;
+  return G.h=rcGlobalSigWalk();
+}
+function rcGlobalSigWalk(){
+  RC.walks=(RC.walks|0)+1;
   const B=rail.bits, K=rail.kind, C=rail.clear, n=B.length; let h=2166136261;
   for(let i=0;i<n;i++){ const b=B[i]; if(b) h=Math.imul(h^(i*67+b*7+K[i]*3+(C[i]?1:0)),16777619); }
   for(const st of rail.stations) h=Math.imul(h^(st.c*977+1+(altOf(st)?st.alt.c*7:0)),16777619);
@@ -5057,7 +5291,7 @@ function loop(now){
     autoRun.nextAt=now+(rail&&rail.sandbox?0:AUTO_SPEEDS[settings.autoSpeed].ms);
     autoStep(); if(rail&&rail.sandbox){ for(let k=0;k<30&&autoRun&&autoRun.phase==='running'&&!modal;k++) autoStep(); }
   }
-  try{ if(rail) Offers.tick(); if(Replay.active) Replay.frame(rdt); else { if(!Offers.paused) simUpdate(rdt); Recorder.tick(); Chuff.update(rdt); Life.update(rdt); Display.tick(); Drive.tick(); } }catch(err){ console.error(err); }
+  try{ if(rail){ Offers.tick(); Postcard.tick(); } if(Replay.active) Replay.frame(rdt); else { if(!Offers.paused) simUpdate(rdt); Recorder.tick(); Chuff.update(rdt); Life.update(rdt); Display.tick(); Drive.tick(); } }catch(err){ console.error(err); }
   if(V3.active){ try{ V3.frame(rdt); }catch(err){ console.error(err); } }
   else { try{ if(dirty)draw(now); }catch(err){ console.error(err); } }
   requestAnimationFrame(loop);
@@ -5087,7 +5321,7 @@ function tileInfo(x,y){
   if(st){ name=`${st.name} station`; col='#1d3f73'; const d=boardRows(st,'dep').slice(0,3); extra=d.length?`<div class="m" style="margin-top:6px;color:var(--ink)">${d.map(r=>`🕒 ${r.time!=null?clockTxt(r.time):'--:--'} ${r.t.name} to ${r.dest} · ${r.exp}`).join('<br>')}</div>`:'<div class="m">No trains call here yet</div>'; const ch=cargoHint(st); if(ch) extra+=`<div class="m">📦 ${ch}</div>`; if(rivalNear(st.c)) extra+=`<div class="m">⚔️ Competing with ${RV.name} — passengers shared</div>`; }
   const m=rail?rail.bits[c]:0;
   if(rail&&rail.signals[c]){ const sm=rail.signals[c]; tags.push({good:'Signal '+I_BIT.filter(b=>sm&b).map(b=>arrow(b)).join(' ')}); }
-  if(resv&&resv[c]){ const rt=trainById(resv[c]); if(rt) tags.push(`Line held by ${rt.name}`); }
+  if(resv&&resv[c]){ const rt=trainById(resv[c]); if(rt){ tags.push(`Line held by ${rt.name}`); const ml=trainMoneyLine(rt); if(ml) extra+=`<div class="m mline-i">🪙 ${rt.name}: ${ml}</div>`; } }
   if(rail&&depotAt(c)){ name='Engineering depot'; col='#8c8f93'; tags.push(`${crews.filter(x=>x.depot===depotAt(c).id).length} crew(s)`); }
   if(rail&&rail.bits[c]){ const wv=rail.wear[c]; if(rail.works[c]) tags.push('Engineers at work · 30% speed'); else tags.push(wv>0.5?`Track ${conditionLabel(wv).toLowerCase()} ${Math.round((1-wv)*100)}% · limit ${Math.round(speedFactor(c)*100)}%`:`Track condition ${Math.round((1-wv)*100)}%`); }
   if(m){
@@ -5227,7 +5461,7 @@ function cargoExchange(t,st){
     if(amt<1||!acc.has(k)) continue;
     const from=stationById(t.loadFrom[k]); const dist=from?Math.max(6,Math.abs(cX(from.c)-cX(st.c))+Math.abs(cY(from.c)-cY(st.c))):6;
     const pay=Math.round(amt*CARGO[k].pay*dist/3);
-    out.earn+=pay; out.delivered.push([k,amt]);
+    out.earn+=pay; out.delivered.push([k,amt]); if(!out.from&&from){ out.from=from; out.dist=dist; }
     // feed a processing industry here (the first that takes it)
     const proc=inds.find(i=>(IND[i.type].accepts||[]).includes(k));
     if(proc){ const D=IND[proc.type], S=rail.ind[proc.id]; S.recv+=amt; if(D.makes){ S.stock[D.makes]=Math.min(STOCK_MAX,(S.stock[D.makes]||0)+amt*D.ratio); S.made+=amt*D.ratio; } }
@@ -5244,6 +5478,8 @@ function cargoExchange(t,st){
     t.load[D.makes]=(t.load[D.makes]||0)+take; t.loadFrom[D.makes]=st.id; out.loaded.push([D.makes,take]); }
   return out;
 }
+/* M6: what a tonne of this cargo pays for every 10 miles (the cargoExchange sum: tonnes x pay x tiles / 3, 3 tiles a mile) */
+const cargoPer10=k=>Math.round(CARGO[k].pay*10*MILE_TILES/3);
 function cargoHint(st){
   const sup=[...stationSupplies(st)], acc=[...stationAccepts(st)];
   return `${sup.length?'Supplies '+sup.map(k=>CARGO[k].name.toLowerCase()).join(', '):''}${sup.length&&acc.length?' · ':''}${acc.length?'Accepts '+acc.map(k=>CARGO[k].name.toLowerCase()).join(', '):''}`;
@@ -5254,7 +5490,8 @@ function openIndustries(idx){
     const what=[D.accepts?'Takes '+D.accepts.map(k=>CARGO[k].name.toLowerCase()).join(' + '):'', D.makes?(D.accepts?'makes ':'Produces ')+CARGO[D.makes].name.toLowerCase():''].filter(Boolean).join(', ');
     const stock=D.makes&&sts.length?` · ${Math.round(S.stock[D.makes]||0)}t waiting`:'';
     items.push({pre:`<span class="dot" style="background:${D.makes?CARGO[D.makes].col:CARGO[D.accepts[0]].col}"></span>`,label:ind.name,
-      detail:`${what}${stock} · ${sts.length?'served by '+sts.join(', '):'<b>no station nearby</b>'}`,fn:()=>{ cam.z=Math.max(cam.z,1.6); cam.x=(ind.x+1)*TS; cam.y=(ind.y+1)*TS; clampCam(); setCursor(ind.x,ind.y); dirty=true; }}); }
+      detail:`${what}${stock} · ${sts.length?'served by '+sts.join(', '):'<b>no station nearby</b>'}${D.makes?`<br>${CARGO[D.makes].name} pays about ${fmt(cargoPer10(D.makes))} a tonne for every 10 miles`:''}`,fn:()=>{ cam.z=Math.max(cam.z,1.6); cam.x=(ind.x+1)*TS; cam.y=(ind.y+1)*TS; clampCam(); setCursor(ind.x,ind.y); dirty=true; }}); }
+  if(money()) items.unshift({heading:true,disabled:true,label:'What goods pay',detail:Object.keys(CARGO).map(k=>`${CARGO[k].name} ${fmt(cargoPer10(k))}`).join(' · ')+' · a tonne for every 10 miles, station to station'});
   items.push({label:'Close',fn:()=>{}});
   const d=rail.delivered||{}, tot=Object.values(d).reduce((a,b)=>a+b,0);
   openModal({title:'Industries & cargo',text:`Build a station within ${CATCH} tiles of an industry, then run a goods train to a stop that accepts its cargo. Towns take food, goods and steel.${tot?` · ${Math.round(tot).toLocaleString('en-GB')}t delivered so far`:''}`,items,idx,onCancel:()=>{}});
@@ -5262,47 +5499,109 @@ function openIndustries(idx){
 // --- 2D drawing ---
 /* Industries in 2D. The still parts (yard, buildings, heaps, tanks) are drawn by drawIndustryStill, which the track cache
    pictures (RC) also use; drawIndustries(...,liveOnly) then adds only what moves: smoke, the pit wheel's spoke, the steel
-   glow, the windmill sails and the stock meter. Without the cache (zoomed far in or out) both are drawn live. */
+   glow, the windmill sails and the stock meter. Without the cache (zoomed far out, or very close in) the still parts are
+   stamped from one picture per kind and size (IND2D.stamp, 22 Nov 2026: they used to be drawn shape by shape every frame,
+   ~35 canvas calls an industry, 378 a frame for 11 industries zoomed out); C2D.off draws them live.
+   Detail (22 Nov 2026), free per frame because it only goes into those pictures: yard paving, roof ridges and skylights,
+   fences, heaps of coal / ore / grain, sacks, log ends and a short siding with a loaded wagon, per kind. Positions are in
+   tiles within the industry's 2x2 square; X,Y its top-left corner in world px. IND2D.off draws without it (tests). */
+const IND2D={off:false, sprites:new Map(), px:0,
+  paving(X,Y,col){ const T=TS; ctx.strokeStyle=col; ctx.lineWidth=0.5; ctx.beginPath();
+    for(let k=1;k<4;k++){ const v=k*T/2; ctx.moveTo(X+2,Y+v); ctx.lineTo(X+2*T-2,Y+v); ctx.moveTo(X+v,Y+2); ctx.lineTo(X+v,Y+2*T-2); } ctx.stroke(); },
+  ridge(X,Y,x,y,w,h,light,dark){ const T=TS, r=h*0.45; ctx.lineWidth=T*0.05;   /* a ridge cap along the top of the roof, a dark eaves line below it */
+    ctx.strokeStyle=light; ctx.beginPath(); ctx.moveTo(X+x*T,Y+(y+0.03)*T); ctx.lineTo(X+(x+w)*T,Y+(y+0.03)*T); ctx.stroke();
+    ctx.strokeStyle=dark; ctx.beginPath(); ctx.moveTo(X+x*T,Y+(y+r)*T); ctx.lineTo(X+(x+w)*T,Y+(y+r)*T); ctx.stroke(); },
+  skylights(X,Y,x,y,w,h,n,col){ const T=TS, r=h*0.45, sw=w/n*0.5, sh=r*0.5; ctx.fillStyle=col||'#b7d0dc'; ctx.beginPath();
+    for(let k=0;k<n;k++) ctx.rect(X+(x+w*(k+0.5)/n-sw/2)*T,Y+(y+r*0.3)*T,sw*T,sh*T); ctx.fill(); },
+  fence(X,Y,x0,y0,x1,y1,sides,col,post){ const T=TS; ctx.strokeStyle=col; ctx.lineWidth=T*0.035; ctx.beginPath();
+    const L={t:[x0,y0,x1,y0],b:[x0,y1,x1,y1],l:[x0,y0,x0,y1],r:[x1,y0,x1,y1]}, P=[];
+    for(const sd of sides){ const [a,b,c,d]=L[sd]; ctx.moveTo(X+a*T,Y+b*T); ctx.lineTo(X+c*T,Y+d*T); const n=Math.max(1,Math.round(Math.hypot(c-a,d-b)/0.25));
+      for(let k=0;k<=n;k++) P.push(a+(c-a)*k/n,b+(d-b)*k/n); }
+    ctx.stroke(); ctx.fillStyle=post||col; ctx.beginPath(); const q=0.035; for(let i=0;i<P.length;i+=2) ctx.rect(X+(P[i]-q)*T,Y+(P[i+1]-q)*T,2*q*T,2*q*T); ctx.fill(); },
+  siding(X,Y,x0,y0,x1,y1){ const T=TS, hz=x1-x0>y1-y0, m=hz?(y0+y1)/2:(x0+x1)/2, len=hz?x1-x0:y1-y0, n=Math.round(len/0.14);
+    ctx.fillStyle='#6b4f36'; ctx.beginPath();   /* sleepers, then two rails */
+    for(let k=0;k<n;k++){ const u=(hz?x0:y0)+(k+0.5)*len/n; if(hz) ctx.rect(X+(u-0.03)*T,Y+(m-0.13)*T,0.06*T,0.26*T); else ctx.rect(X+(m-0.13)*T,Y+(u-0.03)*T,0.26*T,0.06*T); }
+    ctx.fill(); ctx.strokeStyle='#4d4a47'; ctx.lineWidth=T*0.035; ctx.beginPath();
+    for(const o of [-0.075,0.075]){ if(hz){ ctx.moveTo(X+x0*T,Y+(m+o)*T); ctx.lineTo(X+x1*T,Y+(m+o)*T); } else { ctx.moveTo(X+(m+o)*T,Y+y0*T); ctx.lineTo(X+(m+o)*T,Y+y1*T); } }
+    ctx.stroke(); },
+  wagon(X,Y,x,y,w,h,body,load,lines){ const T=TS; ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fillRect(X+x*T+1,Y+y*T+1,w*T,h*T);
+    ctx.fillStyle=body; ctx.fillRect(X+x*T,Y+y*T,w*T,h*T); const i=Math.min(w,h)*0.18; ctx.fillStyle=load; ctx.fillRect(X+(x+i)*T,Y+(y+i)*T,(w-2*i)*T,(h-2*i)*T);
+    if(lines){ ctx.strokeStyle=lines; ctx.lineWidth=T*0.025; ctx.beginPath(); const hz=w>h;   /* timber: logs along the wagon */
+      for(let k=1;k<3;k++){ if(hz){ const v=y+i+(h-2*i)*k/3; ctx.moveTo(X+(x+i)*T,Y+v*T); ctx.lineTo(X+(x+w-i)*T,Y+v*T); } else { const v=x+i+(w-2*i)*k/3; ctx.moveTo(X+v*T,Y+(y+i)*T); ctx.lineTo(X+v*T,Y+(y+h-i)*T); } }
+      ctx.stroke(); } },
+  heap(X,Y,x,y,r,col,hi){ const T=TS; ctx.fillStyle='rgba(0,0,0,0.22)'; ctx.beginPath(); ctx.ellipse(X+(x+0.04)*T,Y+(y+0.05)*T,r*T,r*0.8*T,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=col; ctx.beginPath(); ctx.ellipse(X+x*T,Y+y*T,r*T,r*0.8*T,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=hi; ctx.beginPath(); ctx.ellipse(X+(x-r*0.3)*T,Y+(y-r*0.25)*T,r*0.45*T,r*0.32*T,0,0,Math.PI*2); ctx.fill(); },
+  sacks(X,Y,x,y,cols,rows,col,edge){ const T=TS, sw=0.13, sh=0.1; ctx.beginPath();
+    for(let r=0;r<rows;r++) for(let k=0;k<cols-r;k++){ const cx=X+(x+(k+r*0.5)*sw*1.05)*T, cy=Y+(y-r*sh*0.8)*T; ctx.moveTo(cx+sw*0.5*T,cy); ctx.ellipse(cx,cy,sw*0.5*T,sh*0.5*T,0,0,Math.PI*2); }
+    ctx.fillStyle=col; ctx.fill(); ctx.strokeStyle=edge; ctx.lineWidth=T*0.02; ctx.stroke(); },
+  logs(X,Y,x,y,cols,rows,r){ const T=TS; ctx.beginPath();   /* a stack of log ends, seen end on */
+    for(let row=0;row<rows;row++) for(let k=0;k<cols-row;k++){ const cx=X+(x+(k+row*0.5)*r*2.1)*T, cy=Y+(y-row*r*1.8)*T; ctx.moveTo(cx+r*T,cy); ctx.arc(cx,cy,r*T,0,Math.PI*2); }
+    ctx.fillStyle='#c49a62'; ctx.fill(); ctx.strokeStyle='#6a4524'; ctx.lineWidth=T*0.025; ctx.stroke(); },
+  /* the still parts as one picture per kind and size (the track cache's zoom steps: never blurrier than the screen) */
+  stamp(ind){ const s=rcScale(), key=ind.type+'|'+s; let cv=IND2D.sprites.get(key);
+    if(!cv){ if(IND2D.sprites.size>=32||IND2D.px>4e6){ for(const c of IND2D.sprites.values()) c.width=c.height=0; IND2D.sprites.clear(); IND2D.px=0; }
+      const M=2, span=TS*2+M*2; cv=document.createElement('canvas'); cv.width=cv.height=Math.ceil(span*s); cv._s=s;
+      const g=cv.getContext('2d'), keep=ctx; g.setTransform(s,0,0,s,M*s,M*s); ctx=g;
+      try{ drawIndustryStill({type:ind.type,x:0,y:0}); } finally { ctx=keep; }
+      IND2D.sprites.set(key,cv); IND2D.px+=cv.width*cv.height; }
+    ctx.drawImage(cv,ind.x*TS-2,ind.y*TS-2,cv.width/cv._s,cv.height/cv._s); }
+};
 function drawIndustryStill(ind){
-  const T=TS, X=ind.x*T, Y=ind.y*T;
+  const T=TS, X=ind.x*T, Y=ind.y*T, D2=IND2D.off?null:IND2D;
   ctx.fillStyle='rgba(0,0,0,0.18)'; ctx.fillRect(X+2,Y+3,T*2-2,T*2-2);
   ctx.fillStyle=ind.type==='farm'?'#c9b27a':ind.type==='forest'?'#7d6a48':'#a7a197'; ctx.fillRect(X+1,Y+1,T*2-2,T*2-2);
+  if(D2&&ind.type!=='farm'&&ind.type!=='forest') D2.paving(X,Y,'rgba(70,62,52,0.22)');
   ctx.strokeStyle='rgba(60,50,40,0.5)'; ctx.lineWidth=1; ctx.strokeRect(X+1.5,Y+1.5,T*2-3,T*2-3);
   const box=(x,y,w,h,c,roof)=>{ ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fillRect(X+x*T+1,Y+y*T+1.5,w*T,h*T); ctx.fillStyle=c; ctx.fillRect(X+x*T,Y+y*T,w*T,h*T); if(roof){ ctx.fillStyle=roof; ctx.fillRect(X+x*T,Y+y*T,w*T,h*T*0.45); } };
   const circ=(x,y,r,c,ring)=>{ ctx.fillStyle=c; ctx.beginPath(); ctx.arc(X+x*T,Y+y*T,r*T,0,Math.PI*2); ctx.fill(); if(ring){ ctx.strokeStyle=ring; ctx.lineWidth=T*0.08; ctx.stroke(); } };
   switch(ind.type){
     case 'coalmine': case 'oremine': {
-      const heap=ind.type==='coalmine'?'#1f1d1b':'#8a4a2c';
-      circ(1.35,1.3,0.48,heap); circ(1.55,1.45,0.32,ind.type==='coalmine'?'#2e2b28':'#a3593a');
+      const coal=ind.type==='coalmine', heap=coal?'#1f1d1b':'#8a4a2c';
+      if(D2){ D2.fence(X,Y,0.08,0.08,1.92,1.92,'tl','#5d5a55'); D2.siding(X,Y,0.98,0.3,1.94,0.6); D2.wagon(X,Y,1.1,0.31,0.62,0.28,'#4a3a30',coal?'#1a1817':'#93502f'); }
+      circ(1.35,1.3,0.48,heap); circ(1.55,1.45,0.32,coal?'#2e2b28':'#a3593a');
+      if(D2) D2.heap(X,Y,1.86,0.95,0.1,heap,coal?'#3a3633':'#b0673f');
       box(0.15,0.95,0.7,0.8,'#7b3b2a','#5c2b1f');
+      if(D2){ D2.ridge(X,Y,0.15,0.95,0.7,0.8,'#8c4a35','#3d1c14'); D2.skylights(X,Y,0.15,0.95,0.7,0.8,2); }
       ctx.strokeStyle='#2b2b2b'; ctx.lineWidth=T*0.07; ctx.beginPath(); ctx.moveTo(X+0.25*T,Y+0.9*T); ctx.lineTo(X+0.6*T,Y+0.15*T); ctx.lineTo(X+0.95*T,Y+0.9*T); ctx.moveTo(X+0.6*T,Y+0.15*T); ctx.lineTo(X+0.6*T,Y+0.9*T); ctx.stroke();
       circ(0.6,0.2,0.12,'#555','#2b2b2b');
       break; }
     case 'farm':
       box(0.15,0.2,0.95,0.7,'#9b2f22','#6e1f17'); circ(1.4,0.45,0.25,'#c9c9c4','#8f8f8a'); circ(1.72,0.6,0.2,'#c9c9c4','#8f8f8a');
       for(let k=0;k<4;k++){ ctx.fillStyle=k%2?'#e3c454':'#d1b048'; ctx.fillRect(X+(0.2+k*0.42)*T,Y+1.2*T,T*0.36,T*0.6); }
+      if(D2){ D2.ridge(X,Y,0.15,0.2,0.95,0.7,'#a8402f','#4a140e'); D2.fence(X,Y,0.12,1.12,1.9,1.88,'tlrb','#efe6cf','#8b6a42');
+        D2.sacks(X,Y,1.24,1.0,3,2,'#e8dcb8','#8f7c55'); D2.heap(X,Y,1.76,0.98,0.13,'#e0be55','#f2d77a'); }
       break;
     case 'forest':
+      if(D2){ D2.fence(X,Y,0.08,0.08,0.08,1.92,'l','#5a4630'); D2.siding(X,Y,1.56,0.98,1.86,1.94); D2.wagon(X,Y,1.6,1.08,0.22,0.72,'#4a3a30','#a9824f','#6a4524'); }
       for(let row=0;row<3;row++) for(let k=0;k<4-row;k++){ circ(0.35+k*0.3+row*0.15,1.65-row*0.22,0.13,'#8b5a2b','#5a3a1a'); circ(0.35+k*0.3+row*0.15,1.65-row*0.22,0.05,'#d7b07a'); }
       box(1.1,0.2,0.75,0.6,'#6b5034','#4a3624'); circ(0.45,0.5,0.3,'#2f5d2e'); circ(0.75,0.35,0.22,'#386b34');
+      if(D2){ D2.ridge(X,Y,1.1,0.2,0.75,0.6,'#7d6040','#2e2216'); circ(0.37,0.42,0.1,'#3f7a3c'); circ(0.7,0.29,0.07,'#4a8445'); }
       break;
     case 'power':
+      if(D2){ D2.fence(X,Y,0.07,0.07,1.93,1.93,'tlrb','#6f747a'); D2.heap(X,Y,0.88,0.58,0.2,'#1f1d1b','#3a3633'); D2.heap(X,Y,0.22,0.62,0.1,'#1f1d1b','#3a3633'); }
       box(0.1,0.95,1.1,0.9,'#8c9096','#6a6e74'); circ(1.45,0.55,0.38,'#b9b6ae','#8d8a83'); circ(1.45,0.55,0.2,'#6b6862');
       circ(1.45,1.45,0.32,'#b9b6ae','#8d8a83'); circ(1.45,1.45,0.17,'#6b6862');
+      if(D2){ D2.ridge(X,Y,0.1,0.95,1.1,0.9,'#80848a','#45484d'); D2.skylights(X,Y,0.1,0.95,1.1,0.9,3); }
       box(0.45,0.15,0.18,0.75,'#7a3b2c');
       break;
     case 'steel':
       box(0.1,0.8,1.8,1.0,'#4b4f55','#35383d'); box(0.3,0.15,0.16,0.7,'#5a3328'); box(0.75,0.15,0.16,0.7,'#5a3328');
+      if(D2){ D2.ridge(X,Y,0.1,0.8,1.8,1.0,'#5b6067','#212327'); D2.skylights(X,Y,0.1,0.8,1.8,1.0,6,'#d9a86a');   /* north-light glass, lit by the furnace */
+        D2.heap(X,Y,1.07,0.6,0.12,'#8a4a2c','#a3593a'); D2.heap(X,Y,1.07,0.3,0.1,'#1f1d1b','#3a3633'); }
       circ(1.5,0.45,0.28,'#6a6e74','#3d4045');
       break;
     case 'mill':
       box(0.2,0.6,0.9,1.2,'#d9cbb0','#a48d6a');
+      if(D2){ D2.ridge(X,Y,0.2,0.6,0.9,1.2,'#b9a27e','#6e5a3e'); D2.sacks(X,Y,1.27,1.75,4,2,'#f0e6cc','#9a8660'); }
       for(let k=0;k<3;k++) circ(1.45,0.45+k*0.45,0.14,'#efe2c0','#b8a27a');
       break;
     case 'sawmill':
       box(0.1,0.15,1.2,0.75,'#7a6248','#5a4632');
+      if(D2){ D2.ridge(X,Y,0.1,0.15,1.2,0.75,'#8b7155','#33271b'); D2.skylights(X,Y,0.1,0.15,1.2,0.75,3); }
       for(let k=0;k<3;k++){ ctx.fillStyle=k%2?'#d7b07a':'#c49a62'; ctx.fillRect(X+0.2*T,Y+(1.1+k*0.25)*T,T*1.5,T*0.17); }
       ctx.fillStyle='#bdbdbd'; ctx.beginPath(); ctx.arc(X+1.6*T,Y+0.5*T,T*0.2,0,Math.PI*2); ctx.fill();
+      if(D2) D2.logs(X,Y,1.45,0.97,3,2,0.065);
       break;
   }
 }
@@ -5311,7 +5610,7 @@ function drawIndustries(x0,y0,x1,y1,now,liveOnly){
   for(const ind of world.industries){
     if(ind.x+2<x0||ind.x>x1||ind.y+2<y0||ind.y>y1) continue;
     const X=ind.x*T, Y=ind.y*T, D=IND[ind.type], S=rail.ind[ind.id]||{stock:{}};
-    if(!liveOnly) drawIndustryStill(ind);
+    if(!liveOnly){ if(C2D.off) drawIndustryStill(ind); else IND2D.stamp(ind); }
     const puff=(x,y,c)=>{ for(let k=0;k<3;k++){ const u=((now/1800+k/3)%1); stampPuff(c,X+x*T+u*T*0.5,Y+y*T-u*T*0.9,T*(0.12+u*0.22),0.5*(1-u)); } };
     switch(ind.type){
       case 'coalmine': case 'oremine': {
@@ -5450,7 +5749,7 @@ function contractsTick(){
   // expire
   /* 18 Nov 2026 (Peter): running out of time on a contract you took on costs a quarter of its pay: another company got there first */
   for(const k of rail.contracts.filter(k=>sim.time>k.deadline)){ const fee=money()?Math.round(k.reward*0.25/1000)*1000:0;
-    if(fee){ rail.money-=fee; updateFunds(); }
+    if(fee){ rail.money-=fee; Ledger.add('fees',fee); updateFunds(); }
     toast(`⏰ Too late: ${rivalOn()&&RV&&RV.name?RV.name:'another company'} got there first · ${k.title}${fee?' · −'+fmt(fee):''}`,true); Sound.blocked(); scheduleSave(); }
   rail.contracts=rail.contracts.filter(k=>sim.time<=k.deadline);
   /* a warning once, when a quarter of the time is left (never later than 2 game hours before the end) */
@@ -5503,7 +5802,7 @@ const Offers={ current:null, paused:false, queue:[], peeking:false,
   drop(){ if(modal&&this.current) closeModal(); this.done(); },
   done(){ this.current=null; this.paused=false; this.peeking=false; defaultStatus(); } };
 function award(amount,msg){
-  rail.stats.medals++; if(money()){ rail.money+=amount; updateFunds(); }
+  rail.stats.medals++; if(money()){ rail.money+=amount; Ledger.add('contracts',amount); updateFunds(); }
   toast(`${msg}${money()?' · +'+fmt(amount):''}`); Sound.fanfare(); updateGoalsBtn(); scheduleSave();
 }
 function contractEvent(type,e){
@@ -7227,7 +7526,7 @@ function crewUpdate(gdt){
       if(c==null||!rail.bits[c]){ tk.i++; if(tk.i>=tk.tiles.length) finishWork(cr); continue; }
       const p=centrePt(c); if(!go(p.x,p.y)) continue;
       rail.wear[c]=Math.max(0,rail.wear[c]-0.3*gdt);
-      if(rail.wear[c]<=0.01){ rail.wear[c]=0; rail.works[c]=0; if(money()){ rail.money-=REPAIR_COST; updateFunds(false); } tk.i++; if(tk.i>=tk.tiles.length) finishWork(cr); }
+      if(rail.wear[c]<=0.01){ rail.wear[c]=0; rail.works[c]=0; if(money()){ rail.money-=REPAIR_COST; Ledger.add('repairs',REPAIR_COST); updateFunds(false); } tk.i++; if(tk.i>=tk.tiles.length) finishWork(cr); }
       continue;
     }
     if(cr.state==='return'){ const p=centrePt(dep.c); if(go(p.x,p.y)) cr.state='idle'; }
@@ -7401,7 +7700,7 @@ function build(seed){
       artFlush(); art=r.value; if(bar){ bar.style.animation=''; bar.style.width=''; } }
     world=w;
     const ms=Math.round(performance.now()-t0);
-    const loaded=loadRail(); contractInit(rail); wxInit(rail); companyInit(rail); updateGoalsBtn(); updateWxBadge(); updateFunds(false); WearWatch.reset();
+    const loaded=loadRail(); Ledger.ensure(); contractInit(rail); wxInit(rail); companyInit(rail); updateGoalsBtn(); updateWxBadge(); updateFunds(false); WearWatch.reset();
     $('clock').textContent=clockTxt(sim.time);
     $('region').textContent=`${w.regionName} · ${W}×${H} tiles`; updateCompanyUI(); rememberLast(); updateModeUI();
     const st=w.stats;
@@ -7458,6 +7757,7 @@ function openGameMenu(withFit){
     {label:'New map',fn:()=>$('btnNew').click()},
     ...(withFit?[{label:'Whole map',fn:()=>$('btnFit').click()}]:[]),
     {label:'Save / Load',fn:()=>$('btnSaves').click()},{label:'Settings',fn:()=>$('btnSettings').click()},
+    ...(rail?[{label:'Money today',detail:money()?`Takings, costs and your best train · ${fmt(rail.money)}`:'Money is off on this railway',fn:()=>openMoney()}]:[]),
     {label:'Size: '+state.size,detail:'Change the size (starts a new map)',fn:()=>$('btnSize').click()},
     {label:'Coast: '+state.coast,detail:'Change the coast (starts a new map)',fn:()=>$('btnCoast').click()},
     {label:'Seed: '+state.seed,detail:'Type a seed to build that exact map',fn:()=>openSeedEntry()},
@@ -7467,6 +7767,7 @@ function openGameMenu(withFit){
     {label:'Close',fn:()=>{}}],onCancel:()=>{}});
 }
 $('btnMore').onclick=()=>openGameMenu(true);
+$('funds').onclick=()=>{ if(!modal&&world&&rail&&!V3.active) openMoney(); };   /* M4: tap the money for today's summary */
 $('btnGame').onclick=()=>openGameMenu(false);
 applyLegend();
 function openSeedEntry(){
