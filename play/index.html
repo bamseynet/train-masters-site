@@ -227,8 +227,8 @@ body.shed #shedUI{display:block}
 #shedUI .shtitle{font:600 22px Fraunces,Georgia,serif;color:#ffe6b8;text-shadow:0 2px 8px rgba(0,0,0,.6);white-space:nowrap}
 #shedUI .shcount{font:700 13px Nunito,sans-serif;color:#e8d6b0;background:rgba(30,20,12,.65);border-radius:999px;padding:3px 10px;white-space:nowrap}
 #shedUI .shkeys{flex:1;min-width:0;text-align:center;font:600 12.5px Nunito,sans-serif;color:#e0cfa8;text-shadow:0 1px 4px rgba(0,0,0,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#shedUI #shedBack,#shedUI #shedList{min-height:44px;min-width:44px;background:rgba(30,20,12,.82);border-color:rgba(255,220,170,.3)}
-#shedUI #shedList{margin-left:auto}
+#shedUI #shedBack,#shedUI #shedList,#shedUI #shedRail{min-height:44px;min-width:44px;background:rgba(30,20,12,.82);border-color:rgba(255,220,170,.3);white-space:nowrap;flex:none}
+#shedUI #shedRail{margin-left:auto}
 #shedUI .tb.sel{background:var(--accent);border-color:#f6d68c;color:var(--accent-ink);box-shadow:0 0 0 3px rgba(233,180,76,.4)}
 #shedUI .sharrow{position:absolute;top:30%;transform:translateY(-50%);width:48px;height:64px;border-radius:16px;border:1.5px solid rgba(255,220,170,.3);background:rgba(30,20,12,.62);color:#ffe6b8;font:700 34px/1 Nunito,sans-serif;cursor:pointer}
 #shedUI .sharrow.l{left:calc(var(--shw) + 24px + var(--sx))} #shedUI .sharrow.r{right:calc(12px + var(--sx))}
@@ -278,8 +278,9 @@ body.shed #shedUI{display:block}
 #shedUI .shcard{position:absolute;left:calc(var(--shw) + 24px + var(--sx));right:calc(12px + var(--sx));bottom:calc(12px + var(--sy));max-width:680px;max-height:50vh;box-sizing:border-box;overflow:auto;touch-action:pan-y;background:rgba(32,22,14,.9);border:1px solid rgba(255,214,150,.22);border-radius:18px;box-shadow:0 14px 40px rgba(0,0,0,.5);padding:10px 15px 11px}
 #shedUI .shhead{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:12px;row-gap:2px}
 #shedUI .shname{font:600 22px/1.15 Fraunces,Georgia,serif;color:#ffe6b8}
-#shedUI .shmeta{font:700 13px Nunito,sans-serif;color:#d9b77a;letter-spacing:.02em}
+#shedUI .shmeta{font:700 13px Nunito,sans-serif;color:#d9b77a;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 0}   /* (one line: the pack chip must not make the card taller, PK2) */
 #shedUI .shfacts{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:5px}
+#shedUI .shpack{cursor:pointer;color:#d6ebfa;background:#16314a;border:1px solid #8fbfe3;border-radius:999px;padding:0 8px;white-space:nowrap}   /* (on the name line, so the card keeps its height: PK2) */
 #shedUI .shfacts span{font:700 12.5px Nunito,sans-serif;color:#f3e2c0;background:rgba(255,240,210,.09);border-radius:999px;padding:2px 9px}
 #shedUI .shown,#shedUI .shnot{margin-top:7px;padding:5px 10px;border-radius:10px;font-size:13.5px}
 #shedUI .shown{background:rgba(233,180,76,.16);color:#ffe9be}
@@ -299,7 +300,8 @@ body.shed #shedUI{display:block}
 #shedUI .shblurb.full{display:block;-webkit-line-clamp:unset;overflow:visible}
 :root.tv #shedUI .shhint{display:none}
 :root:not(.tv) #shedUI .shkeys{visibility:hidden}
-@media (max-width:760px){ #shedUI .shtitle{font-size:18px} #shedUI .shcount{display:none} #shedUI .shname{font-size:20px} #shedUI .shblurb{font-size:13.5px} #shedUI #shedList,#shedUI #shedBack{padding:6px 9px;font-size:13px} }
+@media (max-width:760px){ #shedUI .shtitle{font-size:18px} #shedUI .shcount{display:none} #shedUI .shname{font-size:20px} #shedUI .shblurb{font-size:13.5px} #shedUI #shedList,#shedUI #shedBack,#shedUI #shedRail{padding:6px 9px;font-size:13px} #shedUI .shtop{gap:6px} }
+@media (max-width:520px){ #shedUI .shrl,#shedUI .shtt{display:none} }
 @media (max-height:520px){ #shedUI{--sht:50px} #shedUI .shtop{top:calc(4px + var(--sy))} #shedUI .shcard{max-height:56vh;padding:9px 12px} #shedUI .shname{font-size:19px} #shedUI .shblurb{font-size:13px;line-height:1.36} #shedUI .shhint{display:none} #shedUI .shbanner{font-size:11.5px;padding:4px 8px} }
 @media (max-height:420px){ #shedUI .shbanner{display:none!important} #shedUI .shfind input{height:30px} #shedUI .shrow{min-height:34px;padding:5px 8px} #shedUI .shcard{max-height:62vh} #shedUI .shfacts{margin-top:4px} #shedUI .shown,#shedUI .shnot{margin-top:5px;padding:4px 9px;font-size:12.5px} #shedUI .shblurb{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden} }
 /* a tall screen (a phone held upright): the picture at the top, the card under it, the panel at the bottom */
@@ -2662,7 +2664,8 @@ function activateModal(){
   if(it.toggle){ it.checked=!it.checked; renderModal(); return; }
   const idx=m.idx; closeModal(); it.fn&&it.fn(m,idx);
 }
-function closeModal(){ modal=null; const md=$('modal'), ae=document.activeElement; if(ae&&ae!==document.body&&md.contains(ae)&&ae.blur) ae.blur(); md.classList.remove('open'); }   /* blur: a search field must not keep the focus (and the keyboard) */
+function closeModal(){ modal=null; const md=$('modal'), ae=document.activeElement; if(ae&&ae!==document.body&&md.contains(ae)&&ae.blur) ae.blur(); md.classList.remove('open');
+  if(trainsShed) setTimeout(()=>{ if(!modal&&!Shed.active) trainsShed=null; },0); }   /* (left the cards for the map, e.g. Follow this train: Trains & timetables' Back no longer goes into the shed) */   /* blur: a search field must not keep the focus (and the keyboard) */
 /* Back for the open card: what Escape, the remote's Back, the close button and a tap on the backdrop all do (the card's onCancel:
    up one level, "decide later" for a contract offer, "Not now" for a buy card; never a purchase). */
 function modalBack(){ const m=modal; if(!m) return; const cb=m.onCancel; closeModal(); cb&&cb(); }
@@ -4853,9 +4856,20 @@ function openTrains(idx){
   if(rivalOn()) items.push({label:`Rival: ${RV.name}`,detail:`${RV.lines.length} line${RV.lines.length===1?'':'s'} · league table`,fn:()=>openRival()});
   items.push({label:'Industries & cargo',detail:`${world.industries.length} industries · which station serves what`,fn:()=>openIndustries()});
   if(rail.stations.length) items.push({label:'Station departure boards',detail:`${rail.stations.length} station${rail.stations.length===1?'':'s'}`,fn:()=>openBoards()});
-  items.push({label:'Close',fn:()=>{}});
-  openModal({title:'Trains & timetables',text:`${trains.length?`${trains.length} train${trains.length===1?'':'s'} on the network`:'No trains yet.'} · ${clockTxt(sim.time)}, ${dayTxt(sim.time)}${money()&&trains.length?` · running costs ${fmt(trains.reduce((a,t)=>a+TRAIN_TYPES[t.type].run,0))} an hour`:''}${trains.length>1?'<br>Two trains on one line need a passing loop (Signals tool) to get past each other.':''}`,items,idx,onCancel:()=>{}});
+  const back=()=>{ const f=trainsShed; trainsShed=null; if(f) f(); };
+  items.push({label:trainsShed?'Back to the Heritage shed':'Close',fn:back});
+  openModal({title:'Trains & timetables',text:`${trains.length?`${trains.length} train${trains.length===1?'':'s'} on the network`:'No trains yet.'} · ${clockTxt(sim.time)}, ${dayTxt(sim.time)}${money()&&trains.length?` · running costs ${fmt(trains.reduce((a,t)=>a+TRAIN_TYPES[t.type].run,0))} an hour`:''}${trains.length>1?'<br>Two trains on one line need a passing loop (Signals tool) to get past each other.':''}`,items,idx,onCancel:back});
 }
+/* The Trains button (also the T key and the remote's OK on it) opens the Heritage shed straight away, on the store's "Add more
+   engines" tab (Peter, 24 Nov 2026: "the default view should be the engines that are available from the store, not your existing
+   trains. Your existing trains should still be available as a tab"); the Pro edition has no store tab, so Your engines. The search
+   starts empty. The shed's "Your railway" button opens Trains & timetables (your trains, Replay, company, rival, industries,
+   departure boards), whose Back returns to the shed (trainsShed). Where the shed cannot open, or List view was chosen this visit:
+   Trains & timetables, as before. */
+var trainsShed=null;   /* set while Trains & timetables was opened from the shed: how to get back there */
+function trainsButton(){ trainsShed=null; if(modal) closeModal();
+  if(!trainListOnce&&Shed.can()){ trainFind.q=''; trainFind.chip='all'; if(Shed.open(null,null,{tab:1})&&Shed.active) return; }
+  if(!modal) openTrains(); }
 let trainTab=0;   /* the last tab of "Choose a train", remembered for this session */
 function buyTrain(idx,tab){
   /* Peter, 22 Nov 2026: real money must never look like game money ("The tabbed approach is much better. Build it.").
@@ -8405,28 +8419,28 @@ ENGINE_SKUS.wc={sku:'trainmasters.engine.wc'};   /* its Amazon item is approved 
    Google Play). TO EDIT: change the names and the engine lists below; a new engine goes into exactly one themed pack.
    soon:true keeps a pack off sale (hidden everywhere) until its Amazon and Play items exist, like an engine's soon. */
 const ENGINE_PACKS=[
-  {id:'everything', name:'Everything', soon:true, blurb:'Every engine in the shop, and every one added later'},   /* no types: all of ENGINE_SKUS, now and future */
-  {id:'lmslner',   name:'LMS & LNER expresses',            soon:true, blurb:'Big express engines of the London Midland & Scottish and the London & North Eastern',
+  {id:'everything', name:'Everything', blurb:'Every engine in the shop, and every one added later'},   /* no types: all of ENGINE_SKUS, now and future */
+  {id:'lmslner',   name:'LMS & LNER expresses',            blurb:'Big express engines of the London Midland & Scottish and the London & North Eastern',
     types:['pr','rscot','jub','a1pc','a2','v2','b1']},
-  {id:'gwr',       name:'Great Western',                   soon:true, blurb:'Green engines with copper-capped chimneys, from expresses to branch-line tanks',
+  {id:'gwr',       name:'Great Western',                   blurb:'Green engines with copper-capped chimneys, from expresses to branch-line tanks',
     types:['king','hall','saint','grange','prairie','gwr45','gwr14']},
-  {id:'southern',  name:'Southern & BR Standards',         soon:true, blurb:'Southern Railway favourites and the engines British Railways built for everywhere',
+  {id:'southern',  name:'Southern & BR Standards',         blurb:'Southern Railway favourites and the engines British Railways built for everywhere',
     types:['wc','schools','arthur','m7','q1','brit','std4t','ivatt']},
-  {id:'little',    name:'Little engines',                  soon:true, blurb:'Shunters, quarry and hill tanks, and the very first famous engine',
+  {id:'little',    name:'Little engines',                  blurb:'Shunters, quarry and hill tanks, and the very first famous engine',
     types:['jinty','c08','c03','hunslet','dhr','rocket']},
-  {id:'diesels60', name:'BR diesels of the 60s',           soon:true, blurb:'The diesels that took over from steam on British Railways',
+  {id:'diesels60', name:'BR diesels of the 60s',           blurb:'The diesels that took over from steam on British Railways',
     types:['c40','c31','c33','peak','c20','c50']},
-  {id:'modern',    name:'Modern diesels & units',          soon:true, blurb:'Today\'s diesels and the railcars and units of the branch lines',
+  {id:'modern',    name:'Modern diesels & units',          blurb:'Today\'s diesels and the railcars and units of the branch lines',
     types:['c67','c68','c73','pacer','c158','c101']},
-  {id:'freight',   name:'Freight heavyweights',            soon:true, blurb:'The strongest goods engines, steam and diesel, from three continents',
+  {id:'freight',   name:'Freight heavyweights',            blurb:'The strongest goods engines, steam and diesel, from three continents',
     types:['c56','c60','br52','qj','garratt','shay']},
-  {id:'electrics', name:'British electrics & high speed',  soon:true, blurb:'Electric engines and the fastest trains of the British main lines',
+  {id:'electrics', name:'British electrics & high speed',  blurb:'Electric engines and the fastest trains of the British main lines',
     types:['c86','c87','c90','c91','c390','c800','c373','bpull']},
-  {id:'american',  name:'American steam',                  soon:true, blurb:'From the 4-4-0 of the Old West to the giant streamliners',
+  {id:'american',  name:'American steam',                  blurb:'From the 4-4-0 of the Old West to the giant streamliners',
     types:['am440','ns','hudson','k4','chall','daylight','classj','t1']},
-  {id:'europe',    name:'European classics',               soon:true, blurb:'Famous engines from Germany, Scandinavia, Switzerland and France',
+  {id:'europe',    name:'European classics',               blurb:'Famous engines from Germany, Scandinavia, Switzerland and France',
     types:['br01','nohab','v200','e94','ae47','tgv']},
-  {id:'world',     name:'Around the world',                soon:true, blurb:'Japan, China, India and America: steam, diesel, electric and the bullet train',
+  {id:'world',     name:'Around the world',                blurb:'Japan, China, India and America: steam, diesel, electric and the bullet train',
     types:['d51','c62','n700','wp','funit','gg1']},
 ];
 function packSku(p){ return 'trainmasters.pack.'+p.id; }
@@ -9250,7 +9264,7 @@ function openClips(){
   const a=ClipLib.list();
   const items=a.map(c=>({label:c.name,detail:`${c.mins} game minutes · ${c.kb} KB · saved ${new Date(c.when).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`,fn:()=>openModal({title:c.name,items:[
     {label:'Watch it',fn:()=>playClip(c.id)},{label:'Delete',fn:()=>{ ClipLib.remove(c.id); toast('Replay deleted'); openClips(); }},{label:'Back',fn:()=>openClips()}],onCancel:()=>openClips()})}));
-  if(!a.length) items.push({label:'No saved replays yet',detail:'Open Replay from the Trains menu, then “Save this replay”',disabled:true,fn:()=>{}});
+  if(!a.length) items.push({label:'No saved replays yet',detail:'Open Replay from Trains → Your railway, then “Save this replay”',disabled:true,fn:()=>{}});
   items.push({label:'Back',fn:()=>openSaves()});
   openModal({title:`Saved replays ${isPro()?'':PRO_TAG}`,items,onCancel:()=>openSaves()});
 }
@@ -9929,7 +9943,7 @@ function openSeedEntry(){
 }
 $('btnFit').onclick=()=>{ following=null; fitAll(); defaultStatus(); };
 $('btnUndo').onclick=()=>undo();
-$('btnTrains').onclick=()=>openTrains();
+$('btnTrains').onclick=()=>trainsButton();
 $('btnEng').onclick=()=>openEngineers();
 $('btnGoals').onclick=()=>openGoals();
 $('btnUnder').onclick=()=>openGoals();
@@ -10010,7 +10024,7 @@ window.addEventListener('keydown',e=>{
       setTool(TOOLS[(TOOLS.indexOf(tool)+1)%TOOLS.length]); toast(TOOL_NAME[tool]); break;
     case k>='1'&&k<='6'&&k.length===1: setTool(TOOLS[+k-1]); break;
     case k==='v'||k==='V': enter3D(following?'chase':'orbit'); break;
-    case k==='t'||k==='T': openTrains(); break;
+    case k==='t'||k==='T': trainsButton(); break;
     case k==='e'||k==='E': openEngineers(); break;
     case k==='c'||k==='C': openGoals(); break;
     case k==='u'||k==='U'||((e.ctrlKey||e.metaKey)&&(k==='z'||k==='Z')): undo(); break;
@@ -21794,7 +21808,7 @@ const Shed={
      of "Choose a train" with the same rows and rules (trainRows: Your engines in game money, Add more engines in real money),
      the search box and chips (trainFind, shared with the card) and the list. The highlighted engine stands on the turntable
      (the swap waits a moment, SWAP_MS, so scrolling down the list on the stick does not build every engine on the way) and
-     its card sits under the picture: name, era, facts, history and its buttons. zone: where the D-pad is ('top' the List
+     its card sits under the picture: name, era, facts, history and its buttons. zone: where the D-pad is ('top' the Your railway, List
      view and Back buttons, 'tabs', 'find', 'chips', 'list', 'acts' the card's buttons). */
   tab:0, sel:-1, zone:'list', chipIdx:0, topIdx:0, model:null, broken:false, _rows:null, _t:0, SWAP_MS:150, dir:1, _wait:0,
   /* PK1: a third tab, Engine packs (tab 2), when any pack is on sale. Highlighting a pack turns the turntable through its engines
@@ -21832,7 +21846,7 @@ const Shed={
     this._rows=null; if(k&&!this.list().includes(k)){ trainFind.q=''; trainFind.chip='all'; this._rows=null; }   /* (a search that hides it is cleared) */
     const R=this.rows(); let i=k?R.findIndex(it=>it.type===k):-1;
     if(i<0) i=R.findIndex(it=>it.type&&this.fleet(it.type).length); if(i<0) i=R.findIndex(it=>it.type); if(i<0) i=R.findIndex((it,j)=>this.pickable(j));
-    this.ret=ret||null; this.was3d=V3.active; releaseFocus(); this.active=true; this.zone='list'; this.focus=0; this.model=null; this.sel=i;
+    trainsShed=null; this.ret=ret||null; this.was3d=V3.active; releaseFocus(); this.active=true; this.zone='list'; this.focus=0; this.model=null; this.sel=i;
     const it=R[i]; this.cur=it&&it.type?it.type:it&&it.pack?this.list()[0]:this.cur&&TRAIN_TYPES[this.cur]?this.cur:(this.list()[0]||V3.heroTypes()[0]);
     document.body.classList.add('shed'); this.ui(); this.render(); this.dir=1; this.want();
     if(this.deferOK()&&(!V3.shedDrawn||!V3.shedReady(this.cur,this.rep(this.cur)))) return this.opening();
@@ -21919,6 +21933,12 @@ const Shed={
   close(go){ if(!this.active) return; clearTimeout(this._t); this._t=0; clearTimeout(this._cyc); this._cyc=0; this.active=false; this._opening=false; this.ui().classList.remove('opening'); const inp=this.inp(); if(inp&&document.activeElement===inp) inp.blur();
     document.body.classList.remove('shed'); V3.shedHide(); V3.shedWant([]); V3.shedLook({}); Sound.drone(null); dirty=true; this.model=null;
     if(V3.active) V3.status(); else defaultStatus(); const r=this.ret; this.ret=null; if(go) go(); else if(r) r(); },
+  /* Your railway: the Trains & timetables card; its Back (or Close) opens the shed again on this tab and engine, Back from there
+     going where this shed's Back went */
+  railway(){ const k=this.cur, t=this.tab, r=this.ret; this.close(()=>{ trainsShed=()=>{ if(!this.open(k,r,{tab:t})||!this.active) return; if(this.tab!==t) this.setTab(t); }; openTrains(); }); },
+  /* the top bar's buttons, left to right (the remote's topIdx) */
+  TOP:['shedRail','shedList','shedBack'],
+  topGo(i){ const id=this.TOP[i]; if(id==='shedRail') this.railway(); else if(id==='shedList') this.listView(); else this.close(); },
   /* List view: today's "Choose a train" card, remembered for next time */
   listView(){ trainListOnce=true; const t=this.tab; this.close(()=>buyTrain(undefined,t)); },
   /* the card's buttons for the highlighted row */
@@ -21946,7 +21966,7 @@ const Shed={
     else if(it.owned) A.push({label:'Yours: see it on Your engines',fn:()=>{ this.setTab(0); this.show(k); }});
     else if(EDITION==='web') A.push({label:'How to get it',detail:'It is in the Fire TV version of Train Masters',fn:()=>this.storeCard(k)});
     else { const pr=this.price(k); A.push({label:`Add to your collection${pr?` · ${pr}`:''}`,detail:'Opens its store card',real:true,fn:()=>this.storeCard(k)});
-      const P=packOf(k); if(P&&packsShown().includes(P)&&this.nTabs()>2){ const I=packInfo(P); if(I.nw.length>1) A.push({label:`Also in the ${P.name} pack · ${I.types.length} engines${I.pr?` for ${I.pr}`:''}`,fn:()=>this.showPack(P.id)}); } }   /* (gently: a look at its pack) */
+      }   /* (its pack is a small chip in the facts row instead of a button: 24 Nov 2026, the extra button made the card half the TV screen, PK2) */
     return A; },
   /* the Engine packs tab with pack id highlighted */
   showPack(id){ if(!this.active||this.nTabs()<3) return; if(this.tab!==2){ this.tab=2; trainTab=2; } trainFind.q=''; trainFind.chip='all'; this._rows=null;
@@ -21954,15 +21974,15 @@ const Shed={
   inp(){ const el=$('shedUI'); return el?el.querySelector('.shfind input'):null; },
   ui(){ let el=$('shedUI'); if(el) return el;
     el=document.createElement('div'); el.id='shedUI'; document.body.appendChild(el);
-    el.innerHTML=`<div class="shtop"><span class="shtitle">🏛️ Heritage shed</span><span class="shcount"></span><span class="shkeys">▲ ▼ the list · ◀ ▶ another engine · OK: its buttons · Back: leave</span><button class="tb" id="shedList" type="button">☰ List view</button><button class="tb" id="shedBack" type="button">✕ Back</button></div>
+    el.innerHTML=`<div class="shtop"><span class="shtitle">🏛️<span class="shtt"> Heritage shed</span></span><span class="shcount"></span><span class="shkeys">▲ ▼ the list · ◀ ▶ another engine · OK: its buttons · Back: leave</span><button class="tb" id="shedRail" type="button" title="Your trains, timetables, company and departure boards">🚆 Your railway</button><button class="tb" id="shedList" type="button">☰ List<span class="shrl"> view</span></button><button class="tb" id="shedBack" type="button">✕ Back</button></div>
       <div class="shopen">Opening the shed…</div><button class="sharrow l" id="shedPrev" type="button" aria-label="Previous engine">‹</button><button class="sharrow r" id="shedNext" type="button" aria-label="Next engine">›</button>
       <div class="shpanel"><div class="shtabs" role="tablist"></div><div class="shbanner"></div>
         <div class="shfind"><span class="mfi" aria-hidden="true">🔍</span><input type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="40" placeholder="Search engines (name, era, type…)" aria-label="Search engines"><button class="shclear" type="button" tabindex="-1" aria-label="Clear search">✕</button></div>
         <div class="shchips" role="toolbar"></div><div class="shlist" role="listbox"></div></div>
       <div class="shcard"></div>`;
-    el.addEventListener('click',e=>{ const bl=e.target.closest('.shblurb'); if(bl){ if(this._hasMore) this.toggleMore(); return; }   /* the card shows the first lines of the history: a tap (or More) shows it all */
+    el.addEventListener('click',e=>{ const pk=e.target.closest('[data-pack]'); if(pk){ e.stopPropagation(); this.showPack(pk.dataset.pack); return; } const bl=e.target.closest('.shblurb'); if(bl){ if(this._hasMore) this.toggleMore(); return; }   /* the card shows the first lines of the history: a tap (or More) shows it all */
       const b=e.target.closest('button'); if(!b||!this.active) return; e.stopPropagation();
-      if(b.id==='shedBack') this.close(); else if(b.id==='shedList') this.listView(); else if(b.id==='shedPrev') this.step(-1); else if(b.id==='shedNext') this.step(1);
+      if(b.id==='shedBack') this.close(); else if(b.id==='shedList') this.listView(); else if(b.id==='shedRail') this.railway(); else if(b.id==='shedPrev') this.step(-1); else if(b.id==='shedNext') this.step(1);
       else if(b.classList.contains('shclear')){ this.find('',null); }
       else if(b.dataset.tab!=null){ this.zone='list'; this.setTab(+b.dataset.tab); this.render(); }
       else if(b.dataset.chip!=null){ this.chipIdx=+b.dataset.ci; this.find(null,b.dataset.chip); }
@@ -21987,7 +22007,7 @@ const Shed={
   renderFocus(){ this.renderTop(); this.renderTabs(); this.renderList(true); this.renderCard(); },
   renderTop(){ const el=this.ui(), L=this.list(), n=L.indexOf(this.cur);
     el.querySelector('.shcount').textContent=L.length?`${n<0?'–':n+1} / ${L.length}`:'';
-    el.querySelector('#shedList').classList.toggle('sel',this.zone==='top'&&this.topIdx===0); el.querySelector('#shedBack').classList.toggle('sel',this.zone==='top'&&this.topIdx===1);
+    this.TOP.forEach((id,i)=>el.querySelector('#'+id).classList.toggle('sel',this.zone==='top'&&this.topIdx===i));
     },
   renderTabs(){ const el=this.ui(), T=el.querySelector('.shtabs'), B=el.querySelector('.shbanner'), tb=this.tabbed();
     T.style.display=tb?'':'none'; B.style.display=tb&&this.tab>=1?'':'none';
@@ -22029,7 +22049,9 @@ const Shed={
       :it.owned?`<div class="shown">✓ Yours: it is on Your engines, bought with game money like any other</div>`
       :i.locked?`<div class="shnot shroom">${EDITION==='web'?'🛍️ In the works showroom: it is in the Fire TV version':`🛍️ In the works showroom${pr?` · <b>${this.esc(pr)}</b> real money`:''} · ${this.esc(storeShort())}`}</div>`:'';
     C.className='shcard'+(i.owned?'':' not')+(i.locked?' room':'');
-    C.innerHTML=`<div class="shhead"><div class="shname">${ty.name}</div><div class="shmeta">${tags}</div></div><div class="shfacts">${facts}${own}</div><p class="shblurb${this.more?' full':''}">${this.esc(this.blurb(k))}</p>${acts}${hint}`;
+    const PK=i.locked&&!it.owned&&EDITION!=='web'?packOf(k):null, PI=PK&&packsShown().includes(PK)&&this.nTabs()>2?packInfo(PK):null;
+    const pchip=PI&&PI.nw.length>1?`<span class="shpack" data-pack="${PK.id}" title="See the pack: ${this.esc(PK.name)}">📦 In a pack · ${PI.types.length} for ${PI.pr?this.esc(PI.pr):'less'}</span>`:'';   /* (gently; tap it, or the Engine packs tab, to see the pack) */
+    C.innerHTML=`<div class="shhead"><div class="shname">${ty.name}</div><div class="shmeta">${tags}${pchip?' · '+pchip:''}</div></div><div class="shfacts">${facts}${own}</div><p class="shblurb${this.more?' full':''}">${this.esc(this.blurb(k))}</p>${acts}${hint}`;
     /* HS4: the history is cut to its first lines (the card stays short and the engine gets the room); More, after the card's
        buttons (Down reaches it on the remote), shows it all in place and becomes Less. Only when there is more to show. */
     const bl=C.querySelector('.shblurb'); this._hasMore=this.more||(!!bl&&bl.scrollHeight>bl.clientHeight+2);
@@ -22050,8 +22072,8 @@ const Shed={
     if(back){ if(Z==='acts') this.go('list'); else if(this.searching()) this.find('','all'); else this.close(); return done(); }
     if(k&&k.length===1&&k!==' '&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&inp){ this.zone='find'; inp.focus(); inp.value+=k; this.find(inp.value,null); return done(); }   /* a letter: start a search with it */
     const LR=k==='ArrowLeft'?-1:k==='ArrowRight'?1:0, UD=k==='ArrowUp'?-1:k==='ArrowDown'?1:0;
-    if(Z==='top'){ if(LR){ const t=clamp(this.topIdx+LR,0,1); if(t!==this.topIdx){ this.topIdx=t; Sound.tick(); this.renderTop(); } }
-      else if(UD>0) this.go(tb?'tabs':'find'); else if(ok){ if(this.topIdx===0) this.listView(); else this.close(); } else return; return done(); }
+    if(Z==='top'){ if(LR){ const t=clamp(this.topIdx+LR,0,this.TOP.length-1); if(t!==this.topIdx){ this.topIdx=t; Sound.tick(); this.renderTop(); } }
+      else if(UD>0) this.go(tb?'tabs':'find'); else if(ok) this.topGo(this.topIdx); else return; return done(); }
     if(Z==='tabs'){ if(LR) this.setTab(this.tab+LR); else if(UD<0){ this.topIdx=0; this.go('top'); } else if(UD>0||ok) this.go('find'); else return; return done(); }
     if(Z==='find'){ if(UD<0){ this.topIdx=0; this.go(tb?'tabs':'top'); } else if(UD>0) this.go('chips'); else if(ok){ inp.focus(); try{ inp.click(); }catch(_){} } else if(LR&&tb) this.setTab(this.tab+LR); else return; return done(); }
     if(Z==='chips'){ const N=EngineFind.CHIPS.length; if(LR){ const t=clamp(this.chipIdx+LR,0,N-1); if(t!==this.chipIdx){ this.chipIdx=t; Sound.tick(); this.renderTabs(); } }
