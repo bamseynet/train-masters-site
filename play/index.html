@@ -1715,10 +1715,10 @@ const WHISTLES={
 };
 /* Heritage engines' own sounds (Heritage Collection extra #5, Peter's go 23 Nov 2026). Steam (kind 'steam'): one recipe
    per exhaust beat, played by Sound.chuff(..., kind). accent: loudness of each beat in a turn (its length is the beats a
-   turn: four for the Pacifics, three for the Merchant Navy's three cylinders), lilt: each beat's share of the turn
+   turn: four for two and four cylinders, six for three cylinders), lilt: each beat's share of the turn
    (never a metronome), rate: beats a second against the usual beat at the same share of top speed (small wheels turn
    quicker), pitch: the blast's pitch, len: its length, thump: the deep chimney "whump" under it, crisp: the sharp "ch"
-   on top, lp: how bright the recorded beat is let through.
+   on top, lp: how bright the recorded beat is (since 26 Nov 2026 the lift of a high shelf, +6 dB at 4500).
    Diesel and electric (kind 'diesel' / 'electric'): one continuous engine voice (Sound.drone) for the engine nearest
    the camera; vol is its bus gain (quiet). Diesel (HS5, 24 Nov 2026: Peter heard the old two-sawtooth drone as
    "thrumming electricity"): a chain of separate firing pulses, made once per engine as a short loop (dieselLoop) and
@@ -1728,9 +1728,15 @@ const WHISTLES={
    the engine's uneven firing order; thump: the pitch (Hz) of each pulse's low thud, dec its fade (s), tw its weight;
    rasp: the exhaust's noisy rasp, rc its brightness (Hz), rdec its fade; clat: mechanical clatter between pulses;
    jit / lump: how much each pulse wanders in timing / level (the shunters most); lp: the low-pass at idle and full
-   power; whine / wv: the turbocharger's (or gearbox's) faint whistle, its pitch at idle and full power and its level.
+   power; whine / wv: the turbocharger's (or gearbox's) faint whistle, its pitch at idle and full power and its level;
+   body: the 110-380 Hz engine sound under the pulses; tc: how quickly (s) the engine answers the power setting (1.2 s
+   for a locomotive, the default, so opening up is heard building; 0.5 s for the railcars' small engines).
+   26 Nov 2026 (Peter's go, docs/research/2026-11-26-sound-reference.md): the big diesels brighter and less boomy (tw
+   0.6, body 1.6, lp about 1.45x, more rasp, D1), the railcars a purr more than a chug (D2), the Class 08 a little more
+   rasp pulling (D5); and every diesel a little louder working than idling (+3.7 dB, Sound.drone, D3).
    croc and the other electrics: a steady transformer hum (hum Hz and its harmonics) under the traction motors'
-   whine, rising whine[0]..whine[1] Hz with speed. */
+   whine, rising whine[0]..whine[1] Hz with speed, over a soft bed of broadband sound (blowers, rolling and air) that
+   rises with it too (E1). */
 /* exhaust beats a turn of the driving wheels (26 Nov 2026), for the beats close up in 3D, in step with the wheels: two
    cylinders 4; three cylinders 6 (the Merchant Navy and rebuilt West Country, Royal Scot, Jubilee, V2, A1, A2, Schools);
    four-cylinder engines (Duchess, Princess Royal, King) have their inside and outside cranks paired so the two on a side
@@ -1738,48 +1744,61 @@ const WHISTLES={
 const STEAM_BPT={mn:6,wc:6,rscot:6,jub:6,v2:6,a1pc:6,a2:6,schools:6,shay:0};
 const beatsPerTurn=k=>STEAM_BPT[k]!=null?STEAM_BPT[k]:4;
 const HERITAGE_SOUNDS={
-  duchess:{kind:'steam',accent:[1,0.72,0.9,0.66],lilt:[1,1.05,0.97,0.98],rate:1,pitch:0.84,len:1.15,thump:1.25,crisp:0.18,lp:2600},
-  duchessS:{kind:'steam',accent:[1,0.76,0.92,0.7],lilt:[1,1.03,0.98,0.99],rate:1.04,pitch:0.9,len:1.08,thump:1.1,crisp:0.22,lp:3000},   /* the same engine, a touch brisker and brighter */
-  mn:{kind:'steam',accent:[1,0.74,0.84],lilt:[1,1.12,0.88],rate:1.25,pitch:0.98,len:0.9,thump:0.95,crisp:0.3,lp:3600},   /* three cylinders: a lilting three-beat */
-  f9:{kind:'steam',accent:[1,0.6,0.86,0.56],lilt:[1,1.1,0.92,0.98],rate:1.12,pitch:0.68,len:1.32,thump:1.7,crisp:0.12,lp:1800},   /* small wheels, big cylinders: deep and heavy */
-  terrier:{kind:'steam',accent:[1,0.82,0.95,0.78],lilt:[1,1.03,0.98,0.99],rate:1.65,pitch:1.38,len:0.52,thump:0.45,crisp:0.55,lp:5600},   /* tiny wheels: sharp, quick and bright */
-  c47:{kind:'diesel',pulse:[4.8,7.8],fire:[1,0.62,0.86,0.7,0.95,0.58],thump:58,dec:0.045,rasp:0.55,rc:900,rdec:0.05,clat:0.12,jit:0.07,lump:0.14,lp:[1100,2600],whine:[1100,1900],wv:0.045,vol:0.07},
+  /* 26 Nov 2026 (Peter's go, docs/research/2026-11-26-sound-reference.md): every recipe brighter (lp about 1.6x, crisp
+     1.5x: real beats are much brighter than ours were, S5); the four-cylinder engines (Duchess, Princess Royal, King)
+     beat evenly, as real ones do, almost a continuous roar (S3); the three-cylinder engines have six beats a turn, an
+     even three-beat twice over with only a faint once-a-turn lift (S4); the two-cylinder recipes' accents gentler (S1) */
+  duchess:{kind:'steam',accent:[1,0.93,0.97,0.91],lilt:[1,1.01,0.99,1],rate:1,pitch:0.84,len:1.15,thump:1.25,crisp:0.27,lp:4200},
+  duchessS:{kind:'steam',accent:[1,0.94,0.97,0.92],lilt:[1,1.01,0.99,1],rate:1.04,pitch:0.9,len:1.08,thump:1.1,crisp:0.33,lp:4800},   /* the same engine, a touch brisker and brighter */
+  pr:{kind:'steam',accent:[1,0.92,0.96,0.9],lilt:[1,1.01,0.99,1],rate:1,pitch:0.87,len:1.12,thump:1.2,crisp:0.3,lp:4400},   /* Princess Royal: the Duchess's elder sister, four cylinders, as even */
+  king:{kind:'steam',accent:[1,0.93,0.97,0.91],lilt:[1,1.01,0.99,1],rate:1.02,pitch:0.9,len:1.1,thump:1.2,crisp:0.37,lp:4400},   /* GWR King: four cylinders, an even roar like 6024's on the Lickey, a shade crisper */
+  mn:{kind:'steam',accent:[1,0.9,0.95,0.96,0.9,0.95],lilt:[1,1.04,0.96,1,1.04,0.96],rate:1.1,pitch:0.98,len:0.9,thump:0.95,crisp:0.45,lp:5000},   /* three cylinders: an even six beats a turn */
+  wc:{kind:'steam',accent:[1,0.9,0.95,0.96,0.9,0.95],lilt:[1,1.03,0.97,1,1.03,0.97],rate:1.14,pitch:1.02,len:0.86,thump:0.88,crisp:0.45,lp:5000},   /* rebuilt West Country: the Merchant Navy's lighter sister */
+  rscot:{kind:'steam',accent:[1,0.91,0.95,0.97,0.91,0.95],lilt:[1,1.03,0.97,1,1.03,0.97],rate:1.06,pitch:0.94,len:0.95,thump:1.05,crisp:0.4,lp:4600},   /* Royal Scot: three cylinders, big wheels */
+  jub:{kind:'steam',accent:[1,0.9,0.94,0.96,0.9,0.94],lilt:[1,1.03,0.97,1,1.03,0.97],rate:1.08,pitch:0.97,len:0.9,thump:0.95,crisp:0.42,lp:4800},   /* Jubilee: three cylinders, a little lighter than the Royal Scot */
+  v2:{kind:'steam',accent:[1,0.9,0.95,0.96,0.9,0.95],lilt:[1,1.05,0.95,1,1.05,0.95],rate:1.12,pitch:0.95,len:0.95,thump:1.1,crisp:0.38,lp:4400},   /* Gresley V2: the conjugated valve gear's slight unevenness */
+  a1pc:{kind:'steam',accent:[1,0.92,0.96,0.97,0.92,0.96],lilt:[1,1.03,0.97,1,1.03,0.97],rate:1.05,pitch:0.93,len:1,thump:1.1,crisp:0.4,lp:4600},   /* Peppercorn A1: three cylinders, three sets of valve gear: even */
+  a2:{kind:'steam',accent:[1,0.91,0.95,0.96,0.91,0.95],lilt:[1,1.03,0.97,1,1.03,0.97],rate:1.12,pitch:0.96,len:0.95,thump:1.05,crisp:0.4,lp:4600},   /* Peppercorn A2: the A1's smaller-wheeled sister */
+  schools:{kind:'steam',accent:[1,0.9,0.95,0.96,0.9,0.95],lilt:[1,1.03,0.97,1,1.03,0.97],rate:1.08,pitch:1,len:0.85,thump:0.85,crisp:0.45,lp:5000},   /* Schools 4-4-0: three cylinders in a small engine */
+  f9:{kind:'steam',accent:[1,0.78,0.92,0.74],lilt:[1,1.05,0.96,0.99],rate:1.12,pitch:0.68,len:1.32,thump:1.7,crisp:0.18,lp:2900},   /* small wheels, big cylinders: deep and heavy */
+  terrier:{kind:'steam',accent:[1,0.88,0.96,0.85],lilt:[1,1.03,0.98,0.99],rate:1.65,pitch:1.38,len:0.52,thump:0.45,crisp:0.7,lp:7500},   /* tiny wheels: sharp, quick and bright */
+  c47:{kind:'diesel',pulse:[4.8,7.8],fire:[1,0.62,0.86,0.7,0.95,0.58],thump:58,dec:0.045,tw:0.6,body:1.6,rasp:0.7,rc:1100,rdec:0.05,clat:0.12,jit:0.07,lump:0.14,lp:[1500,3400],whine:[1100,1900],wv:0.045,vol:0.07},
   croc:{kind:'electric',hum:100,whine:[160,980],lp:1400,vol:0.06},
   c91:{kind:'electric',hum:100,whine:[260,1650],lp:2200,vol:0.05},   /* Class 91 (24 Nov 2026): a smooth modern hum, its motors' whine rising high with speed */
   tgv:{kind:'electric',hum:100,whine:[300,1900],lp:2600,vol:0.05},   /* Sud-Est high-speed train (24 Nov 2026): a smooth hum, its motors' whine rising highest of all */
-  c33:{kind:'diesel',pulse:[5.2,8.2],fire:[1,0.6,0.84,0.68],thump:56,dec:0.042,rasp:0.55,rc:900,rdec:0.05,clat:0.12,jit:0.07,lump:0.15,lp:[1100,2600],whine:[900,1500],wv:0.035,vol:0.07},   /* Class 33 (24 Nov 2026): the Sulzer's busy, throbbing beat */
+  c33:{kind:'diesel',pulse:[5.2,8.2],fire:[1,0.6,0.84,0.68],thump:56,dec:0.042,tw:0.6,body:1.9,rasp:0.6,rc:980,rdec:0.045,clat:0.12,jit:0.07,lump:0.15,lp:[1600,3800],whine:[900,1500],wv:0.035,vol:0.07},   /* Class 33 (24 Nov 2026): the Sulzer's busy, throbbing beat */
   c86:{kind:'electric',hum:100,whine:[210,1350],lp:1900,vol:0.055},   /* Class 86 (24 Nov 2026): a deep transformer hum, its motors' whine rising with speed (lower than the Class 91's) */
   c73:{kind:'electric',hum:100,whine:[190,1200],lp:1750,vol:0.055},   /* Class 73 (24 Nov 2026): the hum of its third-rail motors, a little lower than the Class 86's */
   c90:{kind:'electric',hum:100,whine:[235,1500],lp:2050,vol:0.05},   /* Class 90 (24 Nov 2026): a steady hum, its motors' whine rising between the Class 86's and the Class 91's */
-  c67:{kind:'diesel',pulse:[4.5,7.5],fire:[1,0.78,0.9,0.74],thump:52,dec:0.05,rasp:0.5,rc:820,rdec:0.05,clat:0.08,jit:0.05,lump:0.1,lp:[1000,2400],whine:[850,1650],wv:0.045,vol:0.068},   /* Class 67 (24 Nov 2026): a steady, smooth two-stroke beat with a high turbo whine */
-  c68:{kind:'diesel',pulse:[5.2,8.2],fire:[1,0.7,0.86,0.66,0.94,0.72],thump:56,dec:0.04,rasp:0.5,rc:950,rdec:0.045,clat:0.1,jit:0.05,lump:0.11,lp:[1100,2600],whine:[700,1380],wv:0.035,vol:0.068},   /* Class 68 (24 Nov 2026): the busy, even beat of a big four-stroke V16 with a softer turbo whine */
+  c67:{kind:'diesel',pulse:[4.5,7.5],fire:[1,0.78,0.9,0.74],thump:52,dec:0.05,tw:0.6,body:1.6,rasp:0.65,rc:1000,rdec:0.05,clat:0.08,jit:0.05,lump:0.1,lp:[1400,3500],whine:[850,1650],wv:0.045,vol:0.068},   /* Class 67 (24 Nov 2026): a steady, smooth two-stroke beat with a high turbo whine */
+  c68:{kind:'diesel',pulse:[5.2,8.2],fire:[1,0.7,0.86,0.66,0.94,0.72],thump:56,dec:0.04,tw:0.6,body:1.6,rasp:0.65,rc:1130,rdec:0.045,clat:0.1,jit:0.05,lump:0.11,lp:[1600,3800],whine:[700,1380],wv:0.035,vol:0.068},   /* Class 68 (24 Nov 2026): the busy, even beat of a big four-stroke V16 with a softer turbo whine */
   gg1:{kind:'electric',hum:50,whine:[140,900],lp:1250,vol:0.06},   /* GG1 (24 Nov 2026): the low growl of a 25-cycle transformer under its motors' rising whine */
   e94:{kind:'electric',hum:67,whine:[120,760],lp:1100,vol:0.065},   /* German E 94 (24 Nov 2026): the deep, slow hum of a low-frequency transformer and the growl of its heavy nose-hung motors */
   ae47:{kind:'electric',hum:84,whine:[150,900],lp:1250,vol:0.062},   /* Swiss Ae 4/7 (24 Nov 2026): the low-frequency hum of an old Swiss transformer and the soft whirr of its Buchli gears */
-  pacer:{kind:'diesel',pulse:[5.8,9],fire:[1,0.6,0.85,0.65,0.9,0.55],thump:80,dec:0.025,tw:0.55,rasp:0.45,rc:1400,rdec:0.03,clat:0.35,jit:0.09,lump:0.2,lp:[1600,3200],whine:[620,1050],wv:0.02,vol:0.065},   /* Pacer (24 Nov 2026): a busy, rattling bus engine, higher and quicker than the main-line diesels */
-  c101:{kind:'diesel',pulse:[5.5,8.6],fire:[1,0.7,0.88,0.66,0.92,0.72],thump:74,dec:0.03,tw:0.6,rasp:0.4,rc:1200,rdec:0.035,clat:0.2,jit:0.07,lump:0.14,lp:[1400,2900],whine:[480,880],wv:0.03,vol:0.065},   /* Class 101 (24 Nov 2026): the steady chug of its underfloor bus-type diesels and the gearbox whine */
+  pacer:{kind:'diesel',pulse:[5.8,9],fire:[1,0.6,0.85,0.65,0.9,0.55],thump:80,dec:0.025,tw:0.4,body:2,rasp:0.55,rc:1400,rdec:0.03,clat:0.35,jit:0.09,lump:0.2,lp:[2200,4000],tc:0.5,whine:[620,1050],wv:0.02,vol:0.065},   /* Pacer (24 Nov 2026): a busy, rattling bus engine, higher and quicker than the main-line diesels */
+  c101:{kind:'diesel',pulse:[5.5,8.6],fire:[1,0.7,0.88,0.66,0.92,0.72],thump:74,dec:0.03,tw:0.4,body:2,rasp:0.5,rc:1200,rdec:0.035,clat:0.2,jit:0.07,lump:0.14,lp:[2200,4000],tc:0.5,whine:[480,880],wv:0.03,vol:0.065},   /* Class 101 (24 Nov 2026): the steady chug of its underfloor bus-type diesels and the gearbox whine */
   c800:{kind:'electric',hum:100,whine:[230,1450],lp:1900,vol:0.042},   /* Class 800 (24 Nov 2026): a quiet modern hum, its motors' whine soft and smooth */
-  nohab:{kind:'diesel',pulse:[4,7],fire:[1,0.8,0.9,0.74,0.96,0.78],thump:44,dec:0.06,rasp:0.6,rc:650,rdec:0.07,clat:0.1,jit:0.06,lump:0.11,lp:[850,2000],whine:[700,1200],wv:0.02,vol:0.07},   /* Scandinavian bulldog diesel (24 Nov 2026): the American two-stroke's deep, steady drum */
-  c60:{kind:'diesel',pulse:[4,6.8],fire:[1,0.72,0.88,0.64],thump:42,dec:0.065,rasp:0.6,rc:650,rdec:0.075,clat:0.1,jit:0.07,lump:0.14,lp:[850,2000],whine:[800,1300],wv:0.045,vol:0.075},   /* Class 60 (24 Nov 2026): a slow, heavy beat, lowest of the diesels */
-  c56:{kind:'diesel',pulse:[4.2,7.2],fire:[1,0.68,0.92,0.6,0.84],thump:46,dec:0.06,rasp:0.65,rc:700,rdec:0.07,clat:0.14,jit:0.08,lump:0.16,lp:[900,2200],whine:[950,1650],wv:0.045,vol:0.075},   /* Class 56 (24 Nov 2026): the big Ruston's growling beat, a shade quicker than the Class 60's */
+  nohab:{kind:'diesel',pulse:[4,7],fire:[1,0.8,0.9,0.74,0.96,0.78],thump:44,dec:0.06,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.07,clat:0.1,jit:0.06,lump:0.11,lp:[1200,2900],whine:[700,1200],wv:0.02,vol:0.07},   /* Scandinavian bulldog diesel (24 Nov 2026): the American two-stroke's deep, steady drum */
+  c60:{kind:'diesel',pulse:[4,6.8],fire:[1,0.72,0.88,0.64],thump:42,dec:0.065,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.075,clat:0.1,jit:0.07,lump:0.14,lp:[1200,2900],whine:[800,1300],wv:0.045,vol:0.075},   /* Class 60 (24 Nov 2026): a slow, heavy beat, lowest of the diesels */
+  c56:{kind:'diesel',pulse:[4.2,7.2],fire:[1,0.68,0.92,0.6,0.84],thump:46,dec:0.06,tw:0.6,body:1.6,rasp:0.8,rc:880,rdec:0.07,clat:0.14,jit:0.08,lump:0.16,lp:[1300,3200],whine:[950,1650],wv:0.045,vol:0.075},   /* Class 56 (24 Nov 2026): the big Ruston's growling beat, a shade quicker than the Class 60's */
   n700:{kind:'electric',hum:120,whine:[340,2200],lp:3000,vol:0.05},   /* Japanese bullet train of 2007 (24 Nov 2026): a 60 Hz hum, its motors' whine rising highest of all */
   c390:{kind:'electric',hum:100,whine:[280,1800],lp:2400,vol:0.05},   /* Class 390 tilting train (24 Nov 2026): a smooth 50 Hz hum, its motors' whine rising a little above the Class 91's */
-  c158:{kind:'diesel',pulse:[5.9,9.2],fire:[1,0.82,0.9,0.78,0.94,0.8],thump:84,dec:0.022,tw:0.5,rasp:0.35,rc:1500,rdec:0.028,clat:0.1,jit:0.05,lump:0.1,lp:[1500,3200],whine:[1300,2300],wv:0.03,vol:0.055},   /* Class 158 (24 Nov 2026): the underfloor engines' smooth hum, quicker and softer than a locomotive's beat */
-  v200:{kind:'diesel',pulse:[5.5,8.5],fire:[1,0.84,0.92,0.8],thump:62,dec:0.035,rasp:0.4,rc:1000,rdec:0.04,clat:0.08,jit:0.05,lump:0.09,lp:[1100,2600],whine:[1400,2400],wv:0.045,vol:0.065},   /* German V200 (24 Nov 2026): two fast-running engines' smooth hum over the rising whine of the hydraulic gearboxes */
-  shay:{kind:'steam',accent:[1,0.8,0.9],lilt:[1,1.04,0.96],rate:2.6,pitch:1.08,len:0.55,thump:0.7,crisp:0.42,lp:4200},   /* Shay (24 Nov 2026): three cylinders geared fast: a busy, quick three-beat at a walking pace */
-  bpull:{kind:'diesel',pulse:[5,8],fire:[1,0.82,0.9,0.78,0.94,0.8],thump:56,dec:0.045,rasp:0.45,rc:900,rdec:0.05,clat:0.08,jit:0.05,lump:0.1,lp:[1000,2400],whine:[1000,1700],wv:0.035,vol:0.06},   /* Blue Pullman (24 Nov 2026): the big diesels' smooth, unhurried beat */
-  c08:{kind:'diesel',pulse:[4.4,6.4],fire:[1,0.55,0.85,0.5,0.95,0.6],thump:50,dec:0.05,rasp:0.55,rc:1000,rdec:0.05,clat:0.55,jit:0.12,lump:0.32,lp:[1800,3400],vol:0.07},   /* Class 08 shunter: the big six-cylinder's slow, lumpy, rattling plod (HS5, 24 Nov 2026) */
+  c158:{kind:'diesel',pulse:[5.9,9.2],fire:[1,0.82,0.9,0.78,0.94,0.8],thump:84,dec:0.022,tw:0.4,body:2,rasp:0.45,rc:1500,rdec:0.028,clat:0.1,jit:0.05,lump:0.1,lp:[2200,4000],tc:0.5,whine:[1300,2300],wv:0.03,vol:0.055},   /* Class 158 (24 Nov 2026): the underfloor engines' smooth hum, quicker and softer than a locomotive's beat */
+  v200:{kind:'diesel',pulse:[5.5,8.5],fire:[1,0.84,0.92,0.8],thump:62,dec:0.035,tw:0.6,body:1.6,rasp:0.55,rc:1180,rdec:0.04,clat:0.08,jit:0.05,lump:0.09,lp:[1600,3800],whine:[1400,2400],wv:0.045,vol:0.065},   /* German V200 (24 Nov 2026): two fast-running engines' smooth hum over the rising whine of the hydraulic gearboxes */
+  shay:{kind:'steam',accent:[1,0.8,0.9],lilt:[1,1.04,0.96],rate:2.6,pitch:1.08,len:0.55,thump:0.7,crisp:0.6,lp:6000},   /* Shay (24 Nov 2026): three cylinders geared fast: a busy, quick three-beat at a walking pace */
+  bpull:{kind:'diesel',pulse:[5,8],fire:[1,0.82,0.9,0.78,0.94,0.8],thump:56,dec:0.045,tw:0.6,body:1.6,rasp:0.6,rc:1080,rdec:0.05,clat:0.08,jit:0.05,lump:0.1,lp:[1400,3500],whine:[1000,1700],wv:0.035,vol:0.06},   /* Blue Pullman (24 Nov 2026): the big diesels' smooth, unhurried beat */
+  c08:{kind:'diesel',pulse:[4.4,6.4],fire:[1,0.55,0.85,0.5,0.95,0.6],thump:50,dec:0.05,body:1.3,rasp:0.55,rc:1000,rdec:0.05,clat:0.55,jit:0.12,lump:0.32,lp:[2200,3800],vol:0.07},   /* Class 08 shunter: the big six-cylinder's slow, lumpy, rattling plod (HS5, 24 Nov 2026) */
   c03:{kind:'diesel',pulse:[5.4,7.4],fire:[1,0.5,0.8,0.62,0.9,0.45,0.75,0.58],thump:64,dec:0.035,rasp:0.6,rc:1300,rdec:0.04,clat:0.7,jit:0.14,lump:0.38,lp:[2200,4000],vol:0.068},   /* Class 03 shunter: a little Gardner engine, quicker, rattlier and lumpier still (HS5, 24 Nov 2026) */
-  c20:{kind:'diesel',pulse:[5,8],fire:[1,0.7,0.84,0.6],thump:56,dec:0.045,rasp:0.5,rc:860,rdec:0.05,clat:0.12,jit:0.07,lump:0.14,lp:[1050,2500],whine:[1800,3000],wv:0.04,vol:0.068},   /* Class 20: an even chug and the English Electric turbo's high whistle (HS5, 24 Nov 2026) */
-  c31:{kind:'diesel',pulse:[4.6,7.6],fire:[1,0.66,0.9,0.62,0.8,0.7],thump:54,dec:0.048,rasp:0.55,rc:820,rdec:0.055,clat:0.14,jit:0.08,lump:0.16,lp:[1000,2400],whine:[1200,2000],wv:0.03,vol:0.068},   /* Class 31: a gruff, slightly uneven beat and a soft turbo (HS5, 24 Nov 2026) */
-  c40:{kind:'diesel',pulse:[4.4,7.4],fire:[1,0.66,0.8,0.62,0.9,0.7,0.84,0.6],thump:52,dec:0.05,rasp:0.5,rc:850,rdec:0.055,clat:0.1,jit:0.06,lump:0.12,lp:[1000,2400],whine:[1700,2900],wv:0.075,vol:0.068},   /* Class 40, the Whistler: a deep chug under the loudest turbo whistle (HS5, 24 Nov 2026) */
-  c50:{kind:'diesel',pulse:[4.6,7.8],fire:[1,0.7,0.9,0.6],thump:54,dec:0.05,rasp:0.6,rc:800,rdec:0.06,clat:0.1,jit:0.06,lump:0.13,lp:[1000,2500],whine:[1500,2600],wv:0.05,vol:0.07},   /* Class 50: a deep, roaring beat and a strong turbo whine (HS5, 24 Nov 2026) */
-  peak:{kind:'diesel',pulse:[4.2,7.2],fire:[1,0.6,0.82,0.66],thump:50,dec:0.055,rasp:0.55,rc:780,rdec:0.06,clat:0.12,jit:0.07,lump:0.15,lp:[950,2300],whine:[1000,1750],wv:0.04,vol:0.07},   /* Class 45 Peak: the big Sulzer's slow, heavy thud (HS5, 24 Nov 2026) */
-  c37:{kind:'diesel',pulse:[4.6,7.8],fire:[1,0.64,0.88,0.7,0.94,0.6,0.8,0.66],thump:50,dec:0.05,rasp:0.7,rc:760,rdec:0.06,clat:0.12,jit:0.07,lump:0.15,lp:[950,2400],whine:[1300,2300],wv:0.05,vol:0.07},   /* Class 37: the famous growl, a rough rasp over a deep chug (HS5, 24 Nov 2026) */
+  c20:{kind:'diesel',pulse:[5,8],fire:[1,0.7,0.84,0.6],thump:56,dec:0.045,tw:0.6,body:1.6,rasp:0.65,rc:1040,rdec:0.05,clat:0.12,jit:0.07,lump:0.14,lp:[1500,3600],whine:[1800,3000],wv:0.04,vol:0.068},   /* Class 20: an even chug and the English Electric turbo's high whistle (HS5, 24 Nov 2026) */
+  c31:{kind:'diesel',pulse:[4.6,7.6],fire:[1,0.66,0.9,0.62,0.8,0.7],thump:54,dec:0.048,tw:0.6,body:1.6,rasp:0.7,rc:1000,rdec:0.055,clat:0.14,jit:0.08,lump:0.16,lp:[1400,3500],whine:[1200,2000],wv:0.03,vol:0.068},   /* Class 31: a gruff, slightly uneven beat and a soft turbo (HS5, 24 Nov 2026) */
+  c40:{kind:'diesel',pulse:[4.4,7.4],fire:[1,0.66,0.8,0.62,0.9,0.7,0.84,0.6],thump:52,dec:0.05,tw:0.6,body:1.6,rasp:0.65,rc:1030,rdec:0.055,clat:0.1,jit:0.06,lump:0.12,lp:[1400,3500],whine:[1700,2900],wv:0.075,vol:0.068},   /* Class 40, the Whistler: a deep chug under the loudest turbo whistle (HS5, 24 Nov 2026) */
+  c50:{kind:'diesel',pulse:[4.6,7.8],fire:[1,0.7,0.9,0.6],thump:54,dec:0.05,tw:0.6,body:1.6,rasp:0.75,rc:980,rdec:0.06,clat:0.1,jit:0.06,lump:0.13,lp:[1400,3600],whine:[1500,2600],wv:0.05,vol:0.07},   /* Class 50: a deep, roaring beat and a strong turbo whine (HS5, 24 Nov 2026) */
+  peak:{kind:'diesel',pulse:[4.2,7.2],fire:[1,0.6,0.82,0.66],thump:50,dec:0.055,tw:0.6,body:1.6,rasp:0.7,rc:960,rdec:0.06,clat:0.12,jit:0.07,lump:0.15,lp:[1400,3300],whine:[1000,1750],wv:0.04,vol:0.07},   /* Class 45 Peak: the big Sulzer's slow, heavy thud (HS5, 24 Nov 2026) */
+  c37:{kind:'diesel',pulse:[4.6,7.8],fire:[1,0.64,0.88,0.7,0.94,0.6,0.8,0.66],thump:50,dec:0.05,tw:0.6,body:1.6,rasp:0.85,rc:950,rdec:0.06,clat:0.12,jit:0.07,lump:0.15,lp:[1300,3200],whine:[1300,2300],wv:0.05,vol:0.07},   /* Class 37: the famous growl, a rough rasp over a deep chug (HS5, 24 Nov 2026) */
   c55:{kind:'diesel',pulse:[5.6,8.8],fire:[1,0.8,0.92,0.76,0.88,0.72],thump:64,dec:0.038,body:1.25,rasp:0.7,rc:1300,rdec:0.045,clat:0.1,jit:0.05,lump:0.12,lp:[1300,3000],whine:[1300,2200],wv:0.055,vol:0.065},   /* Deltic: two busy two-stroke engines, a quick, buzzing, raspy beat (HS5, 24 Nov 2026) */
-  c66:{kind:'diesel',pulse:[4.2,7.2],fire:[1,0.75,0.9,0.7],thump:48,dec:0.055,rasp:0.6,rc:720,rdec:0.065,clat:0.1,jit:0.06,lump:0.12,lp:[900,2200],whine:[1600,2700],wv:0.045,vol:0.07},   /* Class 66: the American two-stroke's slow drum and a high turbo (HS5, 24 Nov 2026) */
-  hst:{kind:'diesel',pulse:[5.6,8.8],fire:[1,0.8,0.9,0.76],thump:60,dec:0.035,rasp:0.6,rc:1200,rdec:0.04,clat:0.08,jit:0.05,lump:0.1,lp:[1200,2900],whine:[2000,3400],wv:0.06,vol:0.065},   /* HST power car: a quick beat under the Valenta's famous turbo scream (HS5, 24 Nov 2026) */
-  funit:{kind:'diesel',pulse:[4,7],fire:[1,0.82,0.94,0.78],thump:46,dec:0.055,rasp:0.6,rc:680,rdec:0.065,clat:0.1,jit:0.06,lump:0.1,lp:[850,2100],whine:[600,1000],wv:0.02,vol:0.07},   /* EMD F-unit: the deep, steady two-stroke drum, only a faint blower whine (HS5, 24 Nov 2026) */
+  c66:{kind:'diesel',pulse:[4.2,7.2],fire:[1,0.75,0.9,0.7],thump:48,dec:0.055,tw:0.6,body:1.6,rasp:0.75,rc:900,rdec:0.065,clat:0.1,jit:0.06,lump:0.12,lp:[1300,3200],whine:[1600,2700],wv:0.055,vol:0.07},   /* Class 66: the American two-stroke's slow drum and a high turbo (HS5, 24 Nov 2026) */
+  hst:{kind:'diesel',pulse:[5.6,8.8],fire:[1,0.8,0.9,0.76],thump:60,dec:0.035,tw:0.6,body:1.8,rasp:0.7,rc:1380,rdec:0.04,clat:0.08,jit:0.05,lump:0.1,lp:[1700,4200],whine:[2000,3400],wv:0.06,vol:0.065},   /* HST power car: a quick beat under the Valenta's famous turbo scream (HS5, 24 Nov 2026) */
+  funit:{kind:'diesel',pulse:[4,7],fire:[1,0.82,0.94,0.78],thump:46,dec:0.055,tw:0.6,body:1.6,rasp:0.75,rc:860,rdec:0.065,clat:0.1,jit:0.06,lump:0.1,lp:[1200,3000],whine:[600,1000],wv:0.02,vol:0.07},   /* EMD F-unit: the deep, steady two-stroke drum, only a faint blower whine (HS5, 24 Nov 2026) */
   c373:{kind:'electric',hum:100,whine:[320,2050],lp:2800,vol:0.05},   /* Channel Tunnel high-speed train (24 Nov 2026): a smooth hum, its motors' whine rising high, between the Sud-Est train's and the bullet train's */
   c87:{kind:'electric',hum:100,whine:[230,1500],lp:2050,vol:0.055},   /* Class 87 (24 Nov 2026): a deep transformer hum, its motors' whine rising a shade higher than the Class 86's */
 };
@@ -1792,9 +1811,18 @@ const Sound=(()=>{
     Promise.all([...STEAM_CLIPS.chuff.map(dec),dec(STEAM_CLIPS.hiss)]).then(r=>{ steam={chuff:r.slice(0,-1).filter(Boolean),hiss:r[r.length-1]}; }); }
   function ctx(){ if(!settings.sound||paused)return null; if(!ac){ try{ ac=new (window.AudioContext||window.webkitAudioContext)(); }catch(_){ return null; } loadSteam(ac); }
     if(ac.state==='suspended') ac.resume(); return ac; }
-  function bus(a,gain){ if(!comp){ comp=a.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=6; comp.connect(a.destination); }
-    const g=a.createGain(); g.gain.value=gain; g.connect(comp); return g; }
+  function master(a){ if(!comp){ comp=a.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=6; comp.connect(a.destination); } return comp; }
+  function bus(a,gain){ const g=a.createGain(); g.gain.value=gain; g.connect(master(a)); return g; }
   function noiseBuf(a){ if(noise)return noise; const n=a.sampleRate*1.6|0; noise=a.createBuffer(1,n,a.sampleRate); const d=noise.getChannelData(0); let b=0; for(let i=0;i<n;i++){ const w=Math.random()*2-1; b=0.97*b+0.03*w; d[i]=w*0.6+b*3; } return noise; }
+  /* an electric's soft bed of broadband sound (E1, 26 Nov 2026): 2 s of noise already band-passed to about 300-2500 Hz
+     (the blowers, the rolling and the air), its ends blended so it loops without a seam. Made once, played by one
+     looping source per electric voice, so the bed costs one audio node and no filter */
+  let bedB=null;
+  function bedBuf(a){ if(bedB) return bedB; const sr=a.sampleRate, n=sr*2|0, X=sr*0.05|0, d=new Float32Array(n+X), kh=Math.exp(-2*Math.PI*300/sr), kl=1-Math.exp(-2*Math.PI*2500/sr);
+    let h=0, p=0, l1=0, l2=0, e=0; for(let i=0;i<n+X;i++){ const w=Math.random()*2-1; h=kh*(h+w-p); p=w; l1+=kl*(h-l1); l2+=kl*(l1-l2); d[i]=l2; }
+    for(let i=0;i<X;i++) d[i]=d[i]*i/X+d[n+i]*(1-i/X);
+    for(let i=0;i<n;i++) e+=d[i]*d[i]; const s=0.16/Math.sqrt(e/n+1e-12);
+    bedB=a.createBuffer(1,n,sr); const o=bedB.getChannelData(0); for(let i=0;i<n;i++) o[i]=d[i]*s; return bedB; }
   function env(g,t,peak,att,dec){ g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(peak,t+att); g.gain.exponentialRampToValueAtTime(0.0001,t+att+dec); }
   function tone(a,out,type,f,t,peak,dec,f2){ const o=a.createOscillator(), g=a.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+dec); env(g,t,peak,0.004,dec); o.connect(g).connect(out); o.start(t); o.stop(t+dec+0.05); }
   function burst(a,out,f,q,t,peak,dec,type='bandpass',att=0.003){ const s=a.createBufferSource(); s.buffer=noiseBuf(a); const fl=a.createBiquadFilter(); fl.type=type; fl.frequency.value=f; fl.Q.value=q; const g=a.createGain(); env(g,t,peak,att,dec); s.connect(fl).connect(g).connect(out); s.start(t,Math.random()*0.5); s.stop(t+att+dec+0.05); }
@@ -1804,9 +1832,14 @@ const Sound=(()=>{
   function exhaust(a,R,g,F,beat,delay){
     const t=a.currentTime+0.005+delay, r=(0.95+Math.random()*0.1)*R.pitch, L=(0.4-0.27*F)*R.len, out=bus(a,g);
     if(steam&&steam.chuff.length){ const src=a.createBufferSource(), lp=a.createBiquadFilter(), eg=a.createGain();
-      src.buffer=steam.chuff[(beat*2+Math.floor(Math.random()*2))%steam.chuff.length]; src.playbackRate.value=(0.94+0.14*F)*Math.sqrt(R.pitch)+Math.random()*0.04;
-      lp.type='lowpass'; lp.frequency.value=R.lp; lp.Q.value=0.7; eg.gain.setValueAtTime(1.5,t); eg.gain.setValueAtTime(1.5,t+L*0.55); eg.gain.linearRampToValueAtTime(0.0001,t+L*1.25);
-      src.connect(lp).connect(eg).connect(out); src.start(t); src.stop(t+L*1.3+0.05); }
+      src.buffer=pickClip(); src.playbackRate.value=(0.94+0.14*F)*Math.sqrt(R.pitch)+Math.random()*0.04;
+      /* at speed each beat lasts a little longer, so the beats begin to run together into a roar as real ones do (S6, 26 Nov 2026) */
+      const k=Math.max(0,F-0.45)/0.55, E=L*(1.25+0.5*k);
+      /* brighter (S5, 26 Nov 2026): the recorded beat has little above 2-3 kHz, so a low-pass there did nothing; real
+         beats have far more bark and "ch". So this filter is now a high shelf from 900 Hz, lifting the bark and the top by the
+         recipe's brightness (lp 4500: +6 dB; the 9F about +4, the Terrier the most, at most +9) */
+      lp.type='highshelf'; lp.frequency.value=900; lp.gain.value=Math.min(9,6*R.lp/4500); eg.gain.setValueAtTime(1.5,t); eg.gain.setValueAtTime(1.5,t+L*(0.55+0.25*k)); eg.gain.linearRampToValueAtTime(0.0001,t+E);
+      src.connect(lp).connect(eg).connect(out); src.start(t); src.stop(t+E+0.1); }
     else { const src=a.createBufferSource(); src.buffer=noiseBuf(a); const bp=a.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=1.1;
       bp.frequency.setValueAtTime(1600*r,t); bp.frequency.exponentialRampToValueAtTime(450*r,t+L);
       const eg=a.createGain(); eg.gain.setValueAtTime(0.0001,t); eg.gain.exponentialRampToValueAtTime(1.1,t+0.012); eg.gain.exponentialRampToValueAtTime(0.0001,t+L);
@@ -1868,24 +1901,45 @@ const Sound=(()=>{
     if(R.kind==='diesel'){
       /* the firing pulses (dieselLoop), played quicker the harder the engine works (F: effort 0 idle .. 1 working hard,
          Chuff.effort), with a slow wander in pace so the loop never sounds like one; a low-pass opening a little as it
-         works; the faint turbo whistle rising with it. Every change glides (about 1-2 s with Chuff's own smoothing) */
+         works; the faint turbo whistle rising with it. Every change glides: a locomotive builds up over about 1.2 s (R.tc,
+         D4 26 Nov 2026: so opening up is heard rising, not a quick swoop; a real one takes 5-15 s), a railcar 0.5 s */
       const lp=a.createBiquadFilter(); lp.type='lowpass'; lp.Q.value=0.7; lp.frequency.value=R.lp[0]+(R.lp[1]-R.lp[0])*F0; lp.connect(out);
       const src=a.createBufferSource(); src.buffer=dieselLoop(a,type,R); src.loop=true; osc.push(src); src.connect(lp);
       const up=R.pulse[1]/R.pulse[0]-1; src.playbackRate.value=1+up*F0;
       const wd=O('sine',0.31), wdg=a.createGain(); wdg.gain.value=0.025; wd.connect(wdg).connect(src.playbackRate);
       let wh=null, wg=null; if(R.whine){ wh=O('sine',R.whine[0]+(R.whine[1]-R.whine[0])*F0); wg=a.createGain(); wg.gain.value=R.wv*(0.15+0.85*F0); wh.connect(wg).connect(out); }
       osc.forEach(o=>o.start(n));
+      const tc=voiceTc(R);
       return {type, out, osc, set(F,t){
-        src.playbackRate.setTargetAtTime(1+up*F,t,0.5); lp.frequency.setTargetAtTime(R.lp[0]+(R.lp[1]-R.lp[0])*F,t,0.5);
-        if(wh){ wh.frequency.setTargetAtTime(R.whine[0]+(R.whine[1]-R.whine[0])*F,t,0.6); wg.gain.setTargetAtTime(R.wv*(0.15+0.85*F),t,0.6); } }};
+        src.playbackRate.setTargetAtTime(1+up*F,t,tc); lp.frequency.setTargetAtTime(R.lp[0]+(R.lp[1]-R.lp[0])*F,t,tc);
+        if(wh){ wh.frequency.setTargetAtTime(R.whine[0]+(R.whine[1]-R.whine[0])*F,t,Math.max(0.6,tc)); wg.gain.setTargetAtTime(R.wv*(0.15+0.85*F),t,Math.max(0.6,tc)); } }};
     }
     const lp=a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=R.lp; lp.connect(out);
     const h1=O('sine',R.hum), h2=O('sine',R.hum*2), h3=O('square',R.hum/2), g1=a.createGain(), g2=a.createGain(), g3=a.createGain(); g1.gain.value=0.5; g2.gain.value=0.22; g3.gain.value=0.07;
     h1.connect(g1).connect(lp); h2.connect(g2).connect(lp); h3.connect(g3).connect(lp);                                                                          /* transformer hum */
     const w=O('triangle',R.whine[0]+(R.whine[1]-R.whine[0])*F0), wg=a.createGain(); wg.gain.value=0.02+0.3*F0; const vib=O('sine',0.7), vd=a.createGain(); vd.gain.value=3; vib.connect(vd).connect(w.frequency); w.connect(wg).connect(lp);   /* the motors */
+    const bd=a.createBufferSource(); bd.buffer=bedBuf(a); bd.loop=true; osc.push(bd); bd.connect(wg);   /* their soft broadband bed (E1): rising with the motors */
     osc.forEach(o=>o.start(n));
     return {type, out, osc, set(F,t){ w.frequency.setTargetAtTime(R.whine[0]+(R.whine[1]-R.whine[0])*F,t,0.6); wg.gain.setTargetAtTime(0.02+0.3*F,t,0.6); }};
   }
+  /* a diesel's loudness by its effort (D3, 26 Nov 2026: a real one gets much louder as it opens up; ours never did):
+     0.65 idling to 1 working hard, about +3.7 dB, eased at the engine's own pace (voiceTc) */
+  const voiceTc=R=>R.tc||1.2, effortLevel=(R,F)=>R.kind==='diesel'?0.65+0.35*F:1;
+  /* a plain steam engine's beat: one of the recorded beats (never the same twice). Brighter (S5, 26 Nov 2026: real beats
+     have far more bark and "ch" than these recordings did): a +6 dB high shelf from 900 Hz (the bark at 400-2000
+     Hz is where ours lacked most), which also carries the beat's level to the mix in place of a bus gain, so no extra
+     node. At speed a beat is held 0.16 s and gone by 0.34 s,
+     so the beats begin to run together as real ones do (S6; it was 0.12 and 0.24) */
+  /* which recorded beat to play: any of them at random, never the same twice running (S1, 26 Nov 2026). Each beat of
+     a turn used to play its own pair, and as the recordings differ in loudness that alone made a fixed four-beat
+     pattern, whatever the accents said */
+  let lastClip=-1;
+  function pickClip(){ const n=steam.chuff.length; let i=Math.floor(Math.random()*n); if(n>1&&i===lastClip) i=(i+1+Math.floor(Math.random()*(n-1)))%n; lastClip=i; return steam.chuff[i]; }
+  function clip(a,g,F,beat,delay){ const t=a.currentTime+0.005+delay, G=g*1.5, sh=a.createBiquadFilter(), src=a.createBufferSource(), eg=a.createGain();
+    sh.type='highshelf'; sh.frequency.value=900; sh.gain.value=6; sh.connect(master(a));
+    src.buffer=pickClip(); src.playbackRate.value=0.94+0.14*F+Math.random()*0.05;
+    eg.gain.setValueAtTime(G,t); if(F>0.45){ eg.gain.setValueAtTime(G,t+0.16); eg.gain.linearRampToValueAtTime(0.0001,t+0.34); }
+    src.connect(eg).connect(sh); src.start(t); src.stop(t+0.5); }
   function droneStop(){ if(!D) return; const d=D; D=null; fadeD=d; try{ const n=d.out.context.currentTime; d.out.gain.cancelScheduledValues(n); d.out.gain.setTargetAtTime(0.0001,n,0.15); d.osc.forEach(o=>o.stop(n+0.8)); }catch(_){} }
   /* an engine voice cut off at once (going to the background): its looping nodes stopped and unplugged */
   function droneKill(d){ if(!d) return; d.osc.forEach(o=>{ try{ o.stop(); }catch(_){} }); try{ d.out.disconnect(); }catch(_){} }
@@ -1904,20 +1958,22 @@ const Sound=(()=>{
       if(!a){ droneStop(); return; }
       if(D&&D.type!==type) droneStop();
       const F=Math.max(0,Math.min(1,f)); if(!D) D=droneMake(a,type,R,bus(a,0.0001),F);
-      const n=a.currentTime; D.out.gain.setTargetAtTime(Math.max(0.0001,R.vol*Math.min(1,g)),n,0.2); D.set(F,n); },
-    droneOn(){ return D?D.type:null; },
+      const n=a.currentTime, T=effortLevel(R,F); D.lv=D.lv==null?T:D.lv+(T-D.lv)*(1-Math.exp(-Math.max(0,n-D.lt)/voiceTc(R))); D.lt=n;
+      D.out.gain.setTargetAtTime(Math.max(0.0001,R.vol*Math.min(1,g)*D.lv),n,0.2); D.set(F,n); },
+    droneOn(){ return D?D.type:null; }, droneLevel(){ return D&&D.lv!=null?D.lv:null; },
     /* tests (tests/diesel_sound.py): an engine voice rendered offline, secs long at speed share F, at its own bus gain;
        resolves to {sr, data (samples), nodes (audio nodes it is made of), ms (making them, with a new diesel loop)} */
     render(type,F=0,secs=2,sr=24000,plan=null){ const R=HERITAGE_SOUNDS[type]; if(!R||R.kind==='steam') return Promise.resolve(null);
       const a=new OfflineAudioContext(1,Math.round(secs*sr),sr); let nodes=0;
       for(const m of ['createOscillator','createBufferSource','createGain','createBiquadFilter']){ const f=a[m]; a[m]=function(){ nodes++; return f.apply(this,arguments); }; }
-      const out=a.createGain(); out.gain.value=R.vol; out.connect(a.destination); nodes=0; const t0=performance.now(); const v=droneMake(a,type,R,out,F); const ms=performance.now()-t0, n=nodes;
-      if(plan) for(const [t,E] of plan) v.set(E,t);   /* plan: [[seconds, effort], ...] (a drive: pulling away, cruising, coasting) */
+      const out=a.createGain(); out.gain.value=R.vol*effortLevel(R,F); out.connect(a.destination); nodes=0; const t0=performance.now(); const v=droneMake(a,type,R,out,F); const ms=performance.now()-t0, n=nodes;
+      if(plan) for(const [t,E] of plan){ v.set(E,t); out.gain.setTargetAtTime(R.vol*effortLevel(R,E),t,voiceTc(R)); }   /* plan: [[seconds, effort], ...] (a drive: pulling away, cruising, coasting), louder as it works as in drone() */
       return a.startRendering().then(b=>({sr, data:Array.from(b.getChannelData(0)), nodes:n, ms})); },
-    /* tests: Heritage steam beats rendered offline, beats [{t (s), g, f, beat}], secs long; resolves to {sr, data} */
-    renderBeats(kind,beats,secs=4,sr=24000){ const R=HERITAGE_SOUNDS[kind]; if(!R||R.kind!=='steam') return Promise.resolve(null);
+    /* tests: steam beats rendered offline, beats [{t (s), g, f, beat}], secs long, in a Heritage engine's own voice or
+       (kind null) a plain engine's recorded beat; resolves to {sr, data} (null: no such recipe, or the recordings not loaded) */
+    renderBeats(kind,beats,secs=4,sr=24000){ const R=kind?HERITAGE_SOUNDS[kind]:null; if(kind?(!R||R.kind!=='steam'):!(steam&&steam.chuff.length)) return Promise.resolve(null);
       const a=new OfflineAudioContext(1,Math.round(secs*sr),sr), keep=comp; comp=null;
-      try{ for(const b of beats) exhaust(a,R,b.g,b.f,b.beat,b.t); } finally{ comp=keep; }
+      try{ for(const b of beats) if(R) exhaust(a,R,b.g,b.f,b.beat,b.t); else clip(a,b.g,Math.min(1,b.f),b.beat,b.t); } finally{ comp=keep; }
       return a.startRendering().then(b=>({sr, data:Array.from(b.getChannelData(0))})); },
     // a heavy rail panel slamming into ballast: punchy kick, latch 'clack', steel ring, short rumble,
     // plus (optional) a bright note that climbs with your streak and a sparkle every 10 pieces
@@ -2005,10 +2061,7 @@ const Sound=(()=>{
     // a deep chimney 'whump' under it and a crisp 'ch' on top. Long and heavy pulling away, short and light at speed.
     chuff(g=0.2,f=0.5,beat=0,delay=0,kind){ const a=ctx(); if(!a)return; const F=Math.min(1,f);   /* delay: seconds from now, so beats land on the audio clock, not on frames */
       const R=kind&&HERITAGE_SOUNDS[kind]; if(R&&R.kind==='steam') return exhaust(a,R,g,F,beat,delay);   /* a Heritage engine's own beat */
-      if(steam&&steam.chuff.length){ const t=a.currentTime+0.005+delay, out=bus(a,g*1.5), src=a.createBufferSource(), eg=a.createGain();
-        src.buffer=steam.chuff[(beat*2+Math.floor(Math.random()*2))%steam.chuff.length]; src.playbackRate.value=0.94+0.14*F+Math.random()*0.05;   // never the same beat twice
-        eg.gain.setValueAtTime(1,t); if(F>0.45){ eg.gain.setValueAtTime(1,t+0.12); eg.gain.linearRampToValueAtTime(0.0001,t+0.24); }   // at speed: a shorter, lighter beat
-        src.connect(eg).connect(out); src.start(t); src.stop(t+0.5); return; }
+      if(steam&&steam.chuff.length) return clip(a,g,F,beat,delay);
       const t=a.currentTime+0.005+delay, out=bus(a,g), r=0.93+Math.random()*0.14, L=0.4-0.27*F;
       const src=a.createBufferSource(); src.buffer=noiseBuf(a); const bp=a.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=1.1;
       bp.frequency.setValueAtTime(1600*r,t); bp.frequency.exponentialRampToValueAtTime(450*r,t+L);
@@ -2039,7 +2092,13 @@ const Sound=(()=>{
 function viewTile(){ if(V3.active){ const c=V3.camXZ&&V3.camXZ(); return c?{x:c.x,y:c.z}:null; } return cam.z>0.9?{x:cam.x/TS,y:cam.y/TS}:null; }
 // Steam engines chuff in time with their speed (8 Nov 2026): slow heavy beats pulling away, quickening to a fast rhythm.
 // Only the two closest engines you're watching (followed, or near the middle of a zoomed-in view); diesels never chuff.
-const Chuff=(()=>{ const ph=new WeakMap(), eff=new WeakMap(), ACCENT=[1,0.7,0.88,0.64], LILT=[1,1.08,0.94,0.98];   // CHUFF-chuff-CHUFF-chuff, never a metronome
+const Chuff=(()=>{ const ph=new WeakMap(), eff=new WeakMap(), ACCENT=[1,0.84,0.93,0.8], LILT=[1,1.04,0.97,0.99];   /* CHUFF-chuff-CHUFF-chuff, never a metronome */
+  /* 26 Nov 2026 (Peter's go, docs/research/2026-11-26-sound-reference.md): real beats vary mostly at random, not in a
+     fixed pattern (a fixed pattern explained 84-95% of ours, 5-33% of a real engine's). So the accents are gentler (S1)
+     and the lilt lighter (S2), and each beat is a little louder or softer (up to 10%) and, when not tied to the drawn
+     wheels, a little early or late (up to 3%) at random. In step with the wheels (3D, close up) only the loudness varies,
+     so every beat still lands as its wheel passes. vary(false): none of it (tests) */
+  let vary=true; const lv=()=>vary?0.9+0.2*Math.random():1, tj=()=>vary?0.97+0.06*Math.random():1;
   /* A diesel's effort, 0..1 (26 Nov 2026, Peter: a real diesel's note follows the driver's power setting, not the
      speed): standing, coasting or braking (slowing, running into a station) 0, a soft idle; pulling away (gaining speed,
      t.pull from simUpdate) or climbing (the ground rising under the line ahead; not on bridges or in tunnels) up to 1,
@@ -2081,14 +2140,14 @@ const Chuff=(()=>{ const ph=new WeakMap(), eff=new WeakMap(), ACCENT=[1,0.7,0.88
       const W=V3.active&&V3.wheelBeat?V3.wheelBeat(t):null;
       if(W){ const now=W.ph+W.rate*dt; if(st.k==null||st.k<=now-1||st.k>now+2) st.k=Math.floor(now)+1; let n=0;
         while(W.rate>0&&st.k-now<=W.rate*0.1&&n++<4){ const b=((st.k%W.nb)+W.nb)%W.nb, a=b%nb;
-          Sound.chuff(0.2*w*A[a]*(f<0.3?1.25:1),f,a,Math.max(0,(st.k-now)/W.rate),R?t.type:undefined); st.k++; }
+          Sound.chuff(0.2*w*A[a]*(f<0.3?1.25:1)*lv(),f,a,Math.max(0,(st.k-now)/W.rate),R?t.type:undefined); st.k++; }
         continue; }
       st.k=null;
       if(st.b>=nb) st.b=0;
       st.p+=rate*dt; let n=0;
-      while(st.p>=LT[st.b]&&n++<3){ st.p-=LT[st.b]; const late=st.p/Math.max(rate,1e-6);   /* the beat fell this long ago, mid-frame */
-        Sound.chuff(0.2*w*A[st.b]*(f<0.3?1.25:1),f,st.b,Math.max(0,0.1-late),R?t.type:undefined); st.b=(st.b+1)%nb; } } }   /* 9 Nov 2026: a steady 100 ms ahead on the audio clock; on frames it galloped (114-239 ms for a 180 ms beat) */
-  return {update, effort:t=>eff.get(t)}; })();
+      while(st.p>=LT[st.b]*(st.j||1)&&n++<3){ st.p-=LT[st.b]*(st.j||1); const late=st.p/Math.max(rate,1e-6);   /* the beat fell this long ago, mid-frame */
+        Sound.chuff(0.2*w*A[st.b]*(f<0.3?1.25:1)*lv(),f,st.b,Math.max(0,0.1-late),R?t.type:undefined); st.b=(st.b+1)%nb; st.j=tj(); } } }   /* 9 Nov 2026: a steady 100 ms ahead on the audio clock; on frames it galloped (114-239 ms for a 180 ms beat) */
+  return {update, effort:t=>eff.get(t), ACCENT, LILT, vary(on){ vary=!!on; }}; })();
 // Countryside life (Pro, 8 Nov 2026): villagers out and about by time of day, cars and lorries on the roads (they wait at
 // level crossings), tractors working the arable fields by day, ducks on ponds, boats on lakes and yachts near the shore.
 // Kept cheap: ~100 agents at most, 2D draws only when zoomed in and on screen, 3D uses one instanced mesh per kind.
@@ -22191,7 +22250,7 @@ const Shed={
      turning wheels, in its own voice for a Heritage engine; a Heritage diesel or electric idles. Quiet. */
   sound(dt){ const k=this.cur, ty=TRAIN_TYPES[k], R=HERITAGE_SOUNDS[k]; if(!settings.sound||document.hidden||!ty){ Sound.drone(null); return; }
     if(R&&R.kind!=='steam'){ Sound.drone(k,0.7,0.06); return; } Sound.drone(null); if(!ty.steam) return;
-    const A=R?R.accent:[1,0.7,0.88,0.64], LT=R?R.lilt:[1,1.08,0.94,0.98], st=this.beat, rate=V3.shedInfo().tps*A.length;
+    const A=R?R.accent:Chuff.ACCENT, LT=R?R.lilt:Chuff.LILT, st=this.beat, rate=V3.shedInfo().tps*A.length;
     if(st.b>=A.length) st.b=0; st.p+=rate*dt; let n=0;
     while(st.p>=LT[st.b]&&n++<2){ st.p-=LT[st.b]; Sound.chuff(0.07*A[st.b],0.05,st.b,0.05,R?k:undefined); st.b=(st.b+1)%A.length; } },
 };
