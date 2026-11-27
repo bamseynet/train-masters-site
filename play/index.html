@@ -1276,8 +1276,9 @@ const fmt=n=>(n<0?'−£':'£')+Math.round(Math.abs(n)).toLocaleString('en-GB');
 /* ---------------- settings (remembered in this browser) ---------------- */
 const AUTO_SPEEDS=[{name:'Slow',ms:600},{name:'Normal',ms:360},{name:'Fast',ms:180},{name:'Very fast',ms:70}];
 if(isTV) document.documentElement.classList.add('tv');   // no blurred panels on TV: they drop a Fire TV Stick to ~4 fps
-let settings={q3d:isTV?'low':'high', autoSpeed:1, money:true, sound:true, grid:false, labels:true, shake:true, chimes:true, aboard:false, weather:true, advisor:false, postcard:false};   /* aboard: "All aboard!" starts Off (22 Nov 2026, Peter) */
+let settings={q3d:isTV?'low':'high', autoSpeed:1, money:true, sound:true, grid:false, labels:true, shake:true, chimes:true, aboard:false, diesel:false, weather:true, advisor:false, postcard:false};   /* aboard: "All aboard!" starts Off (22 Nov 2026, Peter); diesel: diesel engines' throb starts Off (27 Nov 2026, Peter: "very jarring") */
 try{ Object.assign(settings, JSON.parse(localStorage.getItem('tm-settings')||'{}')); }catch(_){}
+if(!settings.dieselV1){ settings.diesel=false; settings.dieselV1=true; try{ localStorage.setItem('tm-settings',JSON.stringify(settings)); }catch(_){} }   /* everyone starts with diesel sounds off once (27 Nov 2026); turning them on later is kept */
 if(!settings.aboardV2){ settings.aboard=false; settings.aboardV2=true; try{ localStorage.setItem('tm-settings',JSON.stringify(settings)); }catch(_){} }   /* players who still had the old default (on) get it switched off once; nobody chose it. Turning it on later is kept */
 function saveSettings(){ try{ localStorage.setItem('tm-settings',JSON.stringify(settings)); }catch(_){} }
 if(settings.plays==null){ try{ if(localStorage.getItem('tm-last')) settings.plays=3; }catch(_){} }   /* played before the count existed (a railway is remembered): an experienced player, no map key by itself */
@@ -1855,6 +1856,8 @@ const Sound=(()=>{
      loop in the engine's firing order, each a little early or late and louder or softer, now and then with a clack of
      clatter between, over a faint mechanical rumble. All seeded by the engine's name, so it always sounds the same.
      Made in one go (a few ms on a PC: three pulses' worth of sums, the rest only adds them up), never while playing. */
+  /* diesels much quieter (27 Nov 2026, Peter: "considerably quieter... very jarring"): every diesel voice at 30% (-10 dB) */
+  const DIESEL_QUIET=0.3, vvol=R=>R.vol*(R.kind==='diesel'?DIESEL_QUIET:1);
   const LOOPS=new Map();
   function dieselLoop(a,type,R){
     let L=LOOPS.get(type); if(L) return L;
@@ -1959,15 +1962,15 @@ const Sound=(()=>{
       if(D&&D.type!==type) droneStop();
       const F=Math.max(0,Math.min(1,f)); if(!D) D=droneMake(a,type,R,bus(a,0.0001),F);
       const n=a.currentTime, T=effortLevel(R,F); D.lv=D.lv==null?T:D.lv+(T-D.lv)*(1-Math.exp(-Math.max(0,n-D.lt)/voiceTc(R))); D.lt=n;
-      D.out.gain.setTargetAtTime(Math.max(0.0001,R.vol*Math.min(1,g)*D.lv),n,0.2); D.set(F,n); },
+      D.out.gain.setTargetAtTime(Math.max(0.0001,vvol(R)*Math.min(1,g)*D.lv),n,0.2); D.set(F,n); },
     droneOn(){ return D?D.type:null; }, droneLevel(){ return D&&D.lv!=null?D.lv:null; },
     /* tests (tests/diesel_sound.py): an engine voice rendered offline, secs long at speed share F, at its own bus gain;
        resolves to {sr, data (samples), nodes (audio nodes it is made of), ms (making them, with a new diesel loop)} */
     render(type,F=0,secs=2,sr=24000,plan=null){ const R=HERITAGE_SOUNDS[type]; if(!R||R.kind==='steam') return Promise.resolve(null);
       const a=new OfflineAudioContext(1,Math.round(secs*sr),sr); let nodes=0;
       for(const m of ['createOscillator','createBufferSource','createGain','createBiquadFilter']){ const f=a[m]; a[m]=function(){ nodes++; return f.apply(this,arguments); }; }
-      const out=a.createGain(); out.gain.value=R.vol*effortLevel(R,F); out.connect(a.destination); nodes=0; const t0=performance.now(); const v=droneMake(a,type,R,out,F); const ms=performance.now()-t0, n=nodes;
-      if(plan) for(const [t,E] of plan){ v.set(E,t); out.gain.setTargetAtTime(R.vol*effortLevel(R,E),t,voiceTc(R)); }   /* plan: [[seconds, effort], ...] (a drive: pulling away, cruising, coasting), louder as it works as in drone() */
+      const out=a.createGain(); out.gain.value=vvol(R)*effortLevel(R,F); out.connect(a.destination); nodes=0; const t0=performance.now(); const v=droneMake(a,type,R,out,F); const ms=performance.now()-t0, n=nodes;
+      if(plan) for(const [t,E] of plan){ v.set(E,t); out.gain.setTargetAtTime(vvol(R)*effortLevel(R,E),t,voiceTc(R)); }   /* plan: [[seconds, effort], ...] (a drive: pulling away, cruising, coasting), louder as it works as in drone() */
       return a.startRendering().then(b=>({sr, data:Array.from(b.getChannelData(0)), nodes:n, ms})); },
     /* tests: steam beats rendered offline, beats [{t (s), g, f, beat}], secs long, in a Heritage engine's own voice or
        (kind null) a plain engine's recorded beat; resolves to {sr, data} (null: no such recipe, or the recordings not loaded) */
@@ -2119,6 +2122,7 @@ const Chuff=(()=>{ const ph=new WeakMap(), eff=new WeakMap(), ACCENT=[1,0.84,0.9
     if(!settings.sound||document.hidden||!trains.length||!sim.speed){ Sound.drone(null); return; }
     const vp=viewTile(), cand=[]; let hum=null;
     for(const t of trains){ const ty=TRAIN_TYPES[t.type]; if(!ty) continue; const R=HERITAGE_SOUNDS[t.type], drone=R&&R.kind!=='steam';
+      if(drone&&R.kind==='diesel'&&!settings.diesel) continue;   /* diesel sounds: off unless switched on in Settings */
       if(!drone&&(!ty.steam||t.state!=='moving'||!(t.v>0))) continue;
       const fol=following===t||(V3.active&&V3.cabTrain()===t); let w=0; if(fol) w=1; else if(vp){ const h=trainHeadPt(t); w=Math.max(0,1-Math.hypot(h.x/TS-vp.x,h.y/TS-vp.y)/10); }
       if(w<=0) continue;
@@ -2870,10 +2874,11 @@ function openSettings(idx=0){
     {label:`Rival company: ${settings.rival!==false?'On':'Off'}`,detail:'An AI railway that builds its own lines and competes for passengers',fn:()=>{settings.rival=settings.rival===false; dirty=true; again(11)();},cost:'Change'},
     {label:`Build advisor tips: ${settings.advisor?'On':'Off'} ${isPro()?'':PRO_TAG}`,detail:'Gentle suggestions for a good line to build next',fn:proGate(()=>{ settings.advisor=!settings.advisor; again(12)(); if(settings.advisor) Advisor.check(true); }),cost:'Change'},
     {label:`Countryside sounds: ${settings.ambient!==false?'On':'Off'}`,detail:'Birdsong near trees, crickets at night, a murmur from the pub · wind only in a storm',fn:()=>{ settings.ambient=settings.ambient===false; saveSettings(); Ambient.update(); openSettings(modal?0:13); },cost:'Change'},
-    {label:`Countryside life: ${settings.life!==false?'On':'Off'} ${isPro()?'':PRO_TAG}`,detail:'Villagers, cars and lorries, tractors, ducks, boats and yachts',fn:proGate(()=>{ settings.life=settings.life===false; saveSettings(); Life.rebuild(); dirty=true; openSettings(14); }),cost:'Change'},
+    {label:`Diesel engine sounds: ${settings.diesel?'On':'Off'}`,detail:'A soft throb from a diesel near the camera, and in the shed',fn:()=>{ settings.diesel=!settings.diesel; again(14)(); },cost:'Change'},
+    {label:`Countryside life: ${settings.life!==false?'On':'Off'} ${isPro()?'':PRO_TAG}`,detail:'Villagers, cars and lorries, tractors, ducks, boats and yachts',fn:proGate(()=>{ settings.life=settings.life===false; saveSettings(); Life.rebuild(); dirty=true; openSettings(15); }),cost:'Change'},
     {label:`Display mode: start now ${isPro()?'':PRO_TAG}`,detail:'Your railway as a living picture on the TV · any button to stop',fn:()=>Display.start()},
-    {label:`Display mode when idle: ${settings.displayIdle?settings.displayIdle+' min':'Off'} ${isPro()?'':PRO_TAG}`,detail:'Starts by itself when nobody has pressed a button for a while',fn:proGate(()=>{ const o=[0,5,10,20]; settings.displayIdle=o[(o.indexOf(settings.displayIdle||0)+1)%o.length]; saveSettings(); openSettings(16); }),cost:'Change'},
-    {label:`End-of-day postcard: ${settings.postcard?'On':'Off'}`,detail:'A cheerful card at the end of each game day: passengers, goods and a favourite moment',fn:()=>{ settings.postcard=!settings.postcard; again(17)(); },cost:'Change'},
+    {label:`Display mode when idle: ${settings.displayIdle?settings.displayIdle+' min':'Off'} ${isPro()?'':PRO_TAG}`,detail:'Starts by itself when nobody has pressed a button for a while',fn:proGate(()=>{ const o=[0,5,10,20]; settings.displayIdle=o[(o.indexOf(settings.displayIdle||0)+1)%o.length]; saveSettings(); openSettings(17); }),cost:'Change'},
+    {label:`End-of-day postcard: ${settings.postcard?'On':'Off'}`,detail:'A cheerful card at the end of each game day: passengers, goods and a favourite moment',fn:()=>{ settings.postcard=!settings.postcard; again(18)(); },cost:'Change'},
     {label:'Sound credits',detail:'The real steam recordings in the game',fn:()=>openModal({title:'Sound credits',text:'Steam exhaust beats: GWR 2800-class no. 2807 leaving Toddington, recorded by David J. Pitt (radio aporee, public domain).<br><br>Drain-cock steam: locomotive 06-018, Work With Sounds / Technical Museum of Slovenia, recorded by Boštjan Troha (CC BY 4.0).',items:[{label:'Back',fn:()=>openSettings()}],onCancel:()=>openSettings()})},
     {label:'How to play',fn:openHowTo},
     {label:'Done',fn:()=>{}},
@@ -4028,7 +4033,9 @@ function openStuck(t,b){
   const sell=x=>({label:`Sell ${x.name}`,detail:money()?`Get back ${fmt(TRAIN_TYPES[x.type].cost*0.5)}`:'Remove it from the line',fn:()=>{ removeTrain(x); if(money()){ rail.money+=TRAIN_TYPES[x.type].cost*0.5; updateFunds(); } toast(`${x.name} sold`); scheduleSave(); }});
   openModal({title:'Trains stuck',text:`${t.name} and ${b.name} are facing each other on a single line and can't get past. A passing loop gives them somewhere to pass.`,
     items:[loopItem(plan,len,0,()=>buildLoop(plan)),
-           {label:'Show me',fn:()=>{ const p=trainHeadPt(t); cam.z=Math.max(cam.z,1.6); cam.x=p.x; cam.y=p.y; clampCam(); dirty=true; }},
+           {label:'Show me',fn:()=>{ const p=trainHeadPt(t), q=trainHeadPt(b), x=(p.x+q.x)/2, y=(p.y+q.y)/2;   /* between their two noses */
+             if(V3.active){ V3.showAt(x/TS,y/TS); return; }   /* 27 Nov 2026 (Peter): in 3D it moved only the hidden 2D map */
+             cam.z=Math.max(cam.z,1.6); cam.x=x; cam.y=y; clampCam(); dirty=true; }},
            sell(t),sell(b),{label:'Close',fn:()=>{}}],onCancel:()=>{}});
 }
 /* ---------------- auto-build a whole network (Sandbox) ----------------
@@ -21812,7 +21819,8 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     _bridgeGeo:()=>{ const G=new Geo(), tiles=[]; for(let c=0;c<world.N;c++) if(isBrick(c)) tiles.push(brickTile(G,c,segments(c))); return {p:G.p,c:G.c,tiles}; },   /* tests: the brick bridges alone, as built into the track mesh */
     _rvBridgeGeo:()=>{ rvComputeH(); const G=new Geo(), tiles=[]; for(let c=0;c<world.N;c++) if(RV.bits[c]&&rvStruct(c)) tiles.push(rvBrickTile(G,c)); return {p:G.p,c:G.c,tiles}; },
     _waterY:c=>world.lake[c]?hFrom(world.filled[c])-0.06:null,
-    _look:(p,l)=>{ camera.position.set(p[0],p[1],p[2]); camera.lookAt(l[0],l[1],l[2]); camera.updateMatrixWorld(); },   /* tests: pictures from any point (call after frame, before snap) */ focus:(x,z,d)=>{ orbit.tx=x; orbit.tz=z; if(d) orbit.dist=d; },   /* point the overhead camera (tests, screenshots) */
+    _look:(p,l)=>{ camera.position.set(p[0],p[1],p[2]); camera.lookAt(l[0],l[1],l[2]); camera.updateMatrixWorld(); },   /* tests: pictures from any point (call after frame, before snap) */ focus:(x,z,d)=>{ orbit.tx=x; orbit.tz=z; if(d) orbit.dist=d; },
+    showAt:(x,z)=>{ if(S.mode!=='orbit') setMode('orbit'); orbit.tx=x; orbit.tz=z; orbit.dist=Math.min(orbit.dist,12); camPos=null; camLook=null; status3(); },   /* look down on a spot (tiles), close in: "Show me" in 3D */   /* point the overhead camera (tests, screenshots) */
     birds:()=>birds, life:()=>lifeG, near:()=>camera&&camera.near, camXZ:()=>!camera?null:S.mode==='orbit'?(orbit.dist<=14?{x:orbit.tx,z:orbit.tz}:null):{x:camera.position.x,z:camera.position.z},   /* where you're looking; overhead only counts when close in */ _carGeo:(t,kind,i=0)=>{ const G=new Geo(); G.sep=true; buildCarGeo(G,t,kind,i); return G; }, _carMeshLen:t=>{ const m=carMesh(t,'coach',1); m.geometry.computeBoundingBox(); const bb=m.geometry.boundingBox; return +(bb.max.x-bb.min.x).toFixed(3); },   /* tests: build one car's shape */
     /* tests: the heritage hero models (who has one, how far each has run, its wheel angle read back from the wheel's instance matrix) */
     liveryPrune:()=>{ if(carMat) liveryPrune(); }, _heroCols:k=>{ const e=HERO.geo.get(k); return e&&e.eng?geoCols(e.eng):null; }, _carCols:k=>geoCols(carGeoCache.get(k)), _wagonTints:(t,kind,i)=>wagonTints(t,kind,i),   /* Heritage liveries (tests) */
@@ -22249,7 +22257,7 @@ const Shed={
   /* in the shed only its engine is heard (Chuff.update calls this): steam simmers with a soft beat in time with its
      turning wheels, in its own voice for a Heritage engine; a Heritage diesel or electric idles. Quiet. */
   sound(dt){ const k=this.cur, ty=TRAIN_TYPES[k], R=HERITAGE_SOUNDS[k]; if(!settings.sound||document.hidden||!ty){ Sound.drone(null); return; }
-    if(R&&R.kind!=='steam'){ Sound.drone(k,0.7,0.06); return; } Sound.drone(null); if(!ty.steam) return;
+    if(R&&R.kind!=='steam'){ Sound.drone(R.kind==='diesel'&&!settings.diesel?null:k,0.7,0.06); return; } Sound.drone(null); if(!ty.steam) return;
     const A=R?R.accent:Chuff.ACCENT, LT=R?R.lilt:Chuff.LILT, st=this.beat, rate=V3.shedInfo().tps*A.length;
     if(st.b>=A.length) st.b=0; st.p+=rate*dt; let n=0;
     while(st.p>=LT[st.b]&&n++<2){ st.p-=LT[st.b]; Sound.chuff(0.07*A[st.b],0.05,st.b,0.05,R?k:undefined); st.b=(st.b+1)%A.length; } },
