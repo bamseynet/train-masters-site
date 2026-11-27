@@ -60,6 +60,8 @@ header{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;gap:1
 .brand h1 span{color:var(--accent)}
 .protag{display:inline-block;font:800 10px Nunito,sans-serif;letter-spacing:.6px;padding:2px 6px;border-radius:6px;background:linear-gradient(135deg,#f6d68c,#d9a441);color:#2a1d05;margin-left:6px;vertical-align:2px}
 body.pro .protag{display:none}
+.newtag{display:inline-block;font:800 10px Nunito,sans-serif;letter-spacing:.6px;padding:2px 6px;border-radius:6px;background:linear-gradient(135deg,#9be38a,#4caf50);color:#0f2a0a;margin-left:6px;vertical-align:2px;text-transform:uppercase}
+.tv .newtag{font-size:12px;padding:0 5px;vertical-align:0}
 #modal .engpic{display:block;width:100%;max-width:340px;height:auto;margin:2px auto 10px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .cobadge{display:inline-block;font:800 9.5px Nunito,sans-serif;letter-spacing:.3px;padding:1px 5px;border-radius:9px;border:1.5px solid #8a8a7a;background:#3a4a3e;color:#fff;margin-right:6px;vertical-align:1px}
 .brand{cursor:pointer}
@@ -1234,12 +1236,36 @@ function* renderWorldIter(w, seedStr, opts={}){
   // 7. villages: houses + church
   const ROOFS=['#a0432f','#8c3b2b','#b5553a','#7a4a3a','#5b5f66','#9a6a4a'];
   w.houses2d=[]; w.chim2d={}; w.church2d={};   // house outlines and chimney tops (world px): chimney smoke rises from these
+  /* 27 Nov 2026 (2D building detail): chimney stacks with a shadow, garden plots in free corners, the church
+     tower's roof, nave windows and a path to its door (and a lych gate), and the pub's hanging sign. Baked into the map picture, so free per frame.
+     Chosen from the cell number (hr), never from rng: the houses after them stay where they were. opts.noDetail leaves it
+     out (tests); w.det2d counts what was drawn. */
+  const DET=!opts.noDetail, det=w.det2d={gardens:0,pubs:0,paths:0,towers:0,chimneys:0};
+  const hr=(c,k)=>{ let h=Math.imul(c+1,0x9E3779B1)^Math.imul(k+1,0x85EBCA6B); h^=h>>>16; h=Math.imul(h,0x7FEB352D); h^=h>>>15; h=Math.imul(h,0x846CA68B); h^=h>>>16; return (h>>>0)/4294967296; };
+  const roadNb=c=>{ const x=c%W, y=(c/W)|0; for(const b of [1,2,4,8]){ const n=b===1?(y>0?c-W:-1):b===2?(x<W-1?c+1:-1):b===4?(y<H-1?c+W:-1):(x>0?c-1:-1); if(n>=0&&w.road[n]) return b; } return 0; };
+  const garden=(c,gx,gy,k)=>{ const g=hr(c,20+k); if(g>=0.75) return; det.gardens++;
+    if(g<0.5){ const vert=hr(c,30+k)<0.5, pw=vert?3.6:4.6, ph=vert?4.6:3.6, X=gx-pw/2, Y=gy-ph/2;   /* a vegetable plot: dug soil, rows of greens */
+      ctx.fillStyle='rgba(0,0,0,0.18)'; ctx.fillRect(X+0.5,Y+0.5,pw,ph); ctx.fillStyle='#6a4529'; ctx.fillRect(X,Y,pw,ph); ctx.fillStyle='#93c75e';
+      for(let r=0;r<3;r++){ if(vert) ctx.fillRect(X+0.35+r*1.15,Y+0.5,0.75,ph-1); else ctx.fillRect(X+0.5,Y+0.35+r*1.15,pw-1,0.75); } }
+    else { for(const [dx,dy,r] of [[-1.3,-0.8,1.4],[1.2,0.9,1.2]]){   /* two little fruit trees */
+        ctx.fillStyle='rgba(15,30,10,0.3)'; ctx.beginPath(); ctx.arc(gx+dx+0.6,gy+dy+0.6,r,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='#3d7433'; ctx.beginPath(); ctx.arc(gx+dx,gy+dy,r,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#5e9a48'; ctx.beginPath(); ctx.arc(gx+dx-0.35,gy+dy-0.35,r*0.55,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle=hr(c,40+k)<0.5?'#e0b04a':'#d9534f'; ctx.fillRect(gx+dx-0.3,gy+dy-0.5,0.6,0.6); } } };
   w.villages.forEach((v,i)=>{
+    const others=v.cells.filter(c=>c!==v.c), pubC=v.kind==='hamlet'?-1:(others.find(c=>roadNb(c))??others[0]??-1);   /* the same cell the 3D pub and evening glow use */
     for(const c of v.cells){
       const x=c%W, y=(c/W)|0;
       if(!w.roadOn[c]){ ctx.fillStyle=c===v.c?'rgba(120,160,80,0.75)':'rgba(128,165,86,0.6)'; ctx.fillRect(x*TS+1,y*TS+1,TS-2,TS-2); ctx.strokeStyle='rgba(45,75,32,0.55)'; ctx.lineWidth=1; ctx.strokeRect(x*TS+1.5,y*TS+1.5,TS-3,TS-3); }
       if(c===v.c){ // church and churchyard: in the middle, or tucked into the quietest corner if a road runs through
         const sp=churchSpot(w.road[c]), X0=x*TS+sp.ux*TS, Y0=y*TS+sp.uy*TS, k0=sp.sc;
+        if(DET&&k0!==1){ det.paths++; const ax=X0+k0, ay=Y0, m=w.road[c], h2=TS/2, cxm=x*TS+h2, cym=y*TS+h2, ends=[];   /* a path from the church door to the nearest point of the road */
+          if(m&1) ends.push([cxm,cym-h2]); if(m&2) ends.push([cxm+h2,cym]); if(m&4) ends.push([cxm,cym+h2]); if(m&8) ends.push([cxm-h2,cym]);
+          let mx=cxm, my=cym, best=1e9; for(let i=0;i<=8;i++){ const t=i/8; for(let j=0;j<ends.length;j++){ let px, py;
+              if(ends.length===2){ if(j) break; const [a,b]=ends; px=(1-t)*(1-t)*a[0]+2*t*(1-t)*cxm+t*t*b[0]; py=(1-t)*(1-t)*a[1]+2*t*(1-t)*cym+t*t*b[1]; }
+              else { px=cxm+(ends[j][0]-cxm)*t; py=cym+(ends[j][1]-cym)*t; }
+              const d=Math.hypot(px-ax,py-ay); if(d<best){ best=d; mx=px; my=py; } } }
+          const l=Math.hypot(mx-ax,my-ay)||1, e=Math.max(0,l-2.2);
+          ctx.strokeStyle='#d9c9a0'; ctx.lineWidth=1.1; ctx.lineCap='butt'; ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(ax+(mx-ax)/l*e,ay+(my-ay)/l*e); ctx.stroke(); }
         ctx.save(); ctx.translate(X0,Y0); ctx.scale(k0,k0); const X=0, Y=0;
         if(k0===1){ ctx.fillStyle='rgba(200,200,190,0.8)'; for(let k=0;k<6;k++) ctx.fillRect(-5+(k%3)*4,3+(k>2?2:0),1,1.2); }
         ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fillRect(X-5,Y-3,12,8);
@@ -1247,6 +1273,13 @@ function* renderWorldIter(w, seedStr, opts={}){
         ctx.fillStyle='#6f6d66'; ctx.fillRect(X-6,Y-1,12,1);
         ctx.fillStyle='#7c7a72'; ctx.fillRect(X+3,Y-6,5,5);
         ctx.fillStyle='#55534d'; ctx.beginPath(); ctx.moveTo(X+5.5,Y-9); ctx.lineTo(X+8,Y-6); ctx.lineTo(X+3,Y-6); ctx.closePath(); ctx.fill();
+        if(DET){ det.towers++;
+          ctx.strokeStyle='rgba(40,38,34,0.55)'; ctx.lineWidth=0.5; ctx.beginPath(); ctx.moveTo(X+3,Y-6); ctx.lineTo(X+8,Y-1); ctx.moveTo(X+8,Y-6); ctx.lineTo(X+3,Y-1); ctx.stroke();   /* the tower's pyramid roof */
+          ctx.fillStyle='rgba(255,255,240,0.28)'; ctx.fillRect(X+3,Y-6,5,0.6); ctx.fillRect(X+3,Y-6,0.6,5);
+          ctx.fillStyle='#e0b44a'; ctx.fillRect(X+5.2,Y-3.8,0.7,0.7);   /* weathercock */
+          ctx.fillStyle='#d8d4c4'; for(let k=0;k<3;k++) ctx.fillRect(X-4.6+k*2.6,Y+1.2,0.9,0.9);   /* nave windows */
+          if(k0===1){ det.paths++; ctx.fillStyle='#d9c9a0'; ctx.fillRect(X+0.6,Y+3,1.6,4.2);   /* a path from the door to a lych gate in the churchyard wall */
+            ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fillRect(X-0.2,Y+6.4,3.6,1.4); ctx.fillStyle='#5b4a3c'; ctx.fillRect(X-0.5,Y+6,3.6,1.3); ctx.fillStyle='#7a6a58'; ctx.fillRect(X-0.5,Y+6,3.6,0.5); } }
         ctx.restore(); (w.church2d=w.church2d||{})[i]=[X0-6*k0,Y0-9*k0,14*k0,13*k0];
         continue;
       }
@@ -1266,9 +1299,19 @@ function* renderWorldIter(w, seedStr, opts={}){
         ctx.fillStyle='rgba(0,0,0,0.25)';
         if(horiz) ctx.fillRect(X,Y+hh/2,hw,hh/2); else ctx.fillRect(X+hw/2,Y,hw/2,hh);
         ctx.fillStyle='rgba(255,255,255,0.22)'; if(horiz) ctx.fillRect(X,Y+hh/2-0.5,hw,0.6); else ctx.fillRect(X+hw/2-0.5,Y,0.6,hh);
-        const chx=horiz?X+hw*0.75:X+hw*0.2, chy=horiz?Y+hh*0.2:Y+hh*0.75; ctx.fillStyle='#3a2a22'; ctx.fillRect(chx,chy,1,1);
+        const chx=horiz?X+hw*0.75:X+hw*0.2, chy=horiz?Y+hh*0.2:Y+hh*0.75;
+        if(DET){ det.chimneys++; ctx.fillStyle='rgba(0,0,0,0.28)'; ctx.fillRect(chx+0.3,chy+0.5,1.4,1.4); ctx.fillStyle='#33241d'; ctx.fillRect(chx-0.2,chy-0.2,1.4,1.4); ctx.fillStyle='#8a5a44'; ctx.fillRect(chx-0.2,chy-0.2,1.4,0.45); }   /* a chimney stack with its shadow and a lit top edge */
+        else { ctx.fillStyle='#3a2a22'; ctx.fillRect(chx,chy,1,1); }
         (w.chim2d[c]=w.chim2d[c]||[]).push([chx+0.5,chy+0.5]);
+        if(DET&&k===0&&c===pubC){ det.pubs++;   /* the pub's hanging sign on a post, out towards the road */
+          const b=roadNb(c), hx=X+hw/2, hy=Y+hh/2; let dx=0, dy=0;
+          if(onRoad){ dx=x*TS+TS/2-hx; dy=y*TS+TS/2-hy; const l=Math.hypot(dx,dy)||1; dx/=l; dy/=l; } else { dx=b===2?1:b===8?-1:0; dy=b===4?1:b===1?-1:0; }
+          const sx=clamp(hx+dx*(hw/2+1.4),x*TS+1.2,x*TS+TS-2.4), sy=clamp(hy+dy*(hh/2+1.4),y*TS+1.6,y*TS+TS-1.8);
+          ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fillRect(sx+0.4,sy-0.6,2.2,2);
+          ctx.fillStyle='#3b2a1e'; ctx.fillRect(sx-0.4,sy-1.2,0.6,2.6);
+          ctx.fillStyle='#8a2a20'; ctx.fillRect(sx,sy-1,2.2,1.6); ctx.fillStyle='#e8c25a'; ctx.fillRect(sx+0.75,sy-0.45,0.7,0.6); }
       }
+      if(DET&&!onRoad) for(let k=n;k<corners.length&&k<n+2;k++){ const [ux,uy]=corners[k]; garden(c,x*TS+ux*TS,y*TS+uy*TS,k); }
     }
   });
 
@@ -1287,6 +1330,10 @@ const canvas=document.getElementById('map'); let ctx=canvas.getContext('2d');   
 const $=id=>document.getElementById(id);
 let world=null, art=null;
 let state={ size:'Medium', coast:'Random', seed:'' };
+/* The free web demo's first visit (backlog S1a, Peter 27 Nov 2026: "do 10"): a gentle hand-picked Small map instead of a random
+   Medium one: flat and open in the middle, Brackford and Walbridge close together, a lake and the coast, hills only at one
+   edge (chosen from 40 Small seeds by mountain share and village spacing). Later visits carry on with their own railway. */
+const WEB_FIRST_SEED='hazel';
 let cam={x:0,y:0,z:1}, view={w:0,h:0,dpr:1};
 let cursor={x:0,y:0};
 let dirty=true;
@@ -3919,9 +3966,14 @@ function buildRoundhouse(st,pl){ if(money()&&pl.cost>rail.money){ toast('Not eno
 /* Roundhouses: the fan of stalls and the turntable pit are still (also drawn into the track cache pictures by
    drawDecorStill); only the slowly turning bridge is drawn every frame when liveOnly. */
 function drawDecorStill(d){ const T=TS, X=(cX(d.c)+0.5)*T, Y=(cY(d.c)+0.5)*T;
+  if(DET2D.near()&&DET2D.stampIt()) return DET2D.stamp('rh'+(d.face||0).toFixed(3),3*T+4,X,Y,()=>drawDecorStill(d));
   /* fan of engine stalls on the far side from the station */
   ctx.save(); ctx.translate(X,Y); ctx.rotate(d.face+Math.PI);
-  for(let k=-2;k<=2;k++){ ctx.save(); ctx.rotate(k*0.42); ctx.fillStyle='#7a4a3a'; ctx.fillRect(T*0.55,-T*0.2,T*0.9,T*0.4); ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fillRect(T*0.55,T*0.12,T*0.9,T*0.08); ctx.restore(); }
+  const dd=DET2D.near();
+  for(let k=-2;k<=2;k++){ ctx.save(); ctx.rotate(k*0.42); ctx.fillStyle='#7a4a3a'; ctx.fillRect(T*0.55,-T*0.2,T*0.9,T*0.4); ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fillRect(T*0.55,T*0.12,T*0.9,T*0.08);
+    if(dd){ ctx.fillStyle='rgba(255,225,200,0.28)'; ctx.fillRect(T*0.6,-T*0.02,T*0.82,T*0.04);   /* roof ridge, a smoke vent, the dark doorway towards the turntable */
+      ctx.fillStyle='#2a1f1a'; ctx.fillRect(T*1.0,-T*0.05,T*0.1,T*0.1); ctx.fillStyle="#1c1714"; ctx.fillRect(T*0.63,-T*0.14,T*0.08,T*0.28); }
+    ctx.restore(); }
   ctx.restore();
   /* turntable pit */
   ctx.fillStyle='#6f6658'; ctx.beginPath(); ctx.arc(X,Y,T*0.62,0,Math.PI*2); ctx.fill();
@@ -4072,7 +4124,7 @@ function openStuck(t,b){
    processor to its nearest town. Where lines cross, the crossing is a flyover (never reserved), so each line's trains only
    ever meet each other: two trains with a passing loop always pass. (A flat crossing would couple lines: starvation or jams.) */
 const AutoNet={
-  links(){
+  links(o={}){   /* o.away: works deliver to a town TOWN_GAP+ away (see below) */
     const town=v=>({kind:'town',ref:v,x:v.x,y:v.y,name:v.name}), indN=i=>({kind:'ind',ref:i,x:i.x,y:i.y,name:i.name});
     const vs=world.villages.filter(v=>v.kind!=='hamlet'), d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
     const near=(arr,p)=>arr.reduce((m,o)=>d(o,p)<d(m,p)?o:m);
@@ -4085,13 +4137,23 @@ const AutoNet={
         for(const [v,q] of best){ const dd=d(v,pick); if(dd<q.d) best.set(v,{d:dd,from:pick}); }
       }
     }
-    const goods=[], fed=new Set();
+    const goods=[], fed=new Set(); let empty=null;
     for(const ind of world.industries){ const D=IND[ind.type]; if(!D.makes||D.accepts) continue;
       const cons=world.industries.filter(o=>(IND[o.type].accepts||[]).includes(D.makes)); if(!cons.length) continue;
-      const to=near(cons,ind); fed.add(to); goods.push({from:indN(ind),to:indN(to),cargo:D.makes}); }
+      /* 27 Nov 2026 (tests/autonet_walls.py): the nearest works with flat ground for a station (one in the hills never gets
+         one, and its suppliers were left unserved too: Small 308 Crowford Timber Camp, Small 11 Millwick Colliery) */
+      const flat=!this.FLAT_CONS?[]:cons.filter(o=>this.anchorFor(indN(o),cIdx(o.x,o.y),empty||(empty=new Uint8Array(world.N)),null)>=0);
+      const to=near(flat.length?flat:cons,ind); fed.add(to); goods.push({from:indN(ind),to:indN(to),cargo:D.makes}); }
     for(const ind of world.industries){ const D=IND[ind.type];
       if(!(D.accepts&&D.makes)||!fed.has(ind)||!TOWN_ACCEPTS.includes(D.makes)||!vs.length) continue;
-      goods.push({from:indN(ind),to:town(near(vs,ind)),cargo:D.makes}); }
+      /* 27 Nov 2026 (tests/autonet_walls.py): o.away (plan: only when a plan left places unreached): not to the
+         town the works stands in (nearer than TOWN_GAP), when another town will do. Both stations then sat in that one
+         town, a few tiles apart, joined by a short line wound round to train length, which took both of the town's
+         stations and hemmed them in, so the town got no passenger line (Medium 6 Corbridge, 422468 Corhurst, Small 21
+         Cormouth, 22 Market Bradbridge and Brinbridge, 12 Coastal Stonecombe, Medium 13 Inland Crowcombe). Not on every
+         map: the longer goods lines made trains wait more where every place was reached anyway. */
+      const own=near(vs,ind), away=o.away?vs.filter(v=>d(v,ind)>=this.TOWN_GAP):[], to=near(away.length?away:vs,ind);
+      goods.push({from:indN(ind),to:town(to),cargo:D.makes,...(to!==own?{own:town(own)}:{})}); }   /* own: tried at the very end if the far town can't be reached */
     return {pax,goods};
   },
   // A station spot beside a place: plain free flat land, at least 3 tiles from other spots and 2 from planned lines (Chebyshev), nearest `toward`.
@@ -4133,6 +4195,11 @@ const AutoNet={
     if(!groundProblem([c,...A[2],...A[8]])) out|=16; if(!groundProblem([c,...A[1],...A[4]])) out|=32;
     return out;
   },
+  TOWN_GAP:16,   /* a works delivers to the nearest town at least this far from it (see links) */
+  NEAR_LOST:30,  /* ...planned so only when such a works is this near a place left unreached (see plan) */
+  FLAT_CONS:true,   /* a works sends to the nearest works that has flat ground for a station (see links) */
+  SELF_X:false,     /* a planned line may cross itself (never since 27 Nov 2026, see planOnce) */
+  PLACE_WALK:true,  /* routeProblem also measures the walk between the places (see there) */
   END_DRY:4,     /* a new station keeps river and lake crossings on its line at least this many tiles away (see plan: wetEnd) */
   FAR_END:9,     // ...and more than this many tiles (a long train and a bit) from the shared line's other end
   THROAT:10,     // lines into a shared station join within this many tiles of it (a short shared stretch: no long single-track bottleneck)
@@ -4156,8 +4223,11 @@ const AutoNet={
   // Why a planned route is not worth building: 'hills', 'detour', or null when it is fine.
   /* 20 Nov 2026 (Peter: "ensure tunnelling through mountains is still allowed"): mountain tiles on a route are dug as a
      tunnel, so they do not count; only surface climbing over hills does (tests/tunnels_allowed.py). */
-  routeProblem(p,a,b){ let hi=0; for(const c of p) hi+=world.type[c]===HILLS?0.5:0; if(hi>this.HIGH*p.length) return 'hills';
-    const man=Math.abs(cX(a)-cX(b))+Math.abs(cY(a)-cY(b)); return p.length-1>this.DETOUR*Math.max(man,this.MIN_LINE)+10?'detour':null; },
+  /* 27 Nov 2026: for a last-resort link (job.late) the walk is measured between the stations or between the places they
+     serve, whichever is longer (two stations each on the near side of their place are closer than the places are:
+     Medium 13 Hartbridge Grain Farm). For every link it let longer lines in early and walled others off (Small 326). */
+  routeProblem(p,a,b,job=null){ let hi=0; for(const c of p) hi+=world.type[c]===HILLS?0.5:0; if(hi>this.HIGH*p.length) return 'hills';
+    const man=Math.max(Math.abs(cX(a)-cX(b))+Math.abs(cY(a)-cY(b)),job&&job.late&&this.PLACE_WALK?Math.abs(job.a.x-job.b.x)+Math.abs(job.a.y-job.b.y):0); return p.length-1>this.DETOUR*Math.max(man,this.MIN_LINE)+10?'detour':null; },
   // Plan every line before building anything. Async and chunked so the screen keeps drawing.
   /* 19 Nov 2026 (Peter: "max stations per town should be 2", "bridges over other tracks must be junctions"): lines share
      stations ("sites"): a town has at most two, an industry is served from any site whose catchment reaches it, else from
@@ -4173,12 +4243,25 @@ const AutoNet={
     const P=await this.planOnce(onProgress,signal); if(!P) return P;
     const lost=Q=>Q.unreachable.length-(Q.hills||[]).length; if(!lost(P)) return P;
     const t1=P.steps||0, Q=await this.planOnce(onProgress&&((d,t)=>onProgress(t1+d,t1+t)),signal,{paxFirst:true}); if(!Q) return Q;
-    return Q.unreachable.length<P.unreachable.length||(Q.unreachable.length===P.unreachable.length&&Q.lines.length>P.lines.length)?Q:P;
+    let B=Q.unreachable.length<P.unreachable.length||(Q.unreachable.length===P.unreachable.length&&Q.lines.length>P.lines.length)?Q:P;
+    /* 27 Nov 2026: still places unreached (not for hills): plan again with every works sending to a town TOWN_GAP or
+       more away (links: o.away), in both orders, and keep that plan only if it loses less (a town counts twice: a whole
+       town's passengers against one works) */
+    const isT=n=>world.villages.some(v=>v.name===n), cost=X=>X.unreachable.filter(n=>!(X.hills||[]).includes(n)).reduce((a,n)=>a+(isT(n)?2:1),0);
+    if(!cost(B)||!this.TOWN_GAP) return B;
+    /* ...only near a place left unreached (two more plans: on maps whose losses are elsewhere, planning took up to 4x as long) */
+    const at=n=>world.villages.find(v=>v.name===n)||world.industries.find(i=>i.name===n), lostAt=B.unreachable.filter(n=>!(B.hills||[]).includes(n)).map(at).filter(Boolean);
+    if(!this.links({away:true}).goods.some(g=>g.own&&lostAt.some(p=>Math.hypot(p.x-g.from.x,p.y-g.from.y)<=this.NEAR_LOST))) return B;
+    let t2=t1+(Q.steps||0);
+    for(const paxFirst of [false,true]){ if(!cost(B)) break;
+      const t=t2, R=await this.planOnce(onProgress&&((d,n)=>onProgress(t+d,t+n)),signal,{paxFirst,away:true}); if(!R) return R; t2+=R.steps||0;
+      if(cost(R)<cost(B)) B=R; }
+    return B;
   },
   async planOnce(onProgress,signal,o={}){
-    const L=this.links(), N=world.N, W=world.W, planned=new Uint8Array(N), taken=new Uint8Array(N), forbid=new Int32Array(N), nojunc=new Uint8Array(N), nocross=new Uint8Array(N), crossNear=new Uint8Array(N), crossNear4=new Uint8Array(N), useBy=new Array(N), near4=new Uint8Array(N), shareT=new Uint8Array(N), endT=new Uint8Array(N);
+    const L=this.links({away:o.away}), N=world.N, W=world.W, planned=new Uint8Array(N), taken=new Uint8Array(N), forbid=new Int32Array(N), nojunc=new Uint8Array(N), nocross=new Uint8Array(N), crossNear=new Uint8Array(N), crossNear4=new Uint8Array(N), useBy=new Array(N), near4=new Uint8Array(N), shareT=new Uint8Array(N), endT=new Uint8Array(N);
     const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y), lines=[], unreachable=new Set(); let id=1;
-    const goodsJobs=L.goods.map(g=>({kind:'goods',cargo:g.cargo,a:g.from,b:g.to})).sort((p,q)=>d(p.a,p.b)-d(q.a,q.b));
+    const goodsJobs=L.goods.map(g=>({kind:'goods',cargo:g.cargo,a:g.from,b:g.to,own:g.own})).sort((p,q)=>d(p.a,p.b)-d(q.a,q.b));
     const paxJobs=L.pax.map(e=>({kind:'pax',a:e.a,b:e.b})).sort((p,q)=>d(p.a,p.b)-d(q.a,q.b));
     const vs=world.villages.filter(v=>v.kind!=='hamlet');
     let done=0, total=goodsJobs.length+paxJobs.length;
@@ -4245,12 +4328,20 @@ const AutoNet={
       let starve=false;
       if(p){ let jb=-1, ja=-1; for(let i=0;i<p.length;i++){ const c=p[i]; if(!planned[c]||!ride[c]) continue; if(join[c]){ if(jb<0) jb=i; } else ja=i; }
         if((jb>=0&&jb<=this.FAR_END)||(ja>=0&&p.length-1-ja<=this.FAR_END)){ if(o.paxFirst) return null; starve=true; } }
-      const why=p&&this.routeProblem(p,a,b); if(why==='hills') job.steep=true;
+      /* 27 Nov 2026 (tests/autonet_walls.py): never a route that crosses itself (the search keeps a heading per tile, so a
+         line wound round to leave a station the right way could loop over its own track: a flat crossing a tile or two
+         from its platform, Small 21 Drayham, Medium 6 Corbridge) */
+      if(p&&!this.SELF_X&&new Set(p).size<p.length) return null;
+      const why=p&&this.routeProblem(p,a,b,job); if(why==='hills') job.steep=true;
       return p&&!why?{a,b,p,A,B,starve}:null;
     };
     /* why a link failed: no flat ground at all by a place, or every route climbs too far round or over the hills */
     /* ...or its flat spots are all next to other lines or in a town that has its two stations already (no room) */
-    const hills=new Set(), room=new Set(), blame=job=>{ for(const n of [job.a,job.b]){ if(job.steep||(!sites.some(s=>serves(s,n))&&this.anchorFor(n,cIdx(n.x,n.y),new Uint8Array(N),null,false,null)<0)) hills.add(n.name); else if(job.full&&job.full.has(n.name)) room.add(n.name); } };
+    /* 27 Nov 2026: a goods link whose other end is in the hills (its only works there has no flat spot) is blamed on the
+       hills too (Small 308 Crowford Timber Camp: the map's one sawmill is in the hills) */
+    const hills=new Set(), room=new Set(), blame=job=>{ const hi=n=>!sites.some(s=>serves(s,n))&&this.anchorFor(n,cIdx(n.x,n.y),new Uint8Array(N),null,false,null)<0;
+      const other=job.kind==='goods'&&(hi(job.a)||hi(job.b));
+      for(const n of [job.a,job.b]){ if(job.steep||other||hi(n)) hills.add(n.name); else if(job.full&&job.full.has(n.name)) room.add(n.name); } };
     // The stations a link could use, best first: shared ones before new spots; never two already joined (a ring).
     const route=async job=>{
       const opt=node=>[...sites.filter(s=>serves(s,node)&&(node.kind!=='town'||s.n<this.SITE_LINES)),...(node.kind!=='town'||townN(node.ref)<TOWN_MAX_ST?[null]:[])];   /* a full station (SITE_LINES) only when nothing else is left */
@@ -4275,7 +4366,7 @@ const AutoNet={
       const p=r.p, A=r.A||addSite(r.a), B=r.B||addSite(r.b);
       for(let i=0;i+1<p.length;i++){ const bit=dirBit(p[i],p[i+1]); planned[p[i]]|=bit; planned[p[i+1]]|=OPP[bit]; }
       for(const c of p) if(planned[c]===15){ mark(c,8,crossNear,1); mark(c,4,crossNear4,1); }   /* no new station within a long train of a flat crossing (at the end, as a last resort, 4 tiles) */
-      const line={id:id++,kind:job.kind,cargo:job.cargo,a:{name:job.a.name,anchor:A.c},b:{name:job.b.name,anchor:B.c},path:p};
+      const line={id:id++,kind:job.kind,cargo:job.cargo,a:{name:job.a.name,anchor:A.c},b:{name:job.b.name,anchor:B.c},path:p,...(job.own&&job.b===job.own?{own:true}:{})};
       for(const c of p){ (useBy[c]||(useBy[c]=[])).push(line); if(useBy[c].length>1){ nocross[c]=1; shareT[c]=1; } }   /* never cross shared track */
       for(let i=0;i<p.length;i++) if(i<=this.LATE_END||i>=p.length-1-this.LATE_END) endT[p[i]]=1;   /* nor a line near its ends (LATE_NEAR) */
       sp[root(A.i)]=root(B.i); A.n++; B.n++;
@@ -4310,7 +4401,9 @@ const AutoNet={
     /* o.paxFirst: the passenger tree before the goods lines (see plan) */
     for(const pass of o.paxFirst?[paxPass,goodsPass]:[goodsPass,paxPass]) if(!await pass()) return null;
     relaxOK=true; total+=late.length+cut.length*3;
-    for(const job of late){ job.full=null; job.late=true; const r=await route(job); if(r){ commit(job,r); unreachable.delete(job.a.name); } if(!await tick()) return null; }
+    for(let job of late){ job.full=null; job.late=true; let r=await route(job);
+      if(!r&&job.own){ const j2={...job,b:job.own,full:null}; r=await route(j2); if(r) job=j2; }   /* a works whose far town can't be reached: its own town after all (see links) */
+      if(r){ commit(job,r); unreachable.delete(job.a.name); } if(!await tick()) return null; }
     for(const g of cut){ const pairs=[]; for(const a of g) for(const b of vs) pairs.push([d(a,b),a,b]); pairs.sort((p,q)=>p[0]-q[0]);
       for(const [,a,b] of pairs.slice(0,3)){ const job={kind:'pax',late:true,a:{kind:'town',ref:a,x:a.x,y:a.y,name:a.name},b:{kind:'town',ref:b,x:b.x,y:b.y,name:b.name}}, r=await route(job); if(!await tick()) return null;
         if(r){ commit(job,r); for(const v of g){ unreachable.delete(v.name); vs.push(v); } break; } } }
@@ -5080,8 +5173,10 @@ function trainItems(tab,card){
   const shown=g=>Object.entries(TRAIN_TYPES).filter(([k,ty])=>ty.group===g&&!(ENGINE_SKUS[k]&&ENGINE_SKUS[k].soon&&engineLocked(k)));   /* soon: not on sale yet, unless already owned */
   const sec=label=>items.push({heading:true,sec:true,disabled:true,label});
   if(tab===2){ const P=packRows((m,j,p)=>openPackCard(p.id,card?()=>buyTrain(j,2):Shed.back()));
-    if(P.length){ sec('Every engine'); items.push(P[0]); if(P.length>1){ sec('Themed packs'); items.push(...P.slice(1)); } }
-    else items.push({heading:true,disabled:true,label:'Engine packs are on the way.'});
+    const fresh=P.filter(r=>isNewItem(packById(r.pack))), rest=P.filter(r=>!fresh.includes(r)), all=rest.find(r=>r.pack==='everything');
+    if(fresh.length){ sec('New packs'); items.push(...fresh); }
+    if(all){ sec('Every engine'); items.push(all); } const themed=rest.filter(r=>r!==all); if(themed.length){ sec('Themed packs'); items.push(...themed); }
+    if(!P.length) items.push({heading:true,disabled:true,label:'Engine packs are on the way.'});
     return items; }
   if(tab===0){
     for(const g of GROUPS){ const list=shown(g).filter(([k])=>!typeLocked(k)); if(!list.length) continue; sec(g);
@@ -5095,7 +5190,10 @@ function trainItems(tab,card){
     for(const g of GROUPS) for(const [k,ty] of shown(g)){
       if(ENGINE_SKUS[k]) famous.push(row(k,ty,g,ENGINE_SKUS[k].sku,!engineLocked(k),(m,j)=>openEngineCard(k,j)));
       else if((ty.pro||ty.heritage)&&!heritageOwned()) her.push(row(k,ty,g,HERITAGE_SKUS[k]||HERITAGE_SKU,!heritageLocked(k),(m,j)=>openHeritageCard(k,j))); }
-    if(famous.length){ sec('Famous engines, one at a time'); items.push(...famous); }
+    const fresh=famous.filter(r=>isNewItem(ENGINE_SKUS[r.type])), rest=famous.filter(r=>!fresh.includes(r));
+    for(const r of fresh) r.label+=NEW_TAG;
+    if(fresh.length){ sec('New engines'); items.push(...fresh); }
+    if(rest.length){ sec('Famous engines, one at a time'); items.push(...rest); }
     if(!heritageOwned()){ sec('Heritage Collection');
       items.push({label:'The whole Heritage Collection',detail:`Seven famous engines in one purchase: ${HERITAGE_NAMES}`,real:true,cost:cost(HERITAGE_SKU),find:'heritage pack',tags:['heritage'],fn:(m,j)=>openHeritageCard(null,j)},...her); }
     if(!isPro()){ sec('Train Masters Pro');
@@ -5109,7 +5207,7 @@ function packRows(open){ const web=EDITION==='web';
   return packsShown().map(p=>{ const I=packInfo(p), find='pack '+I.types.map(k=>TRAIN_TYPES[k].name+' '+(TRAIN_TYPES[k].short||'')).join(' ');
     const tags=EngineFind.CHIPS.map(c=>c[0]).filter(c=>c!=='all'&&I.types.some(k=>EngineFind.chipHas(k,c)));
     const detail=`${p.blurb} · ${packOwnLine(I)}${!web&&packSaveLine(I)?' · '+packSaveLine(I):''}`;
-    return {pack:p.id,label:p.types?p.name:`${p.name} pack`,detail,find,tags,
+    return {pack:p.id,label:(p.types?p.name:`${p.name} pack`)+(isNewItem(p)?NEW_TAG:''),detail,find,tags,
       ...(I.nw.length?{real:true,cost:web?'On Fire TV / Android':I.pr||'Buy',fn:(m,j)=>open(m,j,p)}:{owned:true,disabled:true,cost:'Owned'})}; }); }
 /* Search in "Choose a train" (Peter, 23 Nov 2026: "As you add more engines scrolling to find a specific one gets
    cumbersome"). Every word typed must appear in the engine's words: name, short name, group, era and its decade ("1950s"),
@@ -5131,7 +5229,7 @@ const EngineFind={
   chipHas(k,chip){ const ty=TRAIN_TYPES[k]; if(!ty) return false;
     switch(chip){ case 'steam': return ty.group==='Steam'; case 'diesel': return ty.group==='Diesel'; case 'electric': return this.electric(ty);
       case 'high speed': return ty.group==='High speed'; case 'freight': return ty.group==='Freight'||!!ty.goods; case 'heritage': return !!(ty.heritage||ty.pro); default: return true; } },
-  match(k,q,chip){ const W=Array.isArray(q)?q:this.words(q); if(chip&&chip!=='all'&&!this.chipHas(k,chip)) return false; const h=this.hay(k); return W.every(w=>h.includes(w)); },
+  match(k,q,chip){ const W=Array.isArray(q)?q:this.words(q); if(chip&&chip!=='all'&&!this.chipHas(k,chip)) return false; const h=this.hay(k)+(isNewItem(ENGINE_SKUS[k])?' new':''); return W.every(w=>h.includes(w)); },
   _row(it,W,chip){ if(it.type) return this.match(it.type,W,chip); if(it.find==null) return false;
     if(chip&&chip!=='all'&&!(it.tags||[]).includes(chip)) return false; const h=it._h||(it._h=this.norm(it.label+' '+(it.detail||'')+' '+it.find)); return W.every(w=>h.includes(w)); },
   active(q,chip){ return this.words(q).length>0||(!!chip&&chip!=='all'); },
@@ -5639,12 +5737,58 @@ function drawRailTiles(list){
     const k=R.kind[c]; if(k!==CROSSING&&k!==OVERBRIDGE)continue;
     const x=cX(c)*T, y=cY(c)*T, X=x+T/2, Y=y+T/2;
     if(k===CROSSING){
-      ctx.fillStyle='rgba(230,214,170,0.9)'; ctx.fillRect(X-T*0.2,Y-T*0.2,T*0.4,T*0.4);
-      strokeTiles([c],T*0.31*K,'#c9cdd3'); strokeTiles([c],T*0.19*K,'rgba(230,214,170,1)');
-      ctx.lineWidth=T*0.08; ctx.strokeStyle='#fff'; ctx.strokeRect(X-T*0.38,Y-T*0.38,T*0.76,T*0.76);
-      ctx.strokeStyle='#d0392b'; ctx.setLineDash([T*0.12,T*0.12]); ctx.strokeRect(X-T*0.38,Y-T*0.38,T*0.76,T*0.76); ctx.setLineDash([]);
+      if(DET2D.stampIt()) DET2D.stamp('x'+R.bits[c],T+4,X,Y,()=>crossingStill(c,X,Y,K));   /* drawn live: one picture, not ~14 calls */
+      else crossingStill(c,X,Y,K);
     }
   }
+}
+/* 27 Nov 2026 (2D building detail): small parts drawn only into saved pictures, so they cost nothing per frame: level
+   crossing gate posts with a red lamp (track cache), road overbridges with stone parapets, coping, joints and end piers
+   (drawn over the trains, so not in the track cache: one picture per orientation and zoom step, stamped with one
+   drawImage; the plain bridge was ~7 canvas calls), and the engineering depot's and roundhouse's roofs (track cache).
+   Where these are drawn on the screen directly (zoomed right in, where the track cache is off) crossings, depots and
+   roundhouses are stamped from one picture each too, so there are fewer canvas calls a frame than before, not more.
+   Zoomed far out (tiles under 9 px) the depot and roundhouse detail is left out. DET2D.off draws as before (tests). */
+const DET2D={off:false, sprites:new Map(), px:0, made:0,
+  set(off){ DET2D.off=off; for(const e of RC.map.values()){ e.sig=-1; e.chk=-1; } DET2D.sprites.clear(); DET2D.px=0; dirty=true; },
+  near(){ return !DET2D.off&&TS*cam.z>=9; },
+  gatePosts(X,Y,vert){ const T=TS, q=T*0.38, r=T*0.07, P=[[-1,-1],[1,-1],[-1,1],[1,1]];   /* round white gate posts at the four corners, each with a red lamp facing the road */
+    ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.beginPath(); for(const [sx,sy] of P){ const x=X+sx*q+0.6, y=Y+sy*q+0.8; ctx.moveTo(x+r,y); ctx.arc(x,y,r,0,Math.PI*2); } ctx.fill();
+    ctx.fillStyle='#fbfaf4'; ctx.strokeStyle='#3a3530'; ctx.lineWidth=T*0.03; ctx.beginPath(); for(const [sx,sy] of P){ const x=X+sx*q, y=Y+sy*q; ctx.moveTo(x+r,y); ctx.arc(x,y,r,0,Math.PI*2); } ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#e8402e'; ctx.beginPath(); for(const [sx,sy] of P){ const lx=X+sx*q+(vert?0:-sx*r*1.9), ly=Y+sy*q+(vert?-sy*r*1.9:0); ctx.moveTo(lx+T*0.04,ly); ctx.arc(lx,ly,T*0.04,0,Math.PI*2); } ctx.fill(); },
+  overbridge(X,Y,horiz){ const T=TS, wd=T*0.46, h=wd/2, L=T/2+1;   /* drawn along the road (u) and across it (v); the shadow falls down / right */
+    ctx.save(); ctx.translate(X,Y); if(!horiz) ctx.transform(0,1,1,0,0,0);
+    ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.fillRect(-T/2,-h+2.5,T,wd);
+    ctx.fillStyle='#ddd0a8'; ctx.fillRect(-L,-h,2*L,wd);
+    ctx.fillStyle='rgba(120,98,64,0.16)'; ctx.fillRect(-L,-h*0.42,2*L,0.7); ctx.fillRect(-L,h*0.42-0.7,2*L,0.7);   /* wheel tracks */
+    for(const sd of [-1,1]){ const v0=sd<0?-h:h-1.7;   /* parapet walls: stone, a light coping, mortar joints */
+      ctx.fillStyle='#8c8274'; ctx.fillRect(-L,v0,2*L,1.7);
+      ctx.fillStyle='#d6cfbf'; ctx.fillRect(-L,v0+(sd<0?0.25:0.75),2*L,0.7);
+      ctx.fillStyle='#4f483e'; ctx.fillRect(-L,sd<0?v0:v0+1.4,2*L,0.3);
+      ctx.fillStyle='rgba(60,52,44,0.55)'; for(let u=-L+1.6;u<L-0.5;u+=2.2) ctx.fillRect(u,v0+(sd<0?0.95:0.15),0.3,0.6); }
+    ctx.fillStyle='#7a7163'; for(const e of [-1,1]) ctx.fillRect(e<0?-L-0.4:L-1.6,-h-0.5,2,wd+1);   /* end piers, a little proud of the walls */
+    ctx.fillStyle='#cfc7b6'; for(const e of [-1,1]) ctx.fillRect(e<0?-L-0.4:L-1.6,-h-0.5,2,0.5);
+    ctx.restore(); },
+  /* drawing on the screen (not into a track cache square), with the detail on and not in the tests' all-live mode */
+  stampIt(){ return !DET2D.off&&!C2D.off&&ctx===(DET2D._m||(DET2D._m=canvas.getContext('2d'))); },
+  /* one picture per key and zoom step (never blurrier than the screen), span world px square, centred on X,Y; fn draws
+     at its real world position (the picture's transform moves it), so the same picture serves every copy */
+  stamp(key,span,X,Y,fn){ const s=rcScale(), k=key+'|'+s; let cv=DET2D.sprites.get(k);
+    if(!cv){ if(DET2D.sprites.size>=48||DET2D.px>3e6){ for(const q of DET2D.sprites.values()) q.width=q.height=0; DET2D.sprites.clear(); DET2D.px=0; }
+      cv=document.createElement('canvas'); cv.width=cv.height=Math.ceil(span*s); cv._s=s; cv._span=span;
+      const g=cv.getContext('2d'), keep=ctx; g.setTransform(s,0,0,s,(span/2-X)*s,(span/2-Y)*s); ctx=g;
+      try{ fn(); } finally { ctx=keep; }
+      DET2D.sprites.set(k,cv); DET2D.px+=cv.width*cv.height; DET2D.made++; }
+    let x=X-cv._span/2, y=Y-cv._span/2;
+    if(ctx===DET2D._m){ const d=view.dpr, k=d*cam.z, p=w2s(x,y); x+=(Math.round(p.x*d)-p.x*d)/k; y+=(Math.round(p.y*d)-p.y*d)/k; }   /* on whole screen pixels, like the track cache squares: no blur from a part-pixel shift */
+    ctx.drawImage(cv,x,y,cv.width/cv._s,cv.height/cv._s); }
+};
+function crossingStill(c,X,Y,K){ const T=TS;
+  ctx.fillStyle='rgba(230,214,170,0.9)'; ctx.fillRect(X-T*0.2,Y-T*0.2,T*0.4,T*0.4);
+  strokeTiles([c],T*0.31*K,'#c9cdd3'); strokeTiles([c],T*0.19*K,'rgba(230,214,170,1)');
+  ctx.lineWidth=T*0.08; ctx.strokeStyle='#fff'; ctx.strokeRect(X-T*0.38,Y-T*0.38,T*0.76,T*0.76);
+  ctx.strokeStyle='#d0392b'; ctx.setLineDash([T*0.12,T*0.12]); ctx.strokeRect(X-T*0.38,Y-T*0.38,T*0.76,T*0.76); ctx.setLineDash([]);
+  if(!DET2D.off) DET2D.gatePosts(X,Y,(rail.bits[c]&5)!==0);
 }
 function drawOverbridges(list){
   const T=TS;
@@ -5652,6 +5796,7 @@ function drawOverbridges(list){
     if(rail.kind[c]!==OVERBRIDGE)continue;
     const x=cX(c)*T, y=cY(c)*T, X=x+T/2, Y=y+T/2;
     const rm=world.road[c]; const horiz=(rm&10)!==0 && !((rm&5)!==0 && (rail.bits[c]&10));
+    if(!DET2D.off){ if(C2D.off) DET2D.overbridge(X,Y,horiz); else DET2D.stamp('ob'+(horiz?'h':'v'),T+8,X,Y,()=>DET2D.overbridge(X,Y,horiz)); continue; }
     const wd=T*0.46;
     ctx.fillStyle='rgba(0,0,0,0.35)';
     if(horiz){ ctx.fillRect(x,Y-wd/2+2.5,T,wd); ctx.fillStyle='#ddd0a8'; ctx.fillRect(x-1,Y-wd/2,T+2,wd); ctx.fillStyle='#6d6455'; ctx.fillRect(x-1,Y-wd/2,T+2,1.4); ctx.fillRect(x-1,Y+wd/2-1.4,T+2,1.4); }
@@ -8608,6 +8753,12 @@ function packTypes(p){ return (p.types||Object.keys(ENGINE_SKUS)).filter(k=>TRAI
 /* the themed pack an engine is in (or null) */
 function packOf(k){ return ENGINE_PACKS.find(p=>p.types&&p.types.includes(k))||null; }
 /* the packs on sale here: none in the Pro (browser) edition, none still marked soon */
+/* "New" badges (Peter, 27 Nov 2026: "puts a new badge on new pack for x days and moves them to the top of the packs list, same
+   with engines"). An engine (ENGINE_SKUS[k].added) or pack (p.added) dated YYYY-MM-DD, the day it goes on sale, is new for
+   NEW_DAYS days: a New label on its row and a "New engines" / "New packs" section at the top of its tab (list card and shed).
+   Items without a date (everything on sale before 27 Nov 2026) are never new; a date still to come is not new yet. */
+const NEW_DAYS=14, NEW_TAG='<span class="newtag">New</span>';
+function isNewItem(o){ if(!o||!o.added) return false; const t=Date.parse(o.added+'T00:00:00Z'), now=Date.now(); return isFinite(t)&&now>=t&&now-t<NEW_DAYS*864e5; }
 function packsShown(){ return EDITION==='pro'?[]:ENGINE_PACKS.filter(p=>!p.soon); }
 /* is engine k yours through a pack (its themed pack, or Everything)? */
 function packOwns(k){ if(!ENGINE_SKUS[k]) return false; const p=packOf(k); return (!!p&&EngineStore.owns(packSku(p)))||EngineStore.owns(packSku(ENGINE_PACKS[0])); }
@@ -9971,8 +10122,13 @@ function openEngineers(idx){
 }
 // --- drawing (2D) ---
 function drawDepotStill(d){ const T=TS, X=cX(d.c)*T, Y=cY(d.c)*T;
+  if(DET2D.near()&&DET2D.stampIt()) return DET2D.stamp('dep',T+8,X+T/2,Y+T/2,()=>drawDepotStill(d));   /* drawn live (zoomed right in): one picture */
   ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fillRect(X+3,Y+4,T-4,T-5);
   ctx.fillStyle='#8c8f93'; ctx.fillRect(X+1.5,Y+2,T-4,T-5); ctx.fillStyle='#6b6e72'; ctx.fillRect(X+1.5,Y+2+(T-5)/2,T-4,(T-5)/2);
+  if(DET2D.near()){ ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fillRect(X+1.5,Y+2+(T-5)/2-0.5,T-4,0.6);   /* ridge, skylights, a big door, a stack of rails */
+    ctx.fillStyle='#b7d0dc'; for(let k=0;k<3;k++) ctx.fillRect(X+3+k*3.4,Y+4.2,1.6,1);
+    ctx.fillStyle='#2b2724'; ctx.fillRect(X+T/2-3,Y+T-4.4,4,1.4); ctx.fillStyle='#f2c230'; ctx.fillRect(X+T/2-3.5,Y+T-4.4,0.5,1.4); ctx.fillRect(X+T/2+1,Y+T-4.4,0.5,1.4);
+    ctx.fillStyle='#6b4f36'; ctx.fillRect(X+T-2.2,Y+3,1.6,0.6); ctx.fillRect(X+T-2.2,Y+5,1.6,0.6); ctx.fillStyle='#9aa0a6'; ctx.fillRect(X+T-2.4,Y+3.6,2,0.4); ctx.fillRect(X+T-2.4,Y+4.4,2,0.4); }
   ctx.fillStyle='#f2c230'; ctx.fillRect(X+1.5,Y+2,T-4,1.6); ctx.fillStyle='#2b2b2b'; ctx.font='bold 5px Nunito, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('ENG',X+T/2-0.5,Y+T/2); }
 /* Worn rails go rusty; speed-limit boards on worn track; hazard markings at works. 20 Nov 2026: rust is one stroke per
    shade (shades in steps of 0.05) and the boards one shape per colour, instead of a save, path and stroke per tile. */
@@ -22431,6 +22587,7 @@ setTimeout(()=>ProStore.check(),2500);
 if(/^[A-Za-z0-9]{1,24}$/.test(initial)) build(initial);
 else { let last=null; try{ last=JSON.parse(localStorage.getItem('tm-last')||'null'); }catch(_){}
   if(last&&last.seed){ state.mode=last.mode||'normal'; state.mapId=last.mapId||null; state.scnId=last.scnId||null; state.size=last.size||state.size; state.coast=last.coast||state.coast; refreshButtons(); build(last.seed); }
+  else if(EDITION==='web'){ state.size='Small'; state.coast='Random'; refreshButtons(); build(WEB_FIRST_SEED); }   /* the website's first visit: a gentle map */
   else build(randomSeed()); }
 
 </script>
