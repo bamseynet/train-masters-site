@@ -88,6 +88,7 @@ button.tb.primary .st{color:inherit}
 #legend div{display:flex;align-items:center;gap:7px;white-space:nowrap}
 #legend i{width:13px;height:13px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.3)}
 #legend.hidden{display:none}
+#guide.hidden{display:none}   /* 27 Nov 2026 (build 20 bug, Peter's screenshot): without it the guide's empty frame showed top right for everyone */
 #hint{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:3;font-size:12.5px;color:var(--muted);background:rgba(12,20,15,.7);padding:6px 12px;border-radius:999px;white-space:nowrap;pointer-events:none}
 #loading{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(12,20,15,.82);z-index:10;transition:opacity .25s}
 #loading.hide{opacity:0;pointer-events:none}
@@ -5036,17 +5037,20 @@ function buyTrain(idx,tab){
      tab: 0 or 1, or an engine's key (the tab that engine is on); left out, the last tab used. */
   const web=EDITION==='web', tabbed=EDITION!=='pro';
   if(typeof tab==='string') tab=tabbed&&typeLocked(tab)?1:0;
-  if(!tabbed) tab=0; else if(tab!==0&&tab!==1) tab=trainTab===2?1:trainTab;   /* (the shed's Engine packs tab: here they are a section of the store tab) */
+  /* 27 Nov 2026, Peter: "Yes do list view": the list card has the shed's third tab, Engine packs, too (it was a section at the foot of
+     Add more engines, easy to miss) */
+  const npk=packsShown().length;
+  if(!tabbed) tab=0; else if(!(tab===0||tab===1||tab===2&&npk)) tab=tab===2?1:trainTab===2&&!npk?1:trainTab;   /* (packs asked for but none on sale: the store tab) */
   if(tabbed) trainTab=tab;
   const F=trainFind, items=trainRows(tab,true);
   for(const it of items){ if(it.jump!=null) it.fn=()=>buyTrain(undefined,it.jump); else if(it.clear) it.fn=()=>{ trainFind.q=''; trainFind.chip='all'; buyTrain(undefined,tab); }; }
   if(Shed.can()) items.push({label:'🏛️ Shed view',detail:'See each engine up close on the turntable',fn:()=>{ trainListOnce=false; if(!Shed.open(null,()=>openTrains(),{tab})) buyTrain(undefined,tab); }});   /* (back to the shed browser, remembered) */
   items.push({label:'Back',fn:()=>openTrains()});
-  const text=!tabbed?'Classic British favourites and a couple of world-famous giants.':tab===1?`<span class="shopbanner">${shopBanner()}</span>`
+  const text=!tabbed?'Classic British favourites and a couple of world-famous giants.':tab>=1?`<span class="shopbanner">${shopBanner()}</span>`
     :money()?'Prices on this tab are in your railway’s game money.':'Classic British favourites and a couple of world-famous giants.';
   openModal({title:'Choose a train',text,items,idx,onCancel:()=>openTrains(),
     search:{q:F.q,chip:F.chip,chips:EngineFind.CHIPS,placeholder:'Search engines (name, era, type…)',onChange:(q,chip)=>{ trainFind.q=q; trainFind.chip=chip; buyTrain(undefined,tab); }},
-    ...(tabbed?{tabs:[{label:'Your engines'},{label:'Add more engines',badge:'Store',cls:'shop'}],tab,onTab:i=>buyTrain(undefined,i)}:{})});
+    ...(tabbed?{tabs:[{label:'Your engines'},{label:'Add more engines',badge:'Store',cls:'shop'},...(npk?[{label:'Engine packs',badge:'Store',cls:'shop'}]:[])],tab,onTab:i=>buyTrain(undefined,i)}:{})});
 }
 /* Buying a train starts here (Peter, 24 Nov 2026: "make the shed the default when we click the trains button"): the Heritage
    shed as the engine browser (Shed.open), or the "Choose a train" card (buyTrain) for a player who picked List view there
@@ -5068,14 +5072,14 @@ function trainRows(tab,card){ const tabbed=EDITION!=='pro', F=trainFind, on=Engi
     if(other) items.push({label:`${other} more in ${tab?'Your engines':'Add more engines'}`,detail:none?'Show them':'Matching engines on the other tab',jump:1-tab});
     if(none) items.push({label:'Clear search',clear:true}); }
   return items; }
-/* one tab of "Choose a train" (0 Your engines, 1 Add more engines; 2 the shed's Engine packs), before any search and without
-   Back. card: the list card, whose store tab also has an "Engine packs" section (the shed has them on their own tab) */
+/* one tab of "Choose a train" (0 Your engines, 1 Add more engines, 2 Engine packs: in the shed and, since 27 Nov 2026, the list
+   card too), before any search and without Back. card: for the list card (a pack card's Back returns to it) */
 function trainItems(tab,card){
   const web=EDITION==='web', tabbed=EDITION!=='pro';
   const GROUPS=['Steam','Diesel','Electric','High speed','Freight'], items=[];
   const shown=g=>Object.entries(TRAIN_TYPES).filter(([k,ty])=>ty.group===g&&!(ENGINE_SKUS[k]&&ENGINE_SKUS[k].soon&&engineLocked(k)));   /* soon: not on sale yet, unless already owned */
   const sec=label=>items.push({heading:true,sec:true,disabled:true,label});
-  if(tab===2){ const P=packRows((m,j,p)=>openPackCard(p.id,Shed.back()));
+  if(tab===2){ const P=packRows((m,j,p)=>openPackCard(p.id,card?()=>buyTrain(j,2):Shed.back()));
     if(P.length){ sec('Every engine'); items.push(P[0]); if(P.length>1){ sec('Themed packs'); items.push(...P.slice(1)); } }
     else items.push({heading:true,disabled:true,label:'Engine packs are on the way.'});
     return items; }
@@ -5092,8 +5096,6 @@ function trainItems(tab,card){
       if(ENGINE_SKUS[k]) famous.push(row(k,ty,g,ENGINE_SKUS[k].sku,!engineLocked(k),(m,j)=>openEngineCard(k,j)));
       else if((ty.pro||ty.heritage)&&!heritageOwned()) her.push(row(k,ty,g,HERITAGE_SKUS[k]||HERITAGE_SKU,!heritageLocked(k),(m,j)=>openHeritageCard(k,j))); }
     if(famous.length){ sec('Famous engines, one at a time'); items.push(...famous); }
-    const packs=card?packRows((m,j,p)=>openPackCard(p.id,()=>buyTrain(j,1))):[];
-    if(packs.length){ sec('Engine packs'); items.push(...packs); }
     if(!heritageOwned()){ sec('Heritage Collection');
       items.push({label:'The whole Heritage Collection',detail:`Seven famous engines in one purchase: ${HERITAGE_NAMES}`,real:true,cost:cost(HERITAGE_SKU),find:'heritage pack',tags:['heritage'],fn:(m,j)=>openHeritageCard(null,j)},...her); }
     if(!isPro()){ sec('Train Masters Pro');
