@@ -10580,11 +10580,32 @@ const V3=(()=>{
   /* embankment up to a bridge (19 Nov 2026): grassy slopes from the ballast's edge down to the ground, either side of the
      raised approach; pts {x,y,z} along the track centre with y the rail height, off the rail's height above the ground */
   const EMB=new THREE.Color('#77834c');
-  function embank(G,pts,hw,off,sl,k){ sl=sl||1.5; k=k||EMB;   /* sl: how far the slope reaches out per unit of height; k: colour (or per-vertex function) */
+  /* does an embankment from tile c carry on at (x,z)? the same tile, or a neighbouring raised approach of the same railway */
+  const embCont=c=>(x,z)=>{ const t=Math.floor(x)+Math.floor(z)*world.W; return t===c||(rail.bits[t]&&rail.kind[t]===GROUND&&!!NHr.F[t]); };
+  const rvEmbCont=c=>(x,z)=>{ const t=Math.floor(x)+Math.floor(z)*world.W; return t===c||(RV.bits[t]&&RV.kind[t]===GROUND&&!!NHv.F[t]); };
+  function embank(G,pts,hw,off,sl,k,cont){ sl=sl||1.5; k=k||EMB;   /* sl: how far the slope reaches out per unit of height; k: colour (or per-vertex function); cont(x,z): the mound carries on there (else its open end gets a wall: endWall) */
     for(let i=0;i<pts.length-1;i++){ const p=pts[i], q=pts[i+1], tp=tan(pts,i), tq=tan(pts,i+1);
       const hp=p.y-off-terrainH(p.x,p.z), hq=q.y-off-terrainH(q.x,q.z); if(hp<0.02&&hq<0.02) continue;
       for(const sd of [-1,1]){ const T=(P,t)=>[P.x-t[1]*sd*hw,P.y-0.02,P.z+t[0]*sd*hw], Bt=(P,t,h)=>{ const w=hw+sl*Math.max(0,h)+0.02, x=P.x-t[1]*sd*w, z=P.z+t[0]*sd*w; return [x,terrainH(x,z)-0.03,z]; };
         G.quad(T(p,tp),T(q,tq),Bt(q,tq,hq),Bt(p,tp,hp),k,[-tp[1]*sd,0.8,tp[0]*sd]); } }
+    if(cont) for(const [i,dir] of [[0,-1],[pts.length-1,1]]){ const P=pts[i], t=tan(pts,i), h=P.y-off-terrainH(P.x,P.z), fx=t[0]*dir, fz=t[1]*dir;
+      if(h<0.03||cont(P.x+fx*0.1,P.z+fz*0.1)) continue;   /* the mound carries on into the next tile: no wall */
+      endWall(G,P,t,dir,hw,h,sl); }
+  }
+  /* 27 Nov 2026 (Peter, 3D by a lake bridge: "There are gaps in the mounds of earth leading up to the bridges"): where an
+     embankment stopped at a bridge its grassy slopes just ended, open: the mound is up to three tiles wide at its foot
+     and the bridge's abutment less than one, so from the water you looked into the hollow mound (one slope seen from
+     inside, sky and water between). Now a brick wing wall closes the end, in the bridges' brick, a little proud of the
+     slopes, down below the ground (or into the lake), with a stone coping along its top. */
+  function endWall(G,P,t,dir,hw,h,sl){
+    const fx=t[0]*dir, fz=t[1]*dir, ix=P.x-fx*0.012, iz=P.z-fz*0.012, reach=hw+sl*h+0.06, ry=P.y-0.02, tint=tileTint(Math.floor(P.x)+Math.floor(P.z)*world.W);
+    const at=(sd,u)=>[ix-t[1]*sd*u, iz+t[0]*sd*u], g=(sd,u)=>{ const q=at(sd,u); return terrainH(q[0],q[1]); };
+    const brick=v=>{ const f=tint*(0.74+0.3*clamp((v[1]-terrainH(v[0],v[2]))/1.3,0,1)); return {r:Math.min(1,BRK.r*f),g:Math.min(1,BRK.g*f),b:Math.min(1,BRK.b*f)}; };
+    const topY=u=>u<=hw?ry+0.03:Math.max(lerp(ry,ry-h,(u-hw)/(reach-hw))+0.04,-1e9), n=[fx,0,fz];
+    for(const sd of [-1,1]){ const us=[0,hw,(hw+reach)/2,reach];
+      for(let i=0;i<3;i++){ const a=us[i], b=us[i+1], A=at(sd,a), B=at(sd,b), ya=Math.max(topY(a),g(sd,a)+0.02), yb=Math.max(topY(b),g(sd,b)+0.02);
+        G.quad([A[0],g(sd,a)-0.12,A[1]],[B[0],g(sd,b)-0.12,B[1]],[B[0],yb,B[1]],[A[0],ya,A[1]],brick,n);
+        G.quad([A[0],ya,A[1]],[B[0],yb,B[1]],[B[0]+fx*0.05,yb+0.02,B[1]+fz*0.05],[A[0]+fx*0.05,ya+0.02,A[1]+fz*0.05],BRK_COPE,[0,1,0]); } }   /* (coping: leans out over the face) */
   }
   const tileTint=c=>0.9+0.2*(((c*2654435761)>>>0)/4294967296);   /* a little variation in the brick from tile to tile */
   const isBrick=c=>c>=0&&c<world.N&&rail.bits[c]&&(rail.kind[c]===BRIDGE||rail.kind[c]===VIADUCT);
@@ -10825,7 +10846,7 @@ const V3=(()=>{
           G.box(px+(horiz?-0.42:0),ry+0.2,pz+(horiz?0:-0.42),0.06,0.4,0.06,0,WHITE);
           G.box(px,ry+0.36,pz,horiz?0.8:0.05,0.05,horiz?0.05:0.8,0,WHITE);
           G.box(px,ry+0.36,pz,horiz?0.18:0.055,0.055,horiz?0.055:0.18,0,RED); } }
-      if(k===GROUND&&NHr&&NHr.F[c]) for(const s of segs) embank(G,s,0.33*TRACK_K+0.04,0.09);   /* raised approach to a bridge */
+      if(k===GROUND&&NHr&&NHr.F[c]) for(const s of segs) embank(G,s,0.33*TRACK_K+0.04,0.09,0,0,embCont(c));   /* raised approach to a bridge */
       // ballast, sleepers, rails
       for(const s of segs){
         G.ribbon(s,0,0.33*TRACK_K+0.04,0.0,BAL,(k===BRIDGE||k===VIADUCT||(k===FLYOVER&&s[0].y>terrainH(s[0].x,s[0].z)+0.5))?0:0.12);   /* no skirt on a deck: it would poke through the arch */
@@ -20949,9 +20970,12 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     for(const m of (Life.markets?Life.markets():[])) counts.stall+=m.spots.length;
     for(const a of Life.agents()) counts[a.kind==='car'&&a.lorry?'lorry':a.kind]++;
     /* 22 Nov 2026: vehicles, ducks, launches and stalls were sized next to the old trains: a car as long as a house, a duck
-       as long as a person. Shrink them with the trains (TRAIN_K); narrowboats and fishing boats were already in scale. */
-    const LIFE_SC={car:TRAIN_K,lorry:TRAIN_K,tractor:TRAIN_K,boat:TRAIN_K,sail:TRAIN_K,duck:0.45,stall:0.6};
-    for(const k in shapes){ const G=new Geo(); shapes[k](G); const sc=LIFE_SC[k]; if(sc) for(let i=0;i<G.p.length;i++) G.p[i]*=sc; const geo=new THREE.BufferGeometry();
+       as long as a person. Shrink them with the trains (TRAIN_K); (boats: see below) */
+    /* 27 Nov 2026 (Peter: "The scale of the boats looks off. They look tiny"): measured against a 1.75 m villager the launch
+       was 5 m long, the yacht 5.5 m (mast 4 m), the fishing boat 4 m and the narrowboat 6 m. Now about 8, 11 (mast 9), 10
+       and 11 m (a short narrowboat: a longer one hangs over the banks on the narrow drawn canals' bends); it stays narrow (2.1 m: [length, height, width] scales) for the locks. Test: boat_scale.py */
+    const LIFE_SC={car:TRAIN_K,lorry:TRAIN_K,tractor:TRAIN_K,boat:TRAIN_K*1.6,sail:TRAIN_K*2,duck:0.45,stall:0.6,fishing:2.4,narrowboat:[1.8,1.4,1.4]};
+    for(const k in shapes){ const G=new Geo(); shapes[k](G); const sc=LIFE_SC[k]; if(sc) for(let i=0;i<G.p.length;i++) G.p[i]*=Array.isArray(sc)?sc[i%3]:sc; const geo=new THREE.BufferGeometry();
       geo.setAttribute('position',new THREE.Float32BufferAttribute(G.p,3)); geo.setAttribute('normal',new THREE.Float32BufferAttribute(G.n,3)); geo.setAttribute('color',new THREE.Float32BufferAttribute(G.c,3));
       const nv=G.p.length/3, lk=new Float32Array(nv*2); for(let v=0;v<nv;v++){ const r=G.c[v*3], gg=G.c[v*3+1], bb=G.c[v*3+2]; lk[v*2]=r===gg&&gg===bb&&r>=0.5?1:0; }
       for(const [a0,a1] of (G.lit||[])) for(let v=a0;v<a1;v++){ lk[v*2]=0; lk[v*2+1]=1; }
@@ -21365,7 +21389,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     for(let i=0;i<=N;i++){ const t=i/N, u=1-t, px=u*u*e0[0]+2*u*t*x+t*t*e1[0], pz=u*u*e0[1]+2*u*t*z+t*t*e1[1];
       const tx=2*u*(x-e0[0])+2*t*(e1[0]-x), tz=2*u*(z-e0[1])+2*t*(e1[1]-z), l=Math.hypot(tx,tz)||1;
       P.push({x:px,z:pz,y:rvYt(c,px,pz),wx:-tz/l,wz:tx/l}); }
-    if(RV.kind[c]===GROUND&&NHv&&NHv.F[c]) embank(G,P,0.25,0.05);
+    if(RV.kind[c]===GROUND&&NHv&&NHv.F[c]) embank(G,P,0.25,0.05,0,0,rvEmbCont(c));
     const off=(p,w,dy)=>[p.x+p.wx*w,p.y+dy,p.z+p.wz*w];
     for(let i=0;i<N;i++){ const A=P[i], B=P[i+1];
       G.quad(off(A,-0.25,0.03),off(B,-0.25,0.03),off(B,0.25,0.03),off(A,0.25,0.03),bal,[0,1,0]);
@@ -21400,7 +21424,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
         { const arms=I_BIT.filter(b=>m&b); if(arms.length===2&&m!==5&&m!==10&&!rvStruct(c)){ rvCurve(G,c,arms,bal,sl,rl); continue; } }
         for(const b of I_BIT){ if(!(m&b)) continue; const ux=b===2?1:b===8?-1:0, uz=b===4?1:b===1?-1:0;
           const pts=[[x,rvYt(c,x,z),z]]; for(const f of [0.25,0.5]){ const px=x+ux*f, pz=z+uz*f; pts.push([px,rvYt(c,px,pz),pz]); }
-          if(k===GROUND&&NHv.F[c]) embank(G,pts.map(q=>({x:q[0],y:q[1],z:q[2]})),0.25,0.05);   /* raised approach to a bridge */
+          if(k===GROUND&&NHv.F[c]) embank(G,pts.map(q=>({x:q[0],y:q[1],z:q[2]})),0.25,0.05,0,0,rvEmbCont(c));   /* raised approach to a bridge */
           const wx=-uz, wz=ux;   /* across the track */
           for(let i=0;i<2;i++){ const A=pts[i], B=pts[i+1];
             const off=(P,w,dy)=>[P[0]+wx*w,P[1]+dy,P[2]+wz*w];
@@ -21820,6 +21844,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     _rvBridgeGeo:()=>{ rvComputeH(); const G=new Geo(), tiles=[]; for(let c=0;c<world.N;c++) if(RV.bits[c]&&rvStruct(c)) tiles.push(rvBrickTile(G,c)); return {p:G.p,c:G.c,tiles}; },
     _waterY:c=>world.lake[c]?hFrom(world.filled[c])-0.06:null,
     _look:(p,l)=>{ camera.position.set(p[0],p[1],p[2]); camera.lookAt(l[0],l[1],l[2]); camera.updateMatrixWorld(); },   /* tests: pictures from any point (call after frame, before snap) */ focus:(x,z,d)=>{ orbit.tx=x; orbit.tz=z; if(d) orbit.dist=d; },
+    _embGeo:c=>{ const G=new Geo(); if(rail.kind[c]===GROUND&&NHr&&NHr.F[c]) for(const s of segments(c)) embank(G,s,0.33*TRACK_K+0.04,0.09,0,0,embCont(c)); return {p:G.p, n:G.n, c:G.c}; },   /* tests: one tile's embankment */
     showAt:(x,z)=>{ if(S.mode!=='orbit') setMode('orbit'); orbit.tx=x; orbit.tz=z; orbit.dist=Math.min(orbit.dist,12); camPos=null; camLook=null; status3(); },   /* look down on a spot (tiles), close in: "Show me" in 3D */   /* point the overhead camera (tests, screenshots) */
     birds:()=>birds, life:()=>lifeG, near:()=>camera&&camera.near, camXZ:()=>!camera?null:S.mode==='orbit'?(orbit.dist<=14?{x:orbit.tx,z:orbit.tz}:null):{x:camera.position.x,z:camera.position.z},   /* where you're looking; overhead only counts when close in */ _carGeo:(t,kind,i=0)=>{ const G=new Geo(); G.sep=true; buildCarGeo(G,t,kind,i); return G; }, _carMeshLen:t=>{ const m=carMesh(t,'coach',1); m.geometry.computeBoundingBox(); const bb=m.geometry.boundingBox; return +(bb.max.x-bb.min.x).toFixed(3); },   /* tests: build one car's shape */
     /* tests: the heritage hero models (who has one, how far each has run, its wheel angle read back from the wheel's instance matrix) */
