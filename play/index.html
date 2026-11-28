@@ -1754,6 +1754,13 @@ const WHISTLES={
   pacer:{horn:true,notes:[77,72],step:0.26,len:0.26,lp:2100,vol:0.13},   /* Pacer (24 Nov 2026): a short, bright two-tone toot, higher and quicker than the main-line horns */
   c101:{horn:true,notes:[72,67],step:0.32,len:0.3,lp:1500,vol:0.13},   /* Class 101 (24 Nov 2026): a mellow, slightly wheezy two-tone, lower and slower than the Pacer's */
   kiha40:{horn:true,notes:[77],step:0,len:0.72,lp:2300,vol:0.14},   /* KiHa 40 (28 Nov 2026, pack Japanese railways): the single bright, brassy "pwaan" of a Japanese railcar's air horn */
+  c70:{horn:true,notes:[69,63],step:0.34,len:0.48,lp:1700,vol:0.15},   /* Class 70 (28 Nov 2026, pack Modern main line): a full, modern two-tone, deeper than the Class 68's */
+  c59:{horn:true,notes:[48,52,55],step:0,len:1.1,lp:1150,vol:0.16},   /* Class 59 (28 Nov 2026, pack Modern main line): a deep American three-note chord, like the big diesels of its maker's home */
+  c57:{horn:true,notes:[75,69],step:0.38,len:0.4,lp:1900,vol:0.15},   /* Class 57 (28 Nov 2026, pack Modern main line): the Class 47's bright high-low two-tone, a shade lower and fuller */
+  c92:{horn:true,notes:[78,73],step:0.34,len:0.36,lp:2300,vol:0.14},   /* Class 92 (28 Nov 2026, pack Modern main line): a crisp high-low two-tone, a shade above the Class 90's */
+  c180:{horn:true,notes:[79,74],step:0.3,len:0.34,lp:2400,vol:0.13},   /* Class 180 (28 Nov 2026, pack Modern main line): a clean, bright modern two-tone */
+  c220:{horn:true,notes:[81,76],step:0.26,len:0.3,lp:2700,vol:0.13},   /* Class 220 (28 Nov 2026, pack Modern main line): a short, high modern two-tone, the brightest of the units */
+  c222:{horn:true,notes:[80,74],step:0.3,len:0.32,lp:2600,vol:0.13},   /* Class 222 (28 Nov 2026, pack Modern main line): a high-low two-tone, a little wider apart than the Class 220's */
   c800:{horn:true,notes:[80,75],step:0.28,len:0.32,lp:2600,vol:0.13},   /* Class 800 (24 Nov 2026): a clean, modern high-low two-tone, a shade above the Class 91's */
   saint:{notes:[88,95],mix:[1,0.45],len:0.62,att:0.035},   /* GWR Saint (24 Nov 2026): the shrill GWR whistle, a shade higher and shorter again than the Hall's */
   nohab:{horn:true,notes:[50,55],step:0.5,len:0.62,lp:1000,vol:0.16},   /* Scandinavian bulldog diesel (24 Nov 2026): a deep, mellow low-high two-tone */
@@ -1881,6 +1888,13 @@ const HERITAGE_SOUNDS={
   pacer:{kind:'diesel',pulse:[5.8,9],fire:[1,0.6,0.85,0.65,0.9,0.55],thump:80,dec:0.025,tw:0.4,body:2,rasp:0.55,rc:1400,rdec:0.03,clat:0.35,jit:0.09,lump:0.2,lp:[2200,4000],tc:0.5,whine:[620,1050],wv:0.02,vol:0.065},   /* Pacer (24 Nov 2026): a busy, rattling bus engine, higher and quicker than the main-line diesels */
   c101:{kind:'diesel',pulse:[5.5,8.6],fire:[1,0.7,0.88,0.66,0.92,0.72],thump:74,dec:0.03,tw:0.4,body:2,rasp:0.5,rc:1200,rdec:0.035,clat:0.2,jit:0.07,lump:0.14,lp:[2200,4000],tc:0.5,whine:[480,880],wv:0.03,vol:0.065},   /* Class 101 (24 Nov 2026): the steady chug of its underfloor bus-type diesels and the gearbox whine */
   kiha40:{kind:'diesel',pulse:[5.1,8.1],fire:[1,0.76,0.9,0.7,0.86,0.72],thump:70,dec:0.034,tw:0.45,body:1.9,rasp:0.55,rc:1100,rdec:0.04,clat:0.16,jit:0.06,lump:0.12,lp:[2000,3800],tc:0.5,whine:[620,1350],wv:0.04,vol:0.064},   /* KiHa 40 (28 Nov 2026): the steady drone of its one big underfloor diesel, the hydraulic gearbox's whine rising with speed */
+  c70:{kind:'diesel',pulse:[4.4,7.4],fire:[1,0.74,0.9,0.68,0.94,0.7],thump:50,dec:0.055,tw:0.6,body:1.6,rasp:0.72,rc:950,rdec:0.06,clat:0.1,jit:0.06,lump:0.12,lp:[1350,3300],whine:[1400,2500],wv:0.05,vol:0.07},   /* Class 70 (28 Nov 2026): the deep, even beat of its big modern V16, its turbocharger's whistle rising as it works */
+  c59:{kind:'diesel',pulse:[4.2,7.0],fire:[1,0.82,0.92,0.78,0.96,0.8],thump:44,dec:0.062,tw:0.6,body:1.6,rasp:0.78,rc:860,rdec:0.068,clat:0.1,jit:0.06,lump:0.12,lp:[1250,3000],whine:[900,1500],wv:0.04,vol:0.072},   /* Class 59 (28 Nov 2026): the American two-stroke's deep, steady drum */
+  c57:{kind:'diesel',pulse:[4.6,7.5],fire:[1,0.84,0.92,0.8,0.95,0.82],thump:52,dec:0.06,tw:0.6,body:1.6,rasp:0.7,rc:1000,rdec:0.066,clat:0.11,jit:0.06,lump:0.12,lp:[1400,3300],whine:[1000,1700],wv:0.045,vol:0.07},   /* Class 57 (28 Nov 2026): the American two-stroke fitted in the old Class 47's body: a deep drum, quicker than the Class 59's */
+  c92:{kind:'electric',hum:100,whine:[220,1400],lp:2000,vol:0.052},   /* Class 92 (28 Nov 2026): a deep transformer hum, its motors' whine rising a little below the Class 90's */
+  c180:{kind:'diesel',pulse:[5.6,8.8],fire:[1,0.8,0.9,0.76,0.92,0.78],thump:80,dec:0.026,tw:0.4,body:2,rasp:0.48,rc:1400,rdec:0.03,clat:0.12,jit:0.05,lump:0.1,lp:[2200,4000],tc:0.5,whine:[900,1800],wv:0.035,vol:0.058},   /* Class 180 (28 Nov 2026): the smooth purr of its underfloor engines and the hydraulic gearboxes' whine */
+  c220:{kind:'diesel',pulse:[5.7,9.0],fire:[1,0.84,0.92,0.8,0.95,0.82],thump:78,dec:0.024,tw:0.4,body:2,rasp:0.46,rc:1450,rdec:0.028,clat:0.1,jit:0.05,lump:0.1,lp:[2200,4000],tc:0.5,whine:[1100,2100],wv:0.03,vol:0.056},   /* Class 220 (28 Nov 2026): the busy hum of an engine under every car, a generator's whine over it */
+  c222:{kind:'diesel',pulse:[5.5,8.7],fire:[1,0.82,0.9,0.8,0.94,0.8],thump:76,dec:0.025,tw:0.4,body:2,rasp:0.47,rc:1400,rdec:0.029,clat:0.1,jit:0.05,lump:0.1,lp:[2200,4000],tc:0.5,whine:[1050,2000],wv:0.032,vol:0.057},   /* Class 222 (28 Nov 2026): the Class 220's sister: the same busy hum, a touch deeper and calmer */
   c800:{kind:'electric',hum:100,whine:[230,1450],lp:1900,vol:0.042},   /* Class 800 (24 Nov 2026): a quiet modern hum, its motors' whine soft and smooth */
   nohab:{kind:'diesel',pulse:[4,7],fire:[1,0.8,0.9,0.74,0.96,0.78],thump:44,dec:0.06,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.07,clat:0.1,jit:0.06,lump:0.11,lp:[1200,2900],whine:[700,1200],wv:0.02,vol:0.07},   /* Scandinavian bulldog diesel (24 Nov 2026): the American two-stroke's deep, steady drum */
   c60:{kind:'diesel',pulse:[4,6.8],fire:[1,0.72,0.88,0.64],thump:42,dec:0.065,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.075,clat:0.1,jit:0.07,lump:0.14,lp:[1200,2900],whine:[800,1300],wv:0.045,vol:0.075},   /* Class 60 (24 Nov 2026): a slow, heavy beat, lowest of the diesels */
@@ -3532,6 +3546,40 @@ const TRAIN_TYPES={
      and a thin vermilion line above them (band), a grey roof; no emblem, no numbers */
   kiha40:{name:'KiHa 40 Railcar',short:'KiHa 40',group:'Diesel',era:'1977',desc:'Japan’s everyday country railcar of 1977: two sturdy cars coupled together, each with a cab at both ends, a gangway door in the middle of each flat front between two windscreens, two headlights up under the roof and a long row of small windows, on four-wheeled bogies, in the old national railways’ cream with vermilion below the windows. A self-contained two-car unit with no coaches: 59 mph and the steady drone of its underfloor diesel, on quiet branch lines through the mountains and along the coast',cost:26000,speed:2.95,steam:false,run:270,fare:5.6,goods:false,hero:true,unit:'a two-car unit',
     consist:['engF','engR'],liv:{body:'#ece1c3',band:'#c8462f',roof:'#6c6e6b',wheel:'#202020'}},
+  /* pack Modern main line (backlog E3 pack P4, 28 Nov 2026): ENGINE_SKUS.c70 / c59 / c57 / c92 / c180 / c220 / c222, not
+     Pro and not Heritage, soon until their store items exist; hero models near the camera. Generic freight-company and
+     train-company colours: no logos, no names, no numbers.
+     The Class 70: two carriage places on two six-wheeled bogies, a long container train (flat); dark green (body) with
+     yellow ends (ends) and a yellow line low along the sides (stripe), a dark roof. */
+  c70:{name:'Class 70',short:'Class 70',group:'Diesel',era:'2009',desc:'The big modern freight diesel of 2009, built in America for Britain: a raked windscreen set back above a jutting lower nose with its headlights, black round the cab windows, tall radiator grilles and big roof fans at one end and six-wheeled bogies, in dark green with yellow ends and a yellow line along the sides. 75 mph, hauling a long train of containers with a full two-tone horn',cost:104000,speed:3.75,steam:false,run:1180,fare:6.4,goods:true,hero:true,
+    consist:['engF','engR','flat','flat','flat','flat','flat','flat','flat','flat','flat','flat'],liv:{body:'#1f4a33',ends:'#f2c230',stripe:'#f2c230',roof:'#26322b',wheel:'#202020'}},
+  /* the Class 59: two carriage places on two six-wheeled bogies, a long rake of stone hoppers (open wagons: wagon their
+     grey, load the pale stone); silver (body) with a blue band low along the sides (stripe), a yellow lower front (ends) */
+  c59:{name:'Class 59',short:'Class 59',group:'Diesel',era:'1985',desc:'The American-built stone train diesel of 1985, bought by a quarry company when British engines kept breaking down: flat cab fronts with two windscreens, a long row of engine-room doors along the sides, three big radiator fans on the roof at one end and six-wheeled bogies, in silver with a blue band and a yellow front. Only 60 mph, but it hauls the heaviest stone trains in Britain with a deep American chord horn',cost:94000,speed:3.0,steam:false,run:1100,fare:6.2,goods:true,hero:true,
+    consist:['engF','engR','open','open','open','open','open','open','open','open','open','open','open','open'],liv:{body:'#b9bdc0',stripe:'#1f4e8c',ends:'#f2c230',roof:'#4a4e52',wheel:'#202020',wagon:'#9a9ea1',load:'#c2b9aa'}},
+  /* the Class 57: the Class 47's body (heroC47 with o.c57: no headcode boxes, new grilles and lights) on its bogies, two
+     carriage places; midnight blue (body and lining) with a silver line low along the sides (stripe), a small yellow
+     panel (ends); matching blue coaches with a silver line */
+  c57:{name:'Class 57',short:'Class 57',group:'Diesel',era:'1997',desc:'An old Class 47 given a new life in 1997: the same long body with its curved cab ends and three-axle bogies, but a rebuilt American engine inside, no headcode boxes on the cab roofs and new lights and grilles, in midnight blue with a silver line and a small yellow front panel. 95 mph on passenger and rescue duties, with matching blue coaches',cost:108000,speed:4.75,steam:false,run:1160,fare:8.9,goods:false,hero:true,
+    consist:['engF','engR','coach','coach','coach','coach','coach','coach','coach'],liv:{body:'#1f2f57',lining:'#1f2f57',stripe:'#b8bcc0',ends:'#f2c230',roof:'#3a3e46',wheel:'#202020',coachLo:'#1f2f57',coachHi:'#1f2f57',coachLine:'#b8bcc0',roof2:'#4a4c50'}},
+  /* the Class 92: two carriage places on two six-wheeled bogies, a long goods train of vans and tank wagons; mid grey
+     (body) with a dark grey upper band (band) and roof, a fine white line between (stripe), yellow ends (ends) */
+  c92:{name:'Class 92',short:'Class 92',group:'Electric',era:'1993',desc:'The big electric of 1993 built to haul goods trains through the Channel Tunnel: a long body with flat cab ends, the windscreens leaning back a little, two pantographs on the roof for the overhead wires and pick-up shoes on its six-wheeled bogies for the third rail, in two-tone grey with yellow ends. 87 mph, hauling long trains of vans and tank wagons with a crisp two-tone horn',cost:132000,speed:4.35,steam:false,run:1450,fare:6.8,goods:true,hero:true,
+    consist:['engF','engR','van','van','tankw','van','van','tankw','van','van','tankw','van'],liv:{body:'#a7abad',band:'#464b51',stripe:'#eceae4',ends:'#f2c230',roof:'#464b51',wheel:'#202020'}},
+  /* the Class 180: a driving car in two carriage places on two four-wheeled bogies, three smooth trailers (sleek, in its
+     own colours) and a matching driving car at the far end, facing back (pcR its inner half, pcF its nose: cabs, not
+     paying coaches); deep purple (body) with a gold line (stripe), a yellow lower nose (ends), a dark roof */
+  c180:{name:'Class 180 Intercity Unit',short:'Class 180',group:'Diesel',era:'2000',desc:'The fast diesel unit of 2000 for long intercity runs: a smooth, rounded nose with a big raked windscreen and a yellow front, sleek bodies with an engine under every car, in deep purple with a gold line. No locomotive: 125 mph, with three matching cars and a driving car at the far end',cost:142000,speed:6.25,steam:false,run:1550,fare:10.0,goods:false,hero:true,
+    consist:['engF','engR','coach','coach','coach','pcR','pcF'],liv:{body:'#4a2a5e',stripe:'#d4a84a',ends:'#f2c230',roof:'#2a2a30',wheel:'#202020',coachLo:'#4a2a5e',coachHi:'#4a2a5e',coachLine:'#d4a84a',roof2:'#2a2a30',sleek:true}},
+  /* the Class 220: a driving car in two carriage places on two four-wheeled bogies, two smooth trailers (sleek) and the
+     far driving car facing back (pcR, pcF); silver (body) with a dark grey window band (band), a deep red line low down
+     (stripe), a yellow nose (ends) */
+  c220:{name:'Class 220 Cross-Country Unit',short:'Class 220',group:'Diesel',era:'2000',desc:'The cross-country diesel unit of 2000: a pointed nose sloping down to a coupler cover, a big raked windscreen and a yellow front, four short cars each with its own engine under the floor, in silver with a dark grey window band and a deep red line. 125 mph from one end of Britain to the other, with a driving car at the far end',cost:138000,speed:6.25,steam:false,run:1500,fare:9.8,goods:false,hero:true,
+    consist:['engF','engR','coach','coach','pcR','pcF'],liv:{body:'#b9bec2',band:'#33363b',stripe:'#8c1c2c',ends:'#f2c230',roof:'#5a5e62',wheel:'#202020',coachLo:'#b9bec2',coachHi:'#33363b',coachLine:'#8c1c2c',roof2:'#5a5e62',sleek:true}},
+  /* the Class 222: a driving car in two carriage places on two four-wheeled bogies, three smooth trailers (sleek) and the
+     far driving car facing back (pcR, pcF); teal (body) with a tangerine line (stripe), a yellow nose (ends), a grey roof */
+  c222:{name:'Class 222 Main Line Unit',short:'Class 222',group:'Diesel',era:'2004',desc:'The main-line diesel unit of 2004, the Class 220’s longer-nosed sister: a long pointed nose with a big raked windscreen and a yellow front, smooth cars with an engine under each, in teal with a tangerine line. 125 mph on the long run north from London, with three matching cars and a driving car at the far end',cost:146000,speed:6.25,steam:false,run:1600,fare:10.2,goods:false,hero:true,
+    consist:['engF','engR','coach','coach','coach','pcR','pcF'],liv:{body:'#245f66',stripe:'#e89a3c',ends:'#f2c230',roof:'#4a5054',wheel:'#202020',coachLo:'#245f66',coachHi:'#245f66',coachLine:'#e89a3c',roof2:'#4a5054',sleek:true}},
   /* the Class 800 (ENGINE_SKUS.c800): a driving car in two carriage places on two four-wheeled bogies, three smooth
      trailers (sleek, in its own colours) and a matching driving car at the far end, facing back (pcR its inner half, pcF
      its nose: cabs, not paying coaches); dark green (body) with a gold line (stripe) and a fine white one (band), a
@@ -6680,6 +6728,77 @@ HERIT_2D.kiha40=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.bo
     box('#141414',...X(0.835,0.848),-0.05,0.05); box('#141414',...X(0.032,0.045),-0.05,0.05);   /* the gangway doors */
     for(const z of [-0.13,0.13]) dt('#2a2a2a',m*0.85,z,0.014); box('#141414',...X(0.84,0.87),-0.025,0.025); }   /* the coupler at the outer end */
 };
+/* pack Modern main line from above (28 Nov 2026). Class 70: the dark roof with the cooler and its two big fans at No. 2
+   end, the exhaust and roof grilles, the yellow line showing along the sides, at each end the black mask round the
+   raked windscreen and the jutting yellow lower nose, the buffer beams and buffers */
+HERIT_2D.c70=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.body, R=L.roof||'#26322b', Y=L.ends||'#f2c230', YL=L.stripe||Y, hi='rgba(255,255,255,0.12)', lo='rgba(0,0,0,0.18)';
+  box(b,-0.8,0.8,-0.21,0.21,0.03); box(YL,-0.79,0.79,-0.212,-0.204); box(YL,-0.79,0.79,0.204,0.212);
+  box(R,-0.72,0.72,-0.19,0.19,0.04); box(hi,-0.7,0.7,-0.08,-0.02); box(lo,-0.7,0.7,0.11,0.19);
+  for(const m of [-1,1]){ const X=(a,c)=>m>0?[a,c]:[-c,-a];
+    box('#141414',...X(0.72,0.79),-0.2,0.2); box('#1c2731',...X(0.735,0.782),-0.17,-0.012); box('#1c2731',...X(0.735,0.782),0.012,0.17);   /* the mask and the windscreen */
+    box(Y,...X(0.785,0.815),-0.205,0.205); box('#141414',...X(0.815,0.84),-0.21,0.21); for(const z of [-0.135,0.135]) dt('#2a2a2a',m*0.87,z,0.032); }
+  box(R,-0.66,-0.3,-0.16,0.16,0.02);
+  for(const x of [-0.57,-0.39]){ dt('#0e0e0e',x,0,0.074); dt('#2c3238',x,0,0.065); for(let i=0;i<4;i++){ const a=i/4*Math.PI; box('#9aa0a6',x-Math.cos(a)*0.06,x+Math.cos(a)*0.06+0.004,-0.003,0.003); } dt('#9aa0a6',x,0,0.012); }
+  box('#232323',-0.225,-0.135,-0.04,0.04); box('#141414',-0.215,-0.145,-0.03,0.03);   /* the exhaust */
+  for(const x of [0.05,0.24,0.43]){ box('rgba(0,0,0,0.3)',x-0.07,x+0.07,-0.065,0.065); for(let i=0;i<5;i++) box('rgba(0,0,0,0.35)',x-0.06+i*0.028,x-0.052+i*0.028,-0.06,0.06); }
+};
+/* Class 59 from above: the roof with the raised radiator housing and its three big fans at No. 2 end, the two exhaust
+   stacks and the grilles, the blue band showing along the silver sides, the yellow fronts with their windscreens */
+HERIT_2D.c59=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.body, R=L.roof||'#4a4e52', Y=L.ends||'#f2c230', BL=L.stripe||'#1f4e8c', hi='rgba(255,255,255,0.12)', lo='rgba(0,0,0,0.18)';
+  box(b,-0.8,0.8,-0.21,0.21,0.03); box(BL,-0.79,0.79,-0.212,-0.203); box(BL,-0.79,0.79,0.203,0.212);
+  box(R,-0.775,0.775,-0.19,0.19,0.04); box(hi,-0.76,0.76,-0.08,-0.02); box(lo,-0.76,0.76,0.11,0.19);
+  for(const m of [-1,1]){ const X=(a,c)=>m>0?[a,c]:[-c,-a];
+    box(Y,...X(0.77,0.802),-0.205,0.205); box('#1c2731',...X(0.776,0.794),-0.17,-0.014); box('#1c2731',...X(0.776,0.794),0.014,0.17);
+    box('#141414',...X(0.805,0.83),-0.21,0.21); for(const z of [-0.135,0.135]) dt('#2a2a2a',m*0.86,z,0.032); }
+  box(R,-0.77,-0.43,-0.17,0.17,0.02); box('rgba(0,0,0,0.25)',-0.77,-0.43,0.13,0.17);
+  for(const x of [-0.71,-0.6,-0.49]){ dt('#0e0e0e',x,0,0.052); dt('#2c3238',x,0,0.045); for(let i=0;i<3;i++){ const a=i/3*Math.PI; box('#9aa0a6',x-Math.cos(a)*0.042,x+Math.cos(a)*0.042+0.004,-0.003,0.003); } dt('#9aa0a6',x,0,0.01); }
+  for(const x of [-0.14,-0.04]){ box('#232323',x-0.025,x+0.025,-0.035,0.035); box('#141414',x-0.018,x+0.018,-0.025,0.025); }   /* the exhaust stacks */
+  for(const x of [0.12,0.3,0.48]){ box('rgba(0,0,0,0.3)',x-0.065,x+0.065,-0.065,0.065); for(let i=0;i<5;i++) box('rgba(0,0,0,0.35)',x-0.056+i*0.026,x-0.048+i*0.026,-0.06,0.06); }
+};
+/* Class 57 from above: the Class 47's long roof with the radiator fan and the grilles, the rounded cab ends with their
+   windscreens and small yellow panels, the silver line along the sides, the buffers */
+HERIT_2D.c57=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.body, R=L.roof||'#3a3e46', Y=L.ends||'#f2c230', ST=L.stripe||'#b8bcc0', hi='rgba(255,255,255,0.12)', lo='rgba(0,0,0,0.18)';
+  poly(b,[[-0.81,-0.16],[-0.79,-0.2],[-0.76,-0.21],[0.76,-0.21],[0.79,-0.2],[0.81,-0.16],[0.815,0],[0.81,0.16],[0.79,0.2],[0.76,0.21],[-0.76,0.21],[-0.79,0.2],[-0.81,0.16],[-0.815,0]]);
+  box(ST,-0.76,0.76,-0.214,-0.205); box(ST,-0.76,0.76,0.205,0.214);
+  box(R,-0.7,0.7,-0.18,0.18,0.05); box(hi,-0.68,0.68,-0.08,-0.02); box(lo,-0.68,0.68,0.1,0.18);
+  for(const m of [-1,1]){ const X=(a,c)=>m>0?[a,c]:[-c,-a];
+    poly('#1c2731',[[m*0.71,-0.17],[m*0.76,-0.18],[m*0.79,-0.12],[m*0.795,0],[m*0.79,0.12],[m*0.76,0.18],[m*0.71,0.17],[m*0.73,0]]);   /* the windscreens */
+    box(Y,...X(0.795,0.812),-0.09,0.09); box('#141414',...X(0.812,0.832),-0.21,0.21); for(const z of [-0.135,0.135]) dt('#2a2a2a',m*0.86,z,0.032); }
+  dt('#0e0e0e',-0.47,0,0.078); dt('#2c3238',-0.47,0,0.068); for(let i=0;i<6;i++){ const a=i/6*Math.PI; box('#9aa0a6',-0.47-Math.cos(a)*0.064,-0.47+Math.cos(a)*0.064+0.004,-0.003,0.003); } dt('#9aa0a6',-0.47,0,0.014);   /* the radiator fan */
+  for(const x of [-0.25,-0.05,0.15,0.35]){ box('rgba(0,0,0,0.3)',x-0.08,x+0.08,-0.06,0.06); for(let i=0;i<5;i++) box('rgba(0,0,0,0.35)',x-0.064+i*0.03,x-0.056+i*0.03,-0.055,0.055); }
+  for(const x of [0.05,0.09,-0.2]) box('#1b1b1b',x-0.012,x+0.012,-0.02,0.02);   /* exhausts */
+};
+/* Class 92 from above: the dark roof with its two pantographs, the busbar and the circuit breakers, the fine white line
+   showing along the sides, the yellow ends with their windscreens, the buffers */
+HERIT_2D.c92=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.body, R=L.roof||'#464b51', Y=L.ends||'#f2c230', WL=L.stripe||'#eceae4', PAN='#b9bdc1', hi='rgba(255,255,255,0.1)', lo='rgba(0,0,0,0.18)';
+  poly(b,[[-0.77,-0.205],[0.77,-0.205],[0.8,-0.18],[0.805,0],[0.8,0.18],[0.77,0.205],[-0.77,0.205],[-0.8,0.18],[-0.805,0],[-0.8,-0.18]]);
+  box(WL,-0.78,0.78,-0.207,-0.2); box(WL,-0.78,0.78,0.2,0.207);
+  box(R,-0.76,0.76,-0.188,0.188,0.04); box(hi,-0.74,0.74,-0.08,-0.02); box(lo,-0.74,0.74,0.12,0.188);
+  for(const m of [-1,1]){ const X=(a,c)=>m>0?[a,c]:[-c,-a];
+    poly('#1c2731',[[m*0.74,-0.185],[m*0.775,-0.185],[m*0.79,-0.16],[m*0.79,0.16],[m*0.775,0.185],[m*0.74,0.185]]);
+    poly(Y,[[m*0.79,-0.19],[m*0.8,-0.175],[m*0.805,0],[m*0.8,0.175],[m*0.79,0.19]]);
+    box('#141414',...X(0.8,0.825),-0.21,0.21); for(const z of [-0.135,0.135]) dt('#2a2a2a',m*0.845,z,0.032); }
+  for(const x of [0.42,-0.42]){ box('#141414',x-0.12,x+0.12,-0.11,0.11,0.01); box(PAN,x-0.1,x+0.1,-0.007,0.007); box(PAN,x-0.02,x,-0.13,0.13); box('#2a2a2a',x-0.015,x-0.005,-0.1,0.1);
+    for(const d of [-0.08,0.08]) for(const z of [-0.06,0.06]) dt('#7a4a32',x+d,z,0.012); }
+  box('#9a9fa4',-0.3,0.3,0.026,0.034); for(const x of [-0.08,0.08]) dt('#232323',x,0.03,0.022);   /* the busbar and circuit breakers */
+};
+/* the express diesel units from above (Classes 180, 220, 222): the long nose tapering to its tip, the raked windscreen,
+   the yellow lower nose, the roof with its air-conditioning pods and exhaust, the line along the sides, the bellows at
+   the back; o: the nose's outline (n: [x, half width] from the side to the tip), the windscreen's back edge (w) */
+function heritDEMU2D(box,dt,poly,L,o){ const b=L.body, R=L.roof||'#2a2a30', GL=L.stripe||'#d4a84a', Y=L.ends||'#f2c230';
+  const N=o.n, side=[[-0.81,-0.205]].concat(N.map(([x,w])=>[x,-w])), out=side.concat(N.slice(0,-1).reverse().map(([x,w])=>[x,w])).concat([[-0.81,0.205]]);
+  poly(b,out);
+  box(GL,-0.8,o.w+0.1,-0.211,-0.2); box(GL,-0.8,o.w+0.1,0.2,0.211);
+  box(R,-0.79,o.w-0.03,-0.17,0.17,0.05); box('rgba(255,255,255,0.08)',-0.78,o.w-0.04,-0.09,-0.03); poly(R,[[o.w-0.03,-0.17],[o.w+0.03,-0.13],[o.w+0.05,0],[o.w+0.03,0.13],[o.w-0.03,0.17]]);
+  poly('#1a242c',[[o.w,-0.18],[o.w+0.13,-0.17],[o.w+0.22,-0.11],[o.w+0.24,0],[o.w+0.22,0.11],[o.w+0.13,0.17],[o.w,0.18],[o.w+0.02,0]]);   /* the windscreen */
+  const t=N[N.length-1][0]; poly(Y,[[t-0.1,-0.165],[t-0.04,-0.11],[t-0.005,-0.04],[t,0],[t-0.005,0.04],[t-0.04,0.11],[t-0.1,0.165],[t-0.12,0]]);   /* the yellow nose */
+  for(const x of [-0.55,0.05]){ box('rgba(0,0,0,0.25)',x-0.11,x+0.11,-0.1,0.1,0.02); for(let i=0;i<4;i++) box('rgba(0,0,0,0.3)',x-0.08+i*0.05,x-0.07+i*0.05,-0.08,0.08); }   /* the air-conditioning pods */
+  box('#1b1b1b',-0.27,-0.23,0.04,0.08); dt('#141414',-0.25,0.06,0.012);   /* the exhaust */
+  box('#141414',-0.815,-0.8,-0.16,0.16);   /* the bellows at the back */
+}
+HERIT_2D.c180=(part,box,dt,poly,L)=>{ if(part==='tender') return; heritDEMU2D(box,dt,poly,L,{w:0.5,n:[[0.5,0.205],[0.66,0.2],[0.76,0.18],[0.82,0.14],[0.85,0.08],[0.862,0]]}); };
+HERIT_2D.c220=(part,box,dt,poly,L)=>{ if(part==='tender') return; heritDEMU2D(box,dt,poly,L,{w:0.45,n:[[0.45,0.205],[0.62,0.198],[0.76,0.17],[0.86,0.12],[0.905,0.06],[0.915,0]]}); };
+HERIT_2D.c222=(part,box,dt,poly,L)=>{ if(part==='tender') return; heritDEMU2D(box,dt,poly,L,{w:0.42,n:[[0.42,0.205],[0.6,0.198],[0.76,0.17],[0.87,0.12],[0.92,0.06],[0.932,0]]}); };
 /* Class 800 from above: the dark roof with the pantograph, the long nose with its raked windscreen and yellow tip, the gold
    line showing along the sides, the bellows at the back */
 HERIT_2D.c800=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.body, R=L.roof||'#2a2d2f', GL=L.stripe||'#c9a14a', Y=L.ends||'#f2c230', PAN='#8a8e92';
@@ -9134,6 +9253,13 @@ ENGINE_SKUS.c56={sku:'trainmasters.engine.c56'};   /* Class 56 (24 Nov 2026): so
 ENGINE_SKUS.n700={sku:'trainmasters.engine.n700'};   /* Japanese bullet train of 2007 (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.c101={sku:'trainmasters.engine.c101'};   /* Class 101 (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.kiha40={sku:'trainmasters.engine.kiha40',added:'2026-11-28'};   /* on sale 28 Nov 2026 (Amazon item Approved, Play product active; New for 14 days) */   /* KiHa 40 (28 Nov 2026, pack Japanese railways): soon until its store items exist */
+ENGINE_SKUS.c70={sku:'trainmasters.engine.c70',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 70 (28 Nov 2026, pack Modern main line): soon until its store items exist */
+ENGINE_SKUS.c59={sku:'trainmasters.engine.c59',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 59 (28 Nov 2026, pack Modern main line): soon until its store items exist */
+ENGINE_SKUS.c57={sku:'trainmasters.engine.c57',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 57 (28 Nov 2026, pack Modern main line): soon until its store items exist */
+ENGINE_SKUS.c92={sku:'trainmasters.engine.c92',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 92 (28 Nov 2026, pack Modern main line): soon until its store items exist */
+ENGINE_SKUS.c180={sku:'trainmasters.engine.c180',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 180 (28 Nov 2026, pack Modern main line): soon until its store items exist */
+ENGINE_SKUS.c220={sku:'trainmasters.engine.c220',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 220 (28 Nov 2026, pack Modern main line): soon until its store items exist */
+ENGINE_SKUS.c222={sku:'trainmasters.engine.c222',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 222 (28 Nov 2026, pack Modern main line): soon until its store items exist */
 ENGINE_SKUS.c800={sku:'trainmasters.engine.c800'};   /* Class 800 (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.saint={sku:'trainmasters.engine.saint'};   /* GWR Saint (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.k4={sku:'trainmasters.engine.k4'};   /* American K4 Pacific (24 Nov 2026): soon until its store item exists */
@@ -9198,6 +9324,10 @@ const ENGINE_PACKS=[
      released together; soon (hidden everywhere) until its store items and its engines' exist */
   {id:'japan',     name:'Japanese railways',               blurb:'Steam, diesel and electric from Japan, from a little tank engine to a country railcar',
     types:['jc11','jc57','dd51','ef58','j8620','kiha40'], added:'2026-11-28'},
+  /* Modern main line (backlog E3 pack P4, 28 Nov 2026): seven modern British diesels, an electric and express units,
+     built whole and released together; soon (hidden everywhere) until its store items and its engines' exist */
+  {id:'modern2',   name:'Modern main line',                blurb:'Today’s big freight engines and the fast diesel units of Britain’s main lines',
+    types:['c70','c59','c57','c92','c180','c220','c222'], added:'2026-11-28'},
 ];
 function packSku(p){ return 'trainmasters.pack.'+p.id; }
 function packById(id){ return ENGINE_PACKS.find(p=>p.id===id)||null; }
@@ -12757,6 +12887,62 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       for(const e of [0.84,0.04]){ const x=e>0.5?[0.84,0.846]:[0.034,0.04]; bx(...X(...x),0.4575,0,0.13,0.34,WIN); bx(...X(...x),0.38,0,0.34,0.09,BLK); }
       bx(...X(0.84,0.87),0.17,0,0.04,0.06,BLK); bx(...X(0.22,0.66),0.13,0,0.08,0.3,DK); }
     wh([0.79,0.61,0.27,0.09,-0.09,-0.27,-0.61,-0.79],0.062,DK); };
+  /* pack Modern main line far away (28 Nov 2026). Class 70: the dark green body with its yellow line, the jutting yellow
+     lower noses, the black masks round the raked windscreens, the radiator grilles and the cooler on the roof, the
+     buffer beams, the fuel tank and six-wheeled bogies */
+  HERO_FAR.c70=(K)=>{ const {bx,cx,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#26303a'), YEL=C(L.ends||'#f2c230'), YL=C(L.stripe||L.ends||'#f2c230'), ROOF=C(L.roof||'#26322b'), GRL=body.clone().multiplyScalar(0.4);
+    bx(-0.72,0.72,0.375,0,0.41,0.42,body); bx(-0.72,0.72,0.215,0,0.02,0.424,YL); bx(-0.7,0.7,0.597,0,0.04,0.4,ROOF); bx(-0.66,-0.3,0.628,0,0.02,0.32,ROOF);
+    for(const s of [-1,1]) bx(-0.58,-0.25,0.42,s*0.212,0.24,0.004,GRL);
+    for(const m of [-1,1]){ const X=(a,c)=>m>0?[a,c]:[-c,-a];
+      bx(...X(0.72,0.812),0.278,0,0.216,0.42,YEL); bx(...X(0.72,0.78),0.47,0,0.17,0.42,BLK); bx(...X(0.78,0.784),0.468,0,0.11,0.38,WIN);
+      bx(...X(0.812,0.836),0.155,0,0.085,0.42,BLK); for(const s of [-1,1]) cx(...X(0.825,0.87),0.165,s*0.135,0.025,DK,6);
+      bx(...X(0.18,0.78),0.13,0,0.06,0.46,BLK); }
+    bx(-0.25,0.25,0.105,0,0.08,0.34,BLK);
+    wh([0.64,0.46,0.28,-0.28,-0.46,-0.64],0.078,DK); };
+  /* Class 59 far away: the silver body with its blue band, the flat yellow fronts and windscreens, the engine-room
+     louvres and radiator grilles, the raised radiator housing on the roof, the buffer beams, fuel tank and bogies */
+  HERO_FAR.c59=(K)=>{ const {bx,cx,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#26303a'), YEL=C(L.ends||'#f2c230'), BLU=C(L.stripe||'#1f4e8c'), ROOF=C(L.roof||'#4a4e52'), GRL=body.clone().multiplyScalar(0.42);
+    bx(-0.8,0.8,0.372,0,0.405,0.42,body); bx(-0.8,0.8,0.28,0,0.06,0.424,BLU); bx(-0.77,0.77,0.597,0,0.04,0.4,ROOF); bx(-0.77,-0.43,0.63,0,0.026,0.34,ROOF);
+    for(const s of [-1,1]){ bx(-0.75,-0.45,0.47,s*0.212,0.17,0.004,GRL); bx(-0.4,0.59,0.52,s*0.212,0.05,0.004,GRL); }
+    for(const m of [-1,1]){ const X=(a,c)=>m>0?[a,c]:[-c,-a];
+      bx(...X(0.8,0.804),0.3,0,0.26,0.42,YEL); bx(...X(0.8,0.808),0.48,0,0.11,0.36,WIN);
+      bx(...X(0.808,0.833),0.155,0,0.085,0.42,BLK); for(const s of [-1,1]) cx(...X(0.82,0.865),0.165,s*0.135,0.025,DK,6);
+      bx(...X(0.18,0.78),0.13,0,0.06,0.46,BLK); }
+    bx(-0.25,0.25,0.105,0,0.08,0.34,BLK);
+    wh([0.655,0.47,0.285,-0.285,-0.47,-0.655],0.076,DK); };
+  /* Class 57 far away: the Class 47's long body in midnight blue with its silver line, the windscreens and small
+     yellow panels, the roof, buffer beams, fuel tank and three-axle bogies */
+  HERO_FAR.c57=(K)=>{ const {bx,cx,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#26303a'), YEL=C(L.ends||'#f2c230'), ST=C(L.stripe||'#b8bcc0'), ROOF=C(L.roof||'#3a3e46'), GRL=body.clone().multiplyScalar(0.4);
+    bx(-0.78,0.78,0.385,0,0.43,0.42,body); bx(-0.78,0.78,0.232,0,0.035,0.424,ST); bx(-0.74,0.74,0.605,0,0.03,0.38,ROOF);
+    for(const s of [-1,1]) bx(-0.6,-0.34,0.43,s*0.212,0.16,0.004,GRL);
+    for(const m of [-1,1]){ const X=(a,c)=>m>0?[a,c]:[-c,-a];
+      bx(...X(0.76,0.79),0.455,0,0.11,0.38,WIN); bx(...X(0.78,0.794),0.34,0,0.1,0.18,YEL);
+      bx(...X(0.79,0.812),0.155,0,0.085,0.42,BLK); for(const s of [-1,1]) cx(...X(0.81,0.855),0.165,s*0.135,0.025,DK,6);
+      bx(...X(0.18,0.78),0.13,0,0.06,0.46,BLK); }
+    bx(-0.17,0.17,0.108,0,0.075,0.33,BLK);
+    wh([0.64,0.46,0.28,-0.28,-0.46,-0.64],0.078,DK); };
+  /* Class 92 far away: the grey body with its dark upper band and fine white line, the yellow ends and windscreens, two
+     pantographs, buffer beams, equipment cases and six-wheeled bogies */
+  HERO_FAR.c92=(K)=>{ const {bx,cx,up,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#26303a'), YEL=C(L.ends||'#f2c230'), DG=C(L.band||'#464b51'), WL=C(L.stripe||'#eceae4'), ROOF=C(L.roof||'#464b51'), PAN=C('#9a9ea2');
+    bx(-0.8,0.8,0.29,0,0.23,0.41,body); bx(-0.8,0.8,0.49,0,0.165,0.41,DG); bx(-0.78,0.78,0.405,0,0.006,0.414,WL); bx(-0.78,0.78,0.592,0,0.04,0.36,ROOF);
+    for(const m of [-1,1]){ const X=(a,c)=>m>0?[a,c]:[-c,-a];
+      bx(...X(0.8,0.804),0.3,0,0.24,0.41,YEL); bx(...X(0.8,0.806),0.478,0,0.11,0.36,WIN);
+      bx(...X(0.804,0.83),0.155,0,0.085,0.42,BLK); for(const s of [-1,1]) cx(...X(0.815,0.86),0.165,s*0.135,0.025,DK,6);
+      bx(...X(0.18,0.78),0.13,0,0.06,0.46,BLK); }
+    for(const x of [0.42,-0.42]){ bx(x-0.1,x+0.1,0.64,0,0.012,0.15,PAN); up(x,0.7,0,0.006,0.12,PAN); bx(x-0.01,x+0.01,0.76,0,0.012,0.24,PAN); }
+    bx(-0.2,0.2,0.11,0,0.08,0.34,BLK);
+    wh([0.64,0.46,0.28,-0.28,-0.46,-0.64],0.08,DK); };
+  /* the express diesel units far away (Classes 180, 220, 222): the body with its line (and the dark window band), the
+     row of windows, the nose tapering to its yellow tip, the raked windscreen, the roof, the skirt, the bogies; o: where
+     the nose starts (xs) and its tip (tip), the line's height (yl) */
+  function heroFarDEMU(K,o){ const {bx,tp,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#1a242c'), ST=C(L.stripe||'#d4a84a'), YEL=C(L.ends||'#f2c230'), ROOF=C(L.roof||'#2a2a30'), GRY=C('#3a3d40');
+    bx(-0.8,o.xs,0.395,0,0.43,0.4,body); bx(-0.8,o.xs,o.yl,0,0.016,0.406,ST); if(L.band) bx(-0.8,o.xs,0.48,0,0.1,0.404,C(L.band)); bx(-0.75,o.xs-0.12,0.48,0,0.07,0.408,WIN); bx(-0.79,o.xs-0.05,0.615,0,0.02,0.34,ROOF);
+    tp(o.xs,o.tip,0.17,0.4,0.43,0.32,0.16,0,body); tp(o.xs+0.18,o.tip+0.005,0.17,0.405,0.19,0.33,0.15,0,YEL); tp(o.xs,o.xs+0.28,0.43,0.395,0.13,0.36,0.01,0,WIN);
+    bx(-0.81,-0.8,0.39,0,0.38,0.32,BLK); bx(-0.6,0.56,0.15,0,0.06,0.4,GRY); bx(o.tip-0.16,o.tip-0.02,0.12,0,0.1,0.32,DK);
+    wh([0.65,0.39,-0.39,-0.65],0.064,DK); }
+  HERO_FAR.c180=(K)=>heroFarDEMU(K,{xs:0.5,tip:0.86,yl:0.39});
+  HERO_FAR.c220=(K)=>heroFarDEMU(K,{xs:0.44,tip:0.91,yl:0.27});
+  HERO_FAR.c222=(K)=>heroFarDEMU(K,{xs:0.42,tip:0.93,yl:0.4});
   /* Class 800 far away: the dark green body with its gold line and window band, the long nose with its raked windscreen
      and yellow front, the pantograph, the skirt, the bogies */
   HERO_FAR.c800=(K)=>{ const {bx,up,tp,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#1a242c'), GLD=C(L.stripe||'#c9a14a'), YEL=C(L.ends||'#f2c230'), ROOF=C(L.roof||'#2a2d2f'), GRY=C('#3a3d40'), PAN=C('#9a9ea2');
@@ -13911,6 +14097,28 @@ void main(){ gl_FragColor=texture2D(map,vUv);
        car is the front one turned round (each has a cab at both ends) */
     kiha40:{rD:0.06, cx:0.44, bog:0.26, wb:0.09, wz:0.19, cars:2, build:(L,sp)=>heroKiha40(L,sp), pose:(t,CP,o)=>heroPoseDMU(t,CP,o),
       tris:e=>({cars:2*heroTris(e.eng), bogies:4*heroTris(e.bog), wheels:16*heroTris(e.drvR)})},
+    /* pack Modern main line (28 Nov 2026). Class 70: two carriage places on two six-wheeled bogies, 1.07 m wheels, set as
+       the Class 56's (spread wider, an outer axle came 0.0153 off the rail centre on the test line's curves, at the limit) */
+    c70:{rD:0.078, bog:0.46, wb:0.18, ax:[-0.18,0,0.18], wz:0.19, cars:2, build:(L,sp)=>heroC70(L,sp), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:12*heroTris(e.drvR)})},
+    /* Class 59: two carriage places on two six-wheeled bogies, 1.02 m wheels */
+    c59:{rD:0.076, bog:0.47, wb:0.185, ax:[-0.185,0,0.185], wz:0.19, cars:2, build:(L,sp)=>heroC59(L,sp), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:12*heroTris(e.drvR)})},
+    /* Class 57: the Class 47's body (with o.c57) on the same three-axle bogies, set 1 cm nearer the middle and their outer
+       axles 2 cm nearer (on the test line's curves the Class 47's spacing put an axle 0.0156-0.0163 off the rail centre,
+       just past half a rail head) */
+    c57:{rD:0.078, bog:0.46, wb:0.18, ax:[-0.18,0,0.18], wz:0.19, cars:2, build:(L,sp)=>heroC47(L,sp,{c57:true}), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:12*heroTris(e.drvR)})},
+    /* Class 92: two carriage places on two six-wheeled bogies with third-rail shoes, 1.14 m wheels */
+    c92:{rD:0.078, bog:0.46, wb:0.18, ax:[-0.18,0,0.18], wz:0.19, cars:2, build:(L,sp)=>heroC92(L,sp), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:12*heroTris(e.drvR)})},
+    /* Classes 180, 220 and 222: the driving car in two carriage places on two four-wheeled bogies, 0.84-0.86 m wheels */
+    c180:{rD:0.064, bog:0.52, wb:0.13, ax:[-0.13,0.13], wz:0.19, cars:2, build:(L,sp)=>heroDEMU(L,sp,'c180'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    c220:{rD:0.064, bog:0.52, wb:0.13, ax:[-0.13,0.13], wz:0.19, cars:2, build:(L,sp)=>heroDEMU(L,sp,'c220'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    c222:{rD:0.064, bog:0.52, wb:0.13, ax:[-0.13,0.13], wz:0.19, cars:2, build:(L,sp)=>heroDEMU(L,sp,'c222'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
     /* Class 800 (24 Nov 2026): its driving car in two carriage places on two four-wheeled bogies, 0.84 m wheels */
     c800:{rD:0.068, bog:0.5, wb:0.13, ax:[-0.13,0.13], wz:0.19, cars:2, build:(L,sp)=>heroC800(L,sp), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
       tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
@@ -19636,8 +19844,11 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     for(const a of [0,Math.PI]){ const c=[Math.cos(a)*R*0.6,Math.sin(a)*R*0.6], h=R*0.1; G.quad([c[0]-h,c[1]-h,zo-0.001],[c[0]+h,c[1]-h,zo-0.001],[c[0]+h,c[1]+h,zo-0.001],[c[0]-h,c[1]+h,zo-0.001],o.hole,[0,0,1]); }
     return G;
   }
-  /* ---- Class 47 (Brush Type 4, 1962): two-tone green, curved cab ends, headcode boxes, three-axle bogies ---- */
-  function heroC47(L,sp){
+  /* ---- Class 47 (Brush Type 4, 1962): two-tone green, curved cab ends, headcode boxes, three-axle bogies. o.c57 (28 Nov
+     2026, pack Modern main line): the Class 57 rebuilt from it, the same body and bogies with no headcode boxes (a high
+     headlight in the plated-over roof dome, light clusters low on the front), a bigger radiator grille and new air
+     intakes along the sides, a second exhaust on the roof ---- */
+  function heroC47(L,sp,o={}){
     const C=h=>new THREE.Color(h), DG=C(L.body), LG=C(L.lining||'#86a86e'), YEL=C(L.ends||'#f2c230'), ROOF=C(L.roof||'#5d6164'),
       BLK=C('#141414'), DK=C('#232323'), UF=C('#262728'), STEEL=C('#aab0b5'), WIN=C('#2e4050'), RUB=C('#0c0c0c'), GRL=DG.clone().multiplyScalar(0.3), SLAT=DG.clone().multiplyScalar(0.95),
       WHITE=C('#e9e9e2'), LENS=C('#fff3c4'), ROOFDK=ROOF.clone().multiplyScalar(0.55), BF=C('#262626'), BX=C('#3b3b3b');
@@ -19661,9 +19872,12 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     /* front of the cab (x along the bulged windscreen surface at height y) */
     const xw=(y,z)=>{ const f=0.785+(y-w1)*(0.757-0.785)/(w2-w1), bf=0.018-(y-w1)*0.027; return f+bf*(1-(z/0.13)**2); };
     both(m=>{ const X=x=>m*x;
-      /* headcode box on the roof dome, four characters on its black blind */
-      B(X(0.722),0.551,0,0.06,0.05,0.155,DG); LX(X(0.7525),0.55,0,0.14,0.04,m,RUB); charsX(m>0?'1A23':'1A47',X(0.7535),0.55,0,m,WHITE,0.013,0.024);
-      LY(X(0.722),0.5762,0,0.056,0.15,ROOFDK);
+      /* headcode box on the roof dome, four characters on its black blind (the Class 57: a high headlight in the plated-over
+         dome instead, and light clusters low on the front either side of the yellow panel) */
+      if(!o.c57){ B(X(0.722),0.551,0,0.06,0.05,0.155,DG); LX(X(0.7525),0.55,0,0.14,0.04,m,RUB); charsX(m>0?'1A23':'1A47',X(0.7535),0.55,0,m,WHITE,0.013,0.024);
+        LY(X(0.722),0.5762,0,0.056,0.15,ROOFDK); }
+      else { B(X(0.739),0.552,0,0.012,0.03,0.05,RUB); discX(X(0.7455),0.552,0,0.012,m,LENS,10);
+        both(s=>{ B(X(0.797),0.31,s*0.125,0.008,0.04,0.075,RUB); discX(X(0.8015),0.31,s*0.108,0.012,m,LENS,10); discX(X(0.8015),0.31,s*0.143,0.01,m,C('#c0392b'),8); }); }
       /* two-tone horns on the roof just behind it */
       both(s=>{ coneX(X(0.67),X(0.705),0.58,s*0.05,0.008,0.016,BX,8); B(X(0.66),0.578,s*0.05,0.03,0.012,0.012,BX); });
       /* wipers, parked at the bottom of each windscreen */
@@ -19683,8 +19897,9 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     });
     /* side grilles: the big radiator grille at No. 2 end, three air intakes along the engine room, a few seams */
     both(s=>{ const z=s*0.2115, z2=s*0.2125;
-      LZ(-0.45,0.42,z,0.22,0.12,s,GRL); for(let i=0;i<9;i++) LZ(-0.45,0.367+i*0.0132,z2,0.214,0.0045,s,SLAT);
-      for(const x of [-0.17,0.08,0.33]){ LZ(x,0.45,z,0.12,0.06,s,GRL); for(let i=0;i<4;i++) LZ(x,0.427+i*0.0145,z2,0.114,0.004,s,SLAT); }
+      if(!o.c57){ LZ(-0.45,0.42,z,0.22,0.12,s,GRL); for(let i=0;i<9;i++) LZ(-0.45,0.367+i*0.0132,z2,0.214,0.0045,s,SLAT); }
+      else { LZ(-0.47,0.43,z,0.26,0.16,s,GRL); for(let i=0;i<12;i++) LZ(-0.47,0.358+i*0.0132,z2,0.254,0.0045,s,SLAT); }
+      for(const x of o.c57?[-0.2,0.02,0.24]:[-0.17,0.08,0.33]){ LZ(x,0.45,z,0.12,0.06,s,GRL); for(let i=0;i<4;i++) LZ(x,0.427+i*0.0145,z2,0.114,0.004,s,SLAT); }
       for(const x of [-0.31,-0.02,0.21,0.47]) LZ(x,0.33,z,0.0025,0.31,s,SLAT);
       LZ(0,0.2505,z,1.4,0.0025,s,DG.clone().multiplyScalar(0.8)); });
     /* the roof: radiator fan with its grille at No. 2 end, roof panels with louvres, exhaust ports */
@@ -19693,7 +19908,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     for(let i=0;i<6;i++){ const a=i/6*Math.PI; G.quad([-0.47+Math.cos(a)*0.066,yt+0.0075,Math.sin(a)*0.066-0.003],[-0.47+Math.cos(a)*0.066,yt+0.0075,Math.sin(a)*0.066+0.003],[-0.47-Math.cos(a)*0.066,yt+0.0075,-Math.sin(a)*0.066+0.003],[-0.47-Math.cos(a)*0.066,yt+0.0075,-Math.sin(a)*0.066-0.003],STEEL,[0,1,0]); }
     discY(-0.47,yt+0.0085,0,0,0.014,STEEL,6); B(-0.47,yt+0.002,0,0.18,0.008,0.17,ROOFDK);
     for(const x of [-0.25,-0.05,0.15,0.35]){ LY(x,yt+0.001,0,0.16,0.12,ROOFDK); for(let i=0;i<5;i++) LY(x-0.06+i*0.03,yt+0.0015,0,0.008,0.11,GRL); }
-    for(const x of [0.05,0.09]) B(x,yt+0.006,0,0.025,0.012,0.04,GRL);
+    for(const x of o.c57?[0.05,0.09,-0.2]:[0.05,0.09]) B(x,yt+0.006,0,0.025,0.012,0.04,GRL);
     /* underframe: solebar, fuel tank with straps and filler, battery boxes, air reservoirs */
     B(0,0.158,0,1.56,0.026,0.4,UF);
     B(0,0.108,0,0.34,0.075,0.33,BLK); both(s=>{ for(const x of [-0.12,0,0.12]) LZ(x,0.108,s*0.1652,0.008,0.075,s,UF); B(0.15,0.15,s*0.16,0.02,0.012,0.02,STEEL); });
@@ -21737,6 +21952,308 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     b(0,0.14,0,0.06,0.024,0.44,BLK); b(0,0.155,0,0.1,0.008,0.16,DK);
     const dc={tread:C('#8d9195'), tyre:C('#3a3c3e'), disc:C('#1e1e1e'), cap:C('#555'), hole:C('#050505'), th:0.026, seg:9};
     return {eng:G, bog:Bq, drvR:heroDiscWheel(sp.rD,dc)};
+  }
+  /* ---- the buffer-beam end of a modern British locomotive (28 Nov 2026, pack Modern main line: the Classes 70, 59 and
+     92), at x = m*XF: the beam, two buffers, the coupling hook and its shackle, brake and supply pipes (the main
+     reservoir pipe in yellow), a small snowplough and the footsteps under the cab door. c: the colours {BLK, DK, STEEL, YEL} ---- */
+  function heroModernEnd(G,K,m,XF,c){ const {B,coneX,rod3}=K, X=x=>m*x, {BLK,DK,STEEL,YEL}=c, both=f=>{ f(1); f(-1); };
+    B(X(XF+0.01),0.155,0,0.026,0.085,0.42,BLK);
+    both(s=>{ const z=s*0.135; coneX(X(XF+0.022),X(XF+0.05),0.165,z,0.022,0.022,BLK,8); coneX(X(XF+0.048),X(XF+0.065),0.165,z,0.013,0.013,STEEL,6); G.cyl(X(XF+0.066),0.165,z,0.034,0.007,'x',STEEL,12);
+      rod3([X(XF+0.025),0.13,s*0.06],[X(XF+0.05),0.085,s*0.07],0.012,BLK); rod3([X(XF+0.025),0.2,s*0.09],[X(XF+0.045),0.12,s*0.1],0.009,YEL);
+      B(X(XF-0.01),0.09,s*0.18,0.04,0.006,0.04,DK); B(X(XF-0.01),0.12,s*0.2,0.004,0.06,0.004,DK); });
+    B(X(XF+0.035),0.15,0,0.03,0.018,0.016,BLK); B(X(XF+0.055),0.145,0,0.012,0.01,0.03,STEEL);
+    G.hexa([[X(XF),0.035,-0.2],[X(XF+0.045),0.03,-0.07],[X(XF+0.045),0.03,0.07],[X(XF),0.035,0.2],[X(XF),0.1,-0.2],[X(XF+0.02),0.1,-0.07],[X(XF+0.02),0.1,0.07],[X(XF),0.1,0.2]],BLK);
+  }
+  /* ---- Class 59 (General Motors Co-Co, 1985; 28 Nov 2026, sold on its own as trainmasters.engine.c59, pack Modern main
+     line): the American-built stone-train diesel. Two carriage places on two six-wheeled bogies. Flat cab fronts at both
+     ends, the two windscreens leaning back a little with a pillar between them in a black surround, a pair of headlights
+     in the middle under them and marker lights at the corners, the yellow lower front; a cab door and side window behind
+     each cab; along the sides a long row of engine-room doors, each with a small louvre at the top, a blue band low
+     down; at No. 2 end (-x) the radiator section: tall grilles high on the sides and three big fans on a raised roof
+     housing; two exhaust stacks; the long fuel tank between the bogies. Silver with a blue band; no logo, no numbers. ---- */
+  function heroC59(L,sp){
+    const C=h=>new THREE.Color(h), SV=C(L.body), BLU=C(L.stripe||'#1f4e8c'), YEL=C(L.ends||'#f2c230'), ROOF=C(L.roof||'#4a4e52'),
+      BLK=C('#141414'), DK=C('#232323'), UF=C('#262728'), STEEL=C('#aab0b5'), WIN=C('#2e4050'), RUB=C('#0c0c0c'), GRL=SV.clone().multiplyScalar(0.38), SLAT=SV.clone().multiplyScalar(0.88),
+      WHITE=C('#f1efe6'), LENS=C('#fff3c4'), RLENS=C('#c0392b'), ROOFDK=ROOF.clone().multiplyScalar(0.6), ROOFGR=ROOF.clone().multiplyScalar(0.35), BX=C('#3b3b3b'), SEAM=SV.clone().multiplyScalar(0.68), SEAMB=BLU.clone().multiplyScalar(0.7);
+    const G=new Geo(), K=heroKit(G), {B,LZ,LX,LY,rod3,coneX,discX,discY}=K, both=f=>{ f(1); f(-1); };
+    /* the body: slab sides up to the cantrail at yc, flat cab fronts with the windscreens (w1..w2) leaning back a little, a
+       low rounded roof; the blue band between ys0 and ys1 */
+    const yc=0.575, w1=0.425, w2=0.535, XF=0.8, ys0=0.25, ys1=0.31;
+    const S=[[0.17,XF,0.21,0.03],[ys0,XF,0.21,0.03],[ys1,XF,0.21,0.03],[w1-0.012,XF,0.21,0.03],[w1,XF-0.001,0.21,0.03],[w2,XF-0.013,0.21,0.03],[w2+0.012,XF-0.015,0.21,0.03],
+      [yc,XF-0.02,0.207,0.03],[0.596,XF-0.03,0.192,0.03],[0.61,XF-0.048,0.158,0.025],[0.618,XF-0.068,0.1,0.02]].map(([y,f,w,r])=>({y,f,b:-f,w,r}));
+    const nC=3, zs=[1,0.86,0.72,0.4,0.06,-0.06,-0.4,-0.72,-0.86,-1];
+    heroShell(G,S,(x,y,z,p,k)=>{
+      if(p==='top'||y>0.6) return ROOF;
+      const face=p==='f'||p==='b', adj=!face&&(k===nC-1||k===nC), az=Math.abs(z);
+      if(p==='s'||!(face||adj)) return y>yc?ROOF:y>ys0&&y<ys1?BLU:SV;
+      if(y>=w1-0.012&&y<=w2+0.012){ if(y<w1||y>w2||!face) return RUB; return az<0.012||az>0.172?RUB:WIN; }   /* two windscreens in a black surround, a pillar between */
+      return y<w1?YEL:SV;                                                                                   /* the yellow lower front; silver above the windscreens */
+    },{nS:8,nC,zs});
+    const yt=0.6185, xw=y=>XF-0.013*clamp((y-w1)/(w2-w1),0,1);
+    both(m=>{ const X=x=>m*x;
+      /* wipers; the pair of headlights under the windscreens, marker and tail lights at the corners, a lamp high up */
+      both(s=>{ rod3([X(xw(0.432)+0.004),0.432,s*0.14],[X(xw(0.49)+0.004),0.49,s*0.08],0.004,BLK); });
+      B(X(XF+0.003),0.385,0,0.008,0.04,0.12,RUB); both(s=>discX(X(XF+0.0075),0.385,s*0.03,0.015,m,LENS,10));
+      both(s=>{ B(X(XF+0.003),0.27,s*0.15,0.008,0.05,0.06,RUB); discX(X(XF+0.0075),0.28,s*0.15,0.011,m,WHITE,8); discX(X(XF+0.0075),0.256,s*0.15,0.009,m,RLENS,8);
+        discX(X(XF-0.01),0.565,s*0.15,0.01,m,WHITE,8); });
+      B(X(XF-0.005),0.33,0,0.006,0.03,0.18,RUB);   /* the plain panel where the number would be: left blank */
+      heroModernEnd(G,K,m,XF,{BLK,DK,STEEL,YEL});
+      /* the cab side: the sliding window, the cab door just behind it with its window, handrails either side, the steps */
+      both(s=>{ const z2=s*(0.21+0.0025), z3=s*(0.21+0.0035);
+        LZ(X(0.736),0.478,z2,0.066,0.09,s,RUB); LZ(X(0.736),0.479,z3,0.056,0.076,s,WIN); LZ(X(0.736),0.479,s*0.2137,0.003,0.076,s,RUB);
+        for(const x of [0.648,0.7]) LZ(X(x),0.36,z2,0.003,0.33,s,RUB);
+        LZ(X(0.674),0.53,z2,0.052,0.003,s,RUB); LZ(X(0.674),0.47,z2,0.036,0.07,s,RUB); LZ(X(0.674),0.472,z3,0.028,0.058,s,WIN);
+        for(const x of [0.64,0.708]){ rod3([X(x),0.22,s*0.222],[X(x),0.48,s*0.222],0.006,STEEL); for(const y of [0.23,0.47]) B(X(x),y,s*0.216,0.004,0.004,0.012,STEEL); }
+        B(X(0.674),0.137,s*0.198,0.06,0.006,0.03,DK); B(X(0.674),0.105,s*0.198,0.06,0.006,0.03,DK); for(const x of [0.646,0.702]) B(X(x),0.12,s*0.211,0.004,0.07,0.004,DK); });
+    });
+    /* the sides: the engine-room doors (seams, a louvre at the top of each, a handle), the tall radiator grilles at No. 2
+       end high on the sides, the cantrail and solebar lines, the seam along the blue band */
+    both(s=>{ const z2=s*0.2122, z3=s*0.2127;
+      for(let i=0;i<9;i++){ const x0=-0.4+i*0.11, x=x0+0.055; LZ(x0,0.4,z2,0.0025,0.32,s,i%3===0?SEAM:SEAM); LZ(x,0.52,z2,0.07,0.05,s,GRL); for(let q=0;q<3;q++) LZ(x,0.503+q*0.016,z3,0.064,0.005,s,SLAT);
+        B(x+0.03,0.4,s*0.2132,0.003,0.016,0.002,STEEL); }
+      LZ(0.59,0.4,z2,0.0025,0.32,s,SEAM);
+      LZ(-0.6,0.47,z2,0.3,0.17,s,GRL); for(let q=0;q<10;q++) LZ(-0.6,0.396+q*0.0165,z3,0.29,0.006,s,SLAT);   /* the radiator grilles */
+      LZ(0,yc-0.004,z2,1.46,0.004,s,SEAM); LZ(0,ys1,z2,1.5,0.003,s,SEAMB); LZ(0,0.19,z2,1.5,0.003,s,SEAM); });
+    /* the roof: the raised radiator housing at No. 2 end with its three big fans, two exhaust stacks, grille panels, the
+       horn on each cab roof */
+    B(-0.6,yt+0.012,0,0.34,0.024,0.34,ROOF); LY(-0.6,yt+0.0245,0,0.33,0.33,ROOFDK);
+    for(const x of [-0.71,-0.6,-0.49]){ const y=yt+0.026; discY(x,y,0,0.045,0.052,RUB,12); discY(x,y+0.0005,0,0,0.045,ROOFGR,12);
+      for(let i=0;i<3;i++){ const a=i/3*Math.PI, c=Math.cos(a)*0.044, d=Math.sin(a)*0.044; G.quad([x+c,y+0.0015,d-0.003],[x+c,y+0.0015,d+0.003],[x-c,y+0.0015,-d+0.003],[x-c,y+0.0015,-d-0.003],STEEL,[0,1,0]); }
+      discY(x,y+0.002,0,0,0.01,STEEL,6); }
+    for(const x of [-0.14,-0.04]){ B(x,yt+0.014,0,0.05,0.02,0.07,DK); B(x,yt+0.026,0,0.036,0.006,0.05,BLK); }   /* the exhaust stacks */
+    for(const x of [0.12,0.3,0.48]){ LY(x,yt+0.001,0,0.13,0.13,ROOFDK); for(let i=0;i<5;i++) LY(x-0.052+i*0.026,yt+0.0015,0,0.008,0.12,ROOFGR); }
+    both(m=>both(s=>{ coneX(m>0?0.62:-0.66,m>0?0.66:-0.62,yt+0.012,s*0.05,0.008,0.015,BX,8); }));
+    /* underframe: the solebar, the long fuel tank with its straps and filler, battery boxes, air reservoirs */
+    B(0,0.158,0,1.6,0.026,0.4,UF);
+    B(0,0.105,0,0.5,0.08,0.34,BLK); both(s=>{ for(const x of [-0.18,-0.06,0.06,0.18]) LZ(x,0.105,s*0.1702,0.008,0.08,s,UF); B(0.2,0.125,s*0.172,0.02,0.02,0.006,STEEL); });
+    both(s=>{ G.cyl(-0.12,0.118,s*0.13,0.025,0.1,'x',DK,8); B(0.12,0.125,s*0.17,0.06,0.045,0.03,UF); });
+    return {eng:G, ...heroCoCo(sp)};
+  }
+  /* ---- Class 70 (GE PowerHaul Co-Co, 2009; 28 Nov 2026, sold on its own as trainmasters.engine.c70, pack Modern main
+     line): two carriage places on two six-wheeled bogies. Both cab ends alike: a jutting lower nose (the crash structure)
+     up to the cab floor, with the headlight clusters set in it and a yellow face, then a step back and the two-pane
+     windscreen raked well back under a rounded roof dome, all the cab windows in one black band that wraps round to the
+     cab sides; a cab door behind each cab; along the sides the engine-room doors, a yellow line low down, at No. 2 end
+     (-x) the tall radiator grilles and two big fans on the roof; the exhaust; the long fuel tank between the bogies.
+     Dark green with yellow ends; no logo, no numbers. ---- */
+  function heroC70(L,sp){
+    const C=h=>new THREE.Color(h), GN=C(L.body), YEL=C(L.ends||'#f2c230'), YL=C(L.stripe||L.ends||'#f2c230'), ROOF=C(L.roof||'#26322b'),
+      BLK=C('#141414'), DK=C('#232323'), UF=C('#262728'), STEEL=C('#aab0b5'), WIN=C('#2a3a4a'), RUB=C('#0c0c0c'), GRL=GN.clone().multiplyScalar(0.36), SLAT=GN.clone().multiplyScalar(0.92),
+      WHITE=C('#f1efe6'), LENS=C('#fff3c4'), RLENS=C('#c0392b'), ROOFDK=ROOF.clone().multiplyScalar(0.6), ROOFGR=ROOF.clone().multiplyScalar(0.35), BX=C('#3b3b3b'), SEAM=GN.clone().multiplyScalar(0.66);
+    const G=new Geo(), K=heroKit(G), {B,LZ,LX,LY,rod3,coneX,discX,discY}=K, both=f=>{ f(1); f(-1); };
+    const W=0.21, YC=0.572, yn=0.37, yw0=0.405, yw1=0.53, R=0.03, YS0=0.205, YS1=0.225;
+    /* the cab end in side view (x at each height, the same at both ends) and its bulge in plan: the jutting lower nose,
+       the step back at the cab floor, the raked windscreen, the dome over it */
+    const P=[[0.17,0.81,0.004],[YS0,0.812,0.005],[YS1,0.813,0.005],[0.3,0.815,0.006],[yn,0.812,0.006],[0.385,0.79,0.008],[yw0,0.785,0.009],[0.47,0.76,0.009],[yw1,0.735,0.008],[YC,0.72,0.007],[0.594,0.7,0.005],[0.608,0.678,0.003],[0.617,0.652,0.001]];
+    const wAt=y=>y<=YC?W:y<0.6?0.195:y<0.61?0.165:0.115;
+    const S=P.map(([y,f,bf])=>({y,f,b:-f,w:wAt(y),r:R,bf,bb:bf}));
+    const nC=3, zs=[1,0.8,0.5,0.04,-0.04,-0.5,-0.8,-1];
+    heroShell(G,S,(x,y,z,p,k)=>{
+      if(p==='top'||y>YC+0.003) return ROOF;
+      const end=p==='f'||p==='b', corner=p==='cf'||p==='cb', adj=corner&&(k===nC-1||k===nC);
+      if(end||adj){ if(y<0.19) return BLK; if(y<0.385) return YEL;                       /* the yellow face of the jutting nose */
+        if(y<yw0||y>yw1) return BLK;                                                    /* the black mask round the windscreen */
+        return end&&(k===3)?RUB:WIN; }                                                   /* two panes and the centre pillar, wrapping round the corners */
+      if(corner&&y>0.385&&y<yw1+0.01) return BLK;                                       /* the black band wrapping round to the cab sides */
+      if(corner&&y<0.385&&y>0.19) return YEL;
+      return y>YS0&&y<YS1?YL:GN;
+    },{nS:8,nC,zs});
+    const noseX=(y,z)=>{ let i=0; while(i<P.length-2&&P[i+1][0]<y) i++; const [y0,f0,b0]=P[i], [y1,f1,b1]=P[i+1], u=clamp((y-y0)/(y1-y0),0,1), f=f0+(f1-f0)*u, bf=b0+(b1-b0)*u, zw=W-R, q=Math.min(1,Math.abs(z)/zw); return f+bf*(1-q*q); };
+    const yt=0.617;
+    both(m=>{ const X=x=>m*x;
+      /* the top of the jutting nose (the step under the windscreen), the headlight clusters set in its face, a marker light
+         under the dome, wipers */
+      LY(X(0.8),0.3855,0,0.026,0.4,DK);
+      both(s=>{ const z=s*0.125, y=0.31, x=noseX(y,z);
+        LX(X(x+0.002),y,z,0.09,0.046,m,RUB); discX(X(x+0.004),y,z-s*0.024,0.013,m,LENS,10); discX(X(x+0.004),y,z+s*0.002,0.011,m,WHITE,8); discX(X(x+0.004),y,z+s*0.026,0.01,m,RLENS,8);
+        rod3([X(noseX(yw0+0.012,s*0.15)+0.004),yw0+0.012,s*0.15],[X(noseX(yw0+0.07,s*0.09)+0.004),yw0+0.07,s*0.09],0.004,BLK); });
+      discX(X(noseX(0.56,0)+0.003),0.56,0,0.011,m,LENS,8);
+      heroModernEnd(G,K,m,0.81,{BLK,DK,STEEL,YEL});
+      /* the cab side: the side window in the black band, the cab door behind it with its window, handrails, steps */
+      both(s=>{ const z2=s*(W+0.0025), z3=s*(W+0.0035);
+        LZ(X(0.672),0.468,z2,0.06,0.125,s,BLK); LZ(X(0.672),0.47,z3,0.044,0.085,s,WIN);
+        for(const x of [0.57,0.625]) LZ(X(x),0.36,z2,0.003,0.33,s,SEAM); LZ(X(0.5975),0.528,z2,0.058,0.003,s,SEAM);
+        LZ(X(0.5975),0.47,z2,0.038,0.07,s,RUB); LZ(X(0.5975),0.472,z3,0.03,0.058,s,WIN);
+        for(const x of [0.562,0.633]){ rod3([X(x),0.22,s*(W+0.012)],[X(x),0.48,s*(W+0.012)],0.006,STEEL); for(const y of [0.23,0.47]) B(X(x),y,s*(W+0.006),0.004,0.004,0.012,STEEL); }
+        B(X(0.5975),0.137,s*0.198,0.06,0.006,0.03,DK); B(X(0.5975),0.105,s*0.198,0.06,0.006,0.03,DK); for(const x of [0.57,0.625]) B(X(x),0.12,s*0.211,0.004,0.07,0.004,DK); });
+    });
+    /* the sides: the tall radiator grilles at No. 2 end, smaller grilles along the engine room, door seams, the cantrail */
+    both(s=>{ const z2=s*(W+0.0022), z3=s*(W+0.0027);
+      for(const x of [-0.5,-0.33]){ LZ(x,0.42,z2,0.15,0.24,s,GRL); for(let q=0;q<14;q++) LZ(x,0.307+q*0.0165,z3,0.144,0.006,s,SLAT); }
+      for(const x of [-0.14,0.04,0.22,0.4]){ LZ(x,0.5,z2,0.12,0.07,s,GRL); for(let q=0;q<4;q++) LZ(x,0.476+q*0.016,z3,0.114,0.005,s,SLAT); }
+      for(const x of [-0.235,-0.05,0.13,0.31,0.49]) LZ(x,0.37,z2,0.0025,0.3,s,SEAM);
+      LZ(-0.07,YC-0.004,z2,1.22,0.004,s,SEAM); LZ(0,0.19,z2,1.5,0.003,s,SEAM); });
+    /* the roof: the big cooler at No. 2 end with its two fans, grilles along the engine room, the exhaust, the horns */
+    B(-0.48,yt+0.01,0,0.36,0.02,0.32,ROOF);
+    for(const x of [-0.57,-0.39]){ const y=yt+0.0205; discY(x,y,0,0.065,0.074,RUB,12); discY(x,y+0.0005,0,0,0.065,ROOFGR,12);
+      for(let i=0;i<4;i++){ const a=i/4*Math.PI, c=Math.cos(a)*0.063, d=Math.sin(a)*0.063; G.quad([x+c,y+0.0015,d-0.003],[x+c,y+0.0015,d+0.003],[x-c,y+0.0015,-d+0.003],[x-c,y+0.0015,-d-0.003],STEEL,[0,1,0]); }
+      discY(x,y+0.002,0,0,0.012,STEEL,6); }
+    B(-0.18,yt+0.016,0,0.09,0.026,0.08,DK); B(-0.18,yt+0.03,0,0.07,0.004,0.06,BLK);   /* the exhaust */
+    for(const x of [0.05,0.24,0.43]){ LY(x,yt+0.001,0,0.14,0.13,ROOFDK); for(let i=0;i<5;i++) LY(x-0.056+i*0.028,yt+0.0015,0,0.009,0.12,ROOFGR); }
+    both(m=>both(s=>{ coneX(m>0?0.6:-0.64,m>0?0.64:-0.6,yt+0.008,s*0.05,0.008,0.015,BX,8); }));
+    /* underframe: solebar, the long fuel tank, battery boxes, air reservoirs */
+    B(0,0.158,0,1.6,0.026,0.42,UF);
+    B(0,0.105,0,0.5,0.08,0.34,BLK); both(s=>{ for(const x of [-0.18,-0.06,0.06,0.18]) LZ(x,0.105,s*0.1702,0.008,0.08,s,UF); B(-0.2,0.12,s*0.172,0.02,0.02,0.006,STEEL); });
+    both(s=>{ G.cyl(0.12,0.118,s*0.13,0.025,0.1,'x',DK,8); B(-0.12,0.125,s*0.17,0.06,0.045,0.03,UF); });
+    return {eng:G, ...heroCoCo(sp)};
+  }
+  /* ---- Class 92 (Brush Co-Co electric, 1993; 28 Nov 2026, sold on its own as trainmasters.engine.c92, pack Modern main
+     line): two carriage places on two six-wheeled bogies. Both cab ends alike: upright and yellow up to the cab floor,
+     the two windscreens leaning back a little in a black surround, headlight clusters low on each side; mid grey sides
+     with a dark grey upper band (the cab windows in it) and a fine white line between; a cab door and side window behind
+     each cab, a row of louvred grilles along the engine room; two single-arm pantographs on the roof, the busbar and
+     circuit breakers between them; equipment cases between the bogies, and the third-rail pick-up shoes on the bogies.
+     No logo, no numbers. ---- */
+  function heroC92(L,sp){
+    const C=h=>new THREE.Color(h), LG=C(L.body), DG=C(L.band||'#464b51'), YEL=C(L.ends||'#f2c230'), WL=C(L.stripe||'#eceae4'), ROOF=C(L.roof||'#464b51'),
+      BLK=C('#141414'), DK=C('#232323'), UF=C('#1e1f20'), STEEL=C('#aab0b5'), WIN=C('#2a3a4a'), RUB=C('#0c0c0c'), WHITE=C('#eceae4'), LENS=C('#fff3c4'), RLENS=C('#c0392b'),
+      GRL=LG.clone().multiplyScalar(0.5), SLAT=LG.clone().multiplyScalar(0.85), SEAM=LG.clone().multiplyScalar(0.72), SEAMD=DG.clone().multiplyScalar(0.7), CER=C('#7a4a32'), PAN=C('#b9bdc1'), ROOFDK=ROOF.clone().multiplyScalar(0.6);
+    const G=new Geo(), K=heroKit(G), {B,LZ,LX,LY,rod3,coneX,discX}=K, both=f=>{ f(1); f(-1); };
+    const W=0.205, YC=0.572, yw0=0.42, yw1=0.535, R=0.03, YS=0.405;
+    const P=[[0.175,0.8,0.006],[0.22,0.801,0.007],[0.3,0.801,0.007],[0.37,0.8,0.007],[yw0-0.012,0.799,0.007],[yw0,0.797,0.007],[0.48,0.784,0.006],[yw1,0.772,0.006],[YC,0.762,0.005],[0.594,0.748,0.004],[0.608,0.728,0.003],[0.617,0.7,0.001]];
+    const wAt=y=>y<=YC?W:y<0.6?0.19:y<0.61?0.16:0.11;
+    const S=P.map(([y,f,bf])=>({y,f,b:-f,w:wAt(y),r:R,bf,bb:bf}));
+    const nC=3, zs=[1,0.8,0.5,0.04,-0.04,-0.5,-0.8,-1];
+    heroShell(G,S,(x,y,z,p,k)=>{
+      if(p==='top'||y>YC+0.003) return ROOF;
+      const end=p==='f'||p==='b', corner=p==='cf'||p==='cb', adj=corner&&(k===nC-1||k===nC);
+      if(end||adj){ if(y<0.2) return BLK; if(y<yw0-0.012) return YEL;
+        if(y<yw0||y>yw1) return RUB;
+        return end?(k===3?RUB:WIN):WIN; }                                            /* the windscreen: two panes and the centre pillar */
+      if(corner&&y<yw0-0.012&&y>0.2) return YEL;                                    /* the yellow wrapping round the corners */
+      return y>YS?DG:LG;
+    },{nS:8,nC,zs});
+    const endX=(y,z)=>{ let i=0; while(i<P.length-2&&P[i+1][0]<y) i++; const [y0,f0,b0]=P[i], [y1,f1,b1]=P[i+1], u=clamp((y-y0)/(y1-y0),0,1), f=f0+(f1-f0)*u, bf=b0+(b1-b0)*u, zw=W-R, q=Math.min(1,Math.abs(z)/zw); return f+bf*(1-q*q); };
+    both(m=>{ const X=x=>m*x;
+      both(s=>{ const z=s*0.13, y=0.3, x=endX(y,z);
+        LX(X(x+0.002),y,z,0.075,0.042,m,RUB); discX(X(x+0.004),y,z-s*0.02,0.012,m,LENS,10); discX(X(x+0.004),y,z+s*0.02,0.01,m,RLENS,8); discX(X(x+0.004),y,z,0.007,m,WHITE,8);
+        rod3([X(endX(yw0+0.012,s*0.15)+0.004),yw0+0.012,s*0.15],[X(endX(yw0+0.07,s*0.09)+0.004),yw0+0.07,s*0.09],0.004,BLK); });
+      discX(X(endX(0.38,0)+0.003),0.38,0,0.011,m,LENS,8);
+      heroModernEnd(G,K,m,0.8,{BLK,DK,STEEL,YEL});
+      /* the cab side: the door with its droplight, the side window, handrails, steps */
+      both(s=>{ const z2=s*(W+0.0024), z3=s*(W+0.0034), xd=0.64, xw=0.72;
+        for(const x of [xd-0.028,xd+0.028]) LZ(X(x),0.36,z2,0.003,0.34,s,SEAMD); LZ(X(xd),0.555,z2,0.059,0.003,s,SEAMD);
+        LZ(X(xd),0.49,z2,0.042,0.075,s,RUB); LZ(X(xd),0.492,z3,0.034,0.062,s,WIN);
+        LZ(X(xw),0.49,z2,0.07,0.075,s,RUB); LZ(X(xw),0.492,z3,0.06,0.062,s,WIN);
+        for(const x of [xd-0.036,xd+0.036]) rod3([X(x),0.23,s*(W+0.008)],[X(x),0.47,s*(W+0.008)],0.005,STEEL);
+        B(X(xd),0.14,s*0.196,0.05,0.006,0.03,DK); B(X(xd),0.11,s*0.196,0.05,0.006,0.03,DK); });
+    });
+    /* the sides: the fine white line under the dark band, a row of louvred grilles in the dark band, seams */
+    both(s=>{ const z=s*(W+0.0012), z2=s*(W+0.0024), z3=s*(W+0.0034);
+      LZ(0,YS+0.002,z,1.18,0.006,s,WL);
+      for(let i=0;i<6;i++){ const x=-0.45+i*0.18; LZ(x,0.48,z2,0.13,0.09,s,GRL); for(let q=0;q<5;q++) LZ(x,0.452+q*0.014,z3,0.124,0.005,s,SLAT); }
+      for(const x of [-0.54,-0.36,-0.18,0,0.18,0.36,0.54]) LZ(x,0.3,z2,0.0025,0.2,s,SEAM);
+      LZ(0,YC-0.004,z2,1.42,0.003,s,SEAMD); LZ(0,0.19,z2,1.5,0.004,s,SEAM); });
+    /* the roof: two single-arm pantographs on their insulators, one towards each end, folded down (the rear one) and
+       raised (the front one); the busbar between, two circuit breakers, roof panels */
+    const yt=0.618;
+    const panto=(xp,d,up)=>{ B(xp,yt+0.022,0,0.2,0.012,0.15,PAN);
+      for(const x of [xp-0.08,xp+0.08]) both(s=>{ G.cyl(x,yt+0.008,s*0.06,0.012,0.026,'y',CER,6); G.cyl(x,yt+0.004,s*0.06,0.016,0.004,'y',CER,6); });
+      const hx=xp-d*0.09, hy=yt+0.034, kx=xp+d*(up?0.11:0.1), ky=yt+(up?0.12:0.05), px=xp-d*(up?0.03:0.1), py=yt+(up?0.19:0.07);
+      both(s=>{ rod3([hx,hy,s*0.055],[kx,ky,s*0.012],0.012,PAN); });
+      rod3([kx,ky,0],[px,py,0],0.009,PAN); G.cyl(kx,ky,0,0.012,0.04,'z',PAN,8);
+      rod3([px,py,-0.12],[px,py,0.12],0.012,PAN); rod3([px,py+0.008,-0.1],[px,py+0.008,0.1],0.008,DK);
+      both(s=>{ rod3([px,py,s*0.12],[px,py-0.025,s*0.15],0.008,PAN); }); };
+    panto(0.42,1,true); panto(-0.42,-1,false);
+    B(0,yt+0.004,0,0.5,0.008,0.18,ROOFDK);
+    rod3([-0.3,yt+0.05,0.03],[0.3,yt+0.05,0.03],0.008,STEEL);
+    for(const x of [-0.2,0.2]) G.cyl(x,yt+0.02,0.03,0.011,0.04,'y',CER,6);
+    for(const x of [-0.08,0.08]){ G.cyl(x,yt+0.03,0.03,0.022,0.05,'y',DK,8); G.cyl(x,yt+0.058,0.03,0.016,0.008,'y',STEEL,8); }   /* circuit breakers */
+    /* underframe: solebar, the transformer case and equipment cases, air tanks */
+    B(0,0.163,0,1.56,0.026,0.4,UF);
+    B(0,0.11,0,0.4,0.08,0.34,BLK); both(s=>{ for(const x of [-0.13,0,0.13]) LZ(x,0.11,s*0.1702,0.008,0.08,s,UF); });
+    both(s=>{ G.cyl(-0.12,0.12,s*0.13,0.022,0.1,'x',DK,8); B(0.13,0.12,s*0.16,0.06,0.05,0.03,UF); });
+    /* the bogie: the shared Co-Co bogie with a third-rail shoe beam along each side, the pick-up shoe at its middle */
+    const cc=heroCoCo(sp), Kb=heroKit(cc.bog);
+    both(s=>{ Kb.B(0,0.055,s*0.262,0.34,0.012,0.012,DK); Kb.B(0,0.035,s*0.27,0.06,0.008,0.03,STEEL); Kb.rod3([0,0.055,s*0.262],[0,0.04,s*0.27],0.008,DK); });
+    return {eng:G, ...cc};
+  }
+  /* ---- the modern British express diesel units (28 Nov 2026, pack Modern main line; each sold on its own as
+     trainmasters.engine.<k>): the driving car in two carriage places on two four-wheeled bogies (the far driving car is
+     the same, turned round: pcR / pcF). k chooses the unit:
+       c180 (2000): a smooth, rounded, fairly short nose, the lower part bulging forward round the coupler, the big raked
+         windscreen in a black surround, two round headlight clusters; deep purple with a gold line;
+       c220 (2000): a pointed nose sloping down to a coupler cover at its tip, the big raked windscreen; silver with a dark
+         grey window band and a deep red line low down;
+       c222 (2004): the Class 220's sister with a longer, lower nose; teal with a tangerine line.
+     The back (-x): a flat end with the gangway bellows. Smooth sides, a row of windows, the cab door and a plug door at
+     the back end, roof pods and the exhaust, a skirt over the underfloor engine raft and its fuel tank. A yellow lower
+     nose; no logos, no numbers. ---- */
+  function heroDEMU(L,sp,k){
+    const C=h=>new THREE.Color(h), BODY=C(L.body), ST=C(L.stripe||'#d4a84a'), BAND=L.band?C(L.band):null, YEL=C(L.ends||'#f2c230'), ROOF=C(L.roof||'#2a2a30'),
+      BLK=C('#121212'), DK=C('#262829'), UF=C('#1c1d1e'), STEEL=C('#aab0b5'), WIN=C('#18212a'), RUB=C('#0b0b0b'), LENS=C('#fff6dc'), RLENS=C('#c0392b'),
+      SEAM=BODY.clone().multiplyScalar(0.72), GRY=C('#3a3d40'), ROOFDK=ROOF.clone().multiplyScalar(0.7), ROOFGR=ROOF.clone().multiplyScalar(0.45);
+    const G=new Geo(), {B,LZ,LX,LY,rod3,discX,discY}=heroKit(G), both=f=>{ f(1); f(-1); };
+    const XB=-0.8, W=0.205, YC=0.585;
+    /* each nose's profile, bottom to top: [y, front x, half width, corner radius in plan, bulge of the face]; yw0..yw1 the
+       windscreen, yy the top of the yellow, yl the line along the sides, xn where the nose starts, the windows (n of them
+       from x0, every dx), the doors */
+    const O={
+      c180:{P:[[0.17,0.83,W,0.1,0.01],[0.2,0.852,W,0.11,0.012],[0.25,0.862,W,0.115,0.012],[0.3,0.858,W,0.115,0.012],[0.35,0.842,W,0.112,0.01],[0.4,0.81,W-0.001,0.108,0.008],[0.45,0.77,W-0.002,0.104,0.006],
+          [0.5,0.726,W-0.004,0.1,0.004],[0.545,0.684,W-0.005,0.095,0.002],[YC,0.64,W-0.01,0.09,0],[0.603,0.6,0.178,0.075,0],[0.616,0.55,0.13,0.05,0],[0.623,0.5,0.08,0.03,0]],
+        yw0:0.41,yw1:0.565,yy:0.36,yl:0.39,xn:0.5,win:[7,0.22,0.124,0.1,0.078],doors:[0.4],lights:'round'},
+      c220:{P:[[0.17,0.88,W,0.15,0.02],[0.2,0.905,W,0.158,0.028],[0.24,0.915,W,0.162,0.03],[0.28,0.906,W,0.162,0.03],[0.32,0.882,W,0.158,0.028],[0.36,0.847,W,0.152,0.026],[0.4,0.802,W-0.001,0.146,0.022],
+          [0.44,0.75,W-0.002,0.138,0.018],[0.48,0.692,W-0.003,0.128,0.014],[0.52,0.632,W-0.005,0.116,0.01],[0.555,0.572,W-0.007,0.104,0.006],[YC,0.505,W-0.012,0.09,0.003],[0.603,0.445,0.178,0.075,0],[0.616,0.375,0.13,0.05,0],[0.623,0.305,0.08,0.03,0]],
+        yw0:0.425,yw1:0.56,yy:0.34,yl:0.27,xn:0.42,win:[6,0.13,0.13,0.1,0.08],doors:[0.33],lights:'band',hatch:true},
+      c222:{P:[[0.17,0.895,W,0.155,0.02],[0.2,0.922,W,0.162,0.028],[0.235,0.932,W,0.166,0.03],[0.27,0.925,W,0.166,0.03],[0.31,0.904,W,0.162,0.028],[0.35,0.872,W,0.157,0.026],[0.39,0.83,W-0.001,0.151,0.022],
+          [0.43,0.776,W-0.002,0.143,0.018],[0.47,0.714,W-0.003,0.133,0.014],[0.51,0.648,W-0.005,0.12,0.01],[0.55,0.578,W-0.007,0.106,0.006],[YC,0.5,W-0.012,0.09,0.003],[0.603,0.432,0.178,0.075,0],[0.616,0.36,0.13,0.05,0],[0.623,0.29,0.08,0.03,0]],
+        yw0:0.415,yw1:0.555,yy:0.36,yl:0.4,xn:0.4,win:[6,0.12,0.13,0.104,0.08],doors:[0.32],lights:'band'}}[k];
+    const P=O.P, x0=XB+P[3][3]+0.01, xd=x0+0.05;   /* the back corners are rounded in plan as the nose is: the lines start, and the back door sits, on the flat of the side */
+    const S=P.map(([y,f,w,r,bf])=>({y,f,b:y<=YC?XB:y<0.61?XB+0.006:XB+0.016,w,r,bf}));
+    const nC=3, zs=[1,0.6,0.2,-0.2,-0.6,-1];
+    heroShell(G,S,(x,y,z,p,kk)=>{
+      if(p==='top'||y>0.6) return ROOF;
+      if(y<0.19) return x>0.6?DK:GRY;                                         /* the skirt */
+      const front=x>O.xn&&(p==='f'||p==='cf');
+      if(front&&y<O.yy) return YEL;                                           /* the yellow lower nose */
+      if(front&&y>O.yw0&&y<O.yw1){ const adj=p==='f'||kk===nC-1||kk===nC; return adj?WIN:BLK; }   /* the windscreen and its black surround */
+      if(front&&y>O.yy&&y<O.yw0) return k==='c180'?BLK:BODY;
+      if(x<0&&(p==='b'||p==='cb')) return y<0.3?DK:BODY;
+      return BODY;
+    },{nS:8,nC,zs});
+    /* a point on the nose's surface at height y: u 0..1 along the flat side from x0, 1..2 round the corner */
+    const sl=y=>{ let i=0; while(i<P.length-2&&P[i+1][0]<y) i++; const a=P[i], b=P[i+1], q=clamp((y-a[0])/(b[0]-a[0]),0,1); return [a[1]+(b[1]-a[1])*q,a[2]+(b[2]-a[2])*q,a[3]+(b[3]-a[3])*q]; };
+    const surf=(y,u,s,x0,o=0.0025)=>{ const [f,w,r]=sl(y); if(u<=1) return {p:[x0+(f-r-x0)*u,y,s*(w+o)],n:[0,0,s]};
+      const a=(u-1)*Math.PI/2, sn=Math.sin(a), cs=Math.cos(a); return {p:[f-r+sn*(r+o),y,s*(w-r+cs*(r+o))],n:[sn,0,s*cs]}; };
+    const strip=(s,x0,us,yo,hb,col,o=0.0025)=>{ for(let i=0;i<us.length-1;i++){ const u0=us[i], u1=us[i+1];
+      const A=surf(yo(u0)-hb(u0),u0,s,x0,o), Bq=surf(yo(u1)-hb(u1),u1,s,x0,o), Cq=surf(yo(u1)+hb(u1),u1,s,x0,o), D=surf(yo(u0)+hb(u0),u0,s,x0,o);
+      G.quad(A.p,Bq.p,Cq.p,D.p,col,[(A.n[0]+Bq.n[0])/2,0,(A.n[2]+Bq.n[2])/2]); } };
+    const US=[0,0.25,0.5,0.75,1,1.15,1.3,1.45], xn=O.xn;
+    both(s=>{
+      /* the line along the side, sweeping down the nose's flank to the yellow */
+      LZ((x0+0.4)/2,O.yl,s*(W+0.0015),0.4-x0,0.016,s,ST);
+      if(O.yl>O.yy) strip(s,xn,US,u=>u<=1?O.yl:O.yl-(O.yl-O.yy-0.006)*Math.min(1,(u-1)/0.45),()=>0.008,ST); else strip(s,xn,US.slice(0,6),()=>O.yl,()=>0.008,ST);
+      if(BAND){ LZ((x0+0.4)/2,0.48,s*(W+0.0012),0.4-x0,0.1,s,BAND); strip(s,xn,US.slice(0,6),()=>0.48,()=>0.05,BAND,0.0012); }   /* the dark window band, running on into the windscreen's surround */
+      /* the lights: two round clusters (c180) or a band of lights (c220, c222) in the yellow, a tail light at its outer end */
+      if(O.lights==='round'){ for(const u of [1.38,1.62]){ const c=surf(0.29,u,s,xn,0.003); G.cyl(c.p[0],c.p[1],c.p[2],0.018,0.006,'x',RUB,10); discX(c.p[0]+0.0035,c.p[1],c.p[2],0.014,1,u<1.5?RLENS:LENS,10); } }
+      else { strip(s,xn,[1.35,1.5,1.65,1.8],()=>0.29,()=>0.014,RUB,0.0032); strip(s,xn,[1.4,1.5,1.6,1.75],()=>0.29,()=>0.009,LENS,0.0042); strip(s,xn,[1.3,1.35],()=>0.29,()=>0.009,RLENS,0.0042); }
+      /* wipers on the windscreen */
+      { const a=surf(O.yw0+0.01,1.6,s,xn,0.004), b=surf(O.yw0+0.08,1.75,s,xn,0.004); rod3(a.p,b.p,0.004,BLK); }
+      /* the sides: the cab door behind the windscreen, a plug door at the back end, a row of windows, seams */
+      const z=s*(W+0.0024), z2=s*(W+0.0034);
+      const door=x=>{ for(const d of [-0.03,0.03]) LZ(x+d,0.37,z,0.003,0.32,s,SEAM); LZ(x,0.531,z,0.063,0.003,s,SEAM); LZ(x,0.47,z2,0.03,0.075,s,WIN);
+        B(x+0.022,0.36,s*(W+0.004),0.004,0.02,0.004,STEEL); B(x,0.2,s*(W-0.004),0.07,0.008,0.016,DK); };
+      for(const x of O.doors.concat([xd])) door(x);
+      { const [n,w0,dx,ww,wh]=O.win; for(let i=0;i<n;i++){ const x=w0-i*dx; if(x-ww/2<xd+0.04) break; LZ(x,0.48,z,ww,wh,s,RUB); LZ(x,0.48,z2,ww-0.008,wh-0.008,s,WIN); } }
+      for(const x of [x0,O.doors[0]+0.06]) LZ(x,0.39,z,0.003,0.33,s,SEAM);
+      LZ((x0+0.4)/2,YC-0.004,z,0.4-x0,0.003,s,SEAM);
+    });
+    /* the hinged coupler cover at the tip of the nose (c220) */
+    if(O.hatch) for(const s of [1,-1]) strip(s,xn,[1.6,1.75,1.9,2],()=>0.225,()=>0.0015,BLK);
+    /* the flat back end: the bellows round the gangway, a tail light each side */
+    B(XB-0.006,0.39,0,0.012,0.4,0.33,RUB); B(XB-0.012,0.39,0,0.004,0.34,0.26,DK);
+    both(s=>discX(XB-0.0015,0.3,s*0.17,0.01,-1,RLENS,8));
+    /* the roof: the air-conditioning pods, the exhaust silencer and its stack, the horn grille over the cab */
+    const yt=0.623;
+    for(const x of [-0.55,0.05]){ B(x,yt+0.008,0,0.22,0.026,0.2,ROOFDK); LY(x,yt+0.0215,0,0.2,0.18,ROOF); for(let i=0;i<4;i++) LY(x-0.075+i*0.05,yt+0.022,0,0.012,0.16,ROOFGR); }
+    B(-0.25,yt+0.01,0.06,0.08,0.02,0.05,DK); G.cyl(-0.25,yt+0.03,0.06,0.012,0.03,'y',BLK,8);
+    discY(0.3,yt+0.002,0,0,0.03,ROOFGR,10);
+    /* underframe: the skirt between the bogies over the engine raft, its fuel tank and the radiator grille, the solebar */
+    B(-0.02,0.165,0,1.5,0.026,0.4,UF);
+    both(s=>{ B(-0.02,0.15,s*0.199,0.42,0.06,0.008,GRY); for(const x of [-0.2,-0.06,0.08]) LZ(x,0.15,s*0.2032,0.004,0.06,s,DK); LZ(0.15,0.15,s*0.2032,0.06,0.04,s,BLK); });
+    B(-0.02,0.115,0,0.42,0.07,0.34,BLK);
+    G.hexa([[0.72,0.06,-0.19],[P[1][1]-0.02,0.08,-0.09],[P[1][1]-0.02,0.08,0.09],[0.72,0.06,0.19],[0.72,0.17,-0.2],[P[1][1],0.17,-0.09],[P[1][1],0.17,0.09],[0.72,0.17,0.2]],DK);   /* the spoiler under the nose */
+    return {eng:G, ...heroBoBo(sp)};
   }
   /* ---- Class 158 express diesel unit (1989; sold on its own as trainmasters.engine.c158): one car of the two-car unit in two
      carriage places on two four-wheeled bogies (the other car is the same, turned round: pcR / pcF). The front (+x): a
@@ -24691,6 +25208,13 @@ const SHED_HISTORY={
   pacer:'Built in the mid-1980s as a cheap way to keep country lines running, each car was a bus body from a bus factory set on a four-wheeled underframe like a goods wagon\'s. Ninety-six two-car sets were made. Their wheels squealed on sharp curves and the ride bounced, but they served the towns of the north for some thirty-five years, and when the last retired in 2020 several found new lives as cafes and classrooms.',
   c101:'From 1956 a Birmingham carriage works built more than six hundred of these cars, and the two-car sets soon took over from steam on country branches and busy suburban lines all over Britain. Simple and sturdy, with big windows that let passengers look out past the driver at the line ahead, many kept running for almost fifty years, and several still carry passengers on heritage railways today.',
   kiha40:'From 1977 to 1982 more than eight hundred of these sturdy railcars were built to take over from older diesel cars on the country branch lines of Japan, from the snowy north to the warm south. Some had a cab at both ends and could run on their own, others ran in pairs or longer sets, and all were built strong for the cold and the snow. Many worked for over forty years, and a few still run today, some painted back in their old cream and red.',
+  c70:'Thirty-seven of these big freight engines were built from 2009, most in America and a few in Turkey, to haul container trains from the ports and heavy goods across Britain. Their new engine was made to use less fuel and to cope with long, heavy trains, and their jutting noses were shaped to keep the crew safe. They brought a fresh, bold look to the freight yards and are still hard at work today.',
+  c59:'In the mid-1980s a quarry company in Somerset grew tired of British engines failing under its enormous stone trains, so it bought its own from America. The first four crossed the Atlantic in 1986 and soon proved they could haul trains far heavier than anything else in the country, day after day without fuss. More followed for other owners, and their success helped change how Britain bought its freight engines. They are still hauling stone today.',
+  c57:'By the 1990s many Class 47s were tired, so from 1997 thirty-three of them were rebuilt with reconditioned American two-stroke engines, new generators and modern electrics, keeping their famous bodies and bogies. Some hauled freight, some rescued broken-down express trains and some pulled the overnight sleeper trains to Cornwall and Scotland. A clever way to give old engines a long second life.',
+  c92:'Forty-six of these powerful electrics were built from 1993 to haul goods trains through the new Channel Tunnel between England and France. They could run from the overhead wires or from a third rail beside the track, so they could work on almost any electric line in Britain and on into France. Later some hauled the overnight sleeper trains to Scotland, and a few went to work in Eastern Europe.',
+  c180:'Fourteen of these smooth, fast diesel units were built in Birmingham around 2000 for express services from London to the west. Each five-car train has an engine under every car, and they can run at 125 mph. After a few early troubles they settled down, moved to new routes and owners, and became the comfortable trains of small companies running fast services to Yorkshire and the North East.',
+  c220:'Built in Belgium and Britain from 2000, these four-car trains took over the long cross-country routes that link Scotland, the North, the Midlands and the South West without passing through London. Each car has its own engine under the floor, so they accelerate quickly and run at 125 mph. Many millions of passengers have travelled on them, and they still cross the country every day.',
+  c222:'Built from 2004 as a longer, roomier sister of the cross-country trains, these units took over the fast services between London and the cities of the East Midlands and South Yorkshire. Some had four cars, some five and some seven, each car with its own engine. Smooth and quick at 125 mph, they served the line for some twenty years.',
   c800:'Built from 2014, many of them in a new factory in the north-east of England to a Japanese design, these trains took over the fast services from London to the West Country, Wales, Yorkshire and Scotland from 2017. Each one can run from the overhead wires or, where there are none, from diesel engines under its floors, changing over on the move. Hundreds of their cars now run on Britain\'s main lines.',
   saint:'In 1902 the Great Western built a bold new express engine with two big outside cylinders, a tapered boiler and long-travel valves, ideas gathered from America and France. Over seventy followed, many named after saints, ladies of legend and the heroes of famous novels. They ran the fastest expresses to the West Country and South Wales, and in 1924 one was rebuilt with smaller wheels to become the very first Hall.',
   nohab:'In 1954 a Swedish engine works began building diesels under licence from America, with the same rounded "bulldog" nose as the famous streamliners but on six-wheeled bogies for lighter European track. Denmark, Norway, Belgium, Luxembourg and Hungary bought them too. They were so well built that many ran for fifty years, and they are still loved across Scandinavia.',
