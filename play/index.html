@@ -5606,7 +5606,7 @@ function trainItems(tab,card){
   const shown=g=>Object.entries(TRAIN_TYPES).filter(([k,ty])=>ty.group===g&&!(ENGINE_SKUS[k]&&ENGINE_SKUS[k].soon&&engineLocked(k)));   /* soon: not on sale yet, unless already owned */
   const sec=label=>items.push({heading:true,sec:true,disabled:true,label});
   if(tab===2){ const P=packRows((m,j,p)=>openPackCard(p.id,card?()=>buyTrain(j,2):Shed.back()));
-    const fresh=P.filter(r=>isNewItem(packById(r.pack))), rest=P.filter(r=>!fresh.includes(r)), all=rest.find(r=>r.pack==='everything');
+    const fresh=newestFirst(P.filter(r=>isNewItem(packById(r.pack))),r=>packById(r.pack),r=>r.pack), rest=P.filter(r=>!fresh.includes(r)), all=rest.find(r=>r.pack==='everything');
     if(fresh.length){ sec('New packs'); items.push(...fresh); }
     if(all){ sec('Every engine'); items.push(all); } const themed=rest.filter(r=>r!==all); if(themed.length){ sec('Themed packs'); items.push(...themed); }
     if(!P.length) items.push({heading:true,disabled:true,label:'Engine packs are on the way.'});
@@ -5623,7 +5623,7 @@ function trainItems(tab,card){
     for(const g of GROUPS) for(const [k,ty] of shown(g)){
       if(ENGINE_SKUS[k]) famous.push(row(k,ty,g,ENGINE_SKUS[k].sku,!engineLocked(k),(m,j)=>openEngineCard(k,j)));
       else if((ty.pro||ty.heritage)&&!heritageOwned()) her.push(row(k,ty,g,HERITAGE_SKUS[k]||HERITAGE_SKU,!heritageLocked(k),(m,j)=>openHeritageCard(k,j))); }
-    const fresh=famous.filter(r=>isNewItem(ENGINE_SKUS[r.type])), rest=famous.filter(r=>!fresh.includes(r));
+    const fresh=newestFirst(famous.filter(r=>isNewItem(ENGINE_SKUS[r.type])),r=>ENGINE_SKUS[r.type],r=>r.type), rest=famous.filter(r=>!fresh.includes(r));
     for(const r of fresh) r.label+=NEW_TAG;
     if(fresh.length){ sec('New engines'); items.push(...fresh); }
     if(rest.length){ sec('Famous engines, one at a time'); items.push(...rest); }
@@ -10117,6 +10117,10 @@ function packOf(k){ return ENGINE_PACKS.find(p=>p.types&&p.types.includes(k))||n
    NEW_DAYS days: a New label on its row and a "New engines" / "New packs" section at the top of its tab (list card and shed).
    Items without a date (everything on sale before 27 Nov 2026) are never new; a date still to come is not new yet. */
 const NEW_DAYS=14, NEW_TAG='<span class="newtag">New</span>';
+/* newest first (28 Nov 2026, Peter): a later date first; on the same date the pack further down ENGINE_PACKS (released later)
+   first, and an engine by its latest pack. Ties keep their order. */
+function newestFirst(rows,objOf,packOf){ const rank=r=>{ const id=packOf(r); let i=-1; ENGINE_PACKS.forEach((p,j)=>{ if(p.id===id||(p.types&&p.types.includes(id))) i=j; }); return i; };
+  return rows.map((r,i)=>({r,i,d:(objOf(r)||{}).added||'',k:rank(r)})).sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:(b.k-a.k)||(a.i-b.i)).map(x=>x.r); }
 function isNewItem(o){ if(!o||!o.added) return false; const t=Date.parse(o.added+'T00:00:00Z'), now=Date.now(); return isFinite(t)&&now>=t&&now-t<NEW_DAYS*864e5; }
 function packsShown(){ return EDITION==='pro'?[]:ENGINE_PACKS.filter(p=>!p.soon); }
 /* is engine k yours through a pack (its themed pack, or Everything)? */
