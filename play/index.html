@@ -1804,6 +1804,15 @@ const WHISTLES={
   c170:{horn:true,notes:[78,73],step:0.3,len:0.32,lp:2300,vol:0.13},   /* Class 170 (28 Nov 2026, pack Branch-line units): a clean, bright modern two-tone */
   c175:{horn:true,notes:[77,71],step:0.32,len:0.34,lp:2200,vol:0.13},   /* Class 175 (28 Nov 2026, pack Branch-line units): a bright high-low two-tone, a shade below the Class 180's */
   c166:{horn:true,notes:[76,71],step:0.28,len:0.3,lp:2100,vol:0.13},   /* Class 166 (28 Nov 2026, pack Branch-line units): a brisk two-tone for the busy suburban lines */
+  sa15f:{notes:[56,60,63,67],mix:[1,0.9,0.75,0.45],len:1.6,att:0.18},   /* Class 15F (28 Nov 2026, pack Around the world II): a big, rich South African chime, deep and full */
+  nsw38:{notes:[61,65,68,72],mix:[1,0.88,0.7,0.4],len:1.4,att:0.13},   /* NSW 38 (28 Nov 2026): a bright Australian express chime */
+  wdm2:{horn:true,notes:[62,57],step:0.34,len:0.62,lp:1700,vol:0.16},   /* WDM-2 (28 Nov 2026): the loud Indian two-tone horn, high then low */
+  yp:{notes:[66,70,73],mix:[1,0.8,0.6],len:1.15,att:0.1},   /* YP (28 Nov 2026): a light, bright metre-gauge chime */
+  sy:{notes:[58,61],mix:[1,0.85],len:1.6,att:0.14},   /* SY (28 Nov 2026): the Chinese hooter, two deep notes together */
+  jf:{notes:[51,55],mix:[1,0.9],len:1.95,att:0.18},   /* JF (28 Nov 2026): the deep Chinese freight hooter, long and low */
+  sa25:{notes:[53,57,60,64],mix:[1,0.92,0.8,0.5],len:1.8,att:0.2},   /* Class 25 (28 Nov 2026): a deep four-note chime that carries across the Karoo */
+  vics:{notes:[64,68,71,76],mix:[1,0.86,0.68,0.36],len:1.4,att:0.12},   /* Victorian S (28 Nov 2026): a clear express chime with a bright top note */
+  nzja:{notes:[62,65,69],mix:[1,0.85,0.6],len:1.3,att:0.12},   /* Ja (28 Nov 2026): a mellow New Zealand chime */
   c800:{horn:true,notes:[80,75],step:0.28,len:0.32,lp:2600,vol:0.13},   /* Class 800 (24 Nov 2026): a clean, modern high-low two-tone, a shade above the Class 91's */
   saint:{notes:[88,95],mix:[1,0.45],len:0.62,att:0.035},   /* GWR Saint (24 Nov 2026): the shrill GWR whistle, a shade higher and shorter again than the Hall's */
   nohab:{horn:true,notes:[50,55],step:0.5,len:0.62,lp:1000,vol:0.16},   /* Scandinavian bulldog diesel (24 Nov 2026): a deep, mellow low-high two-tone */
@@ -1883,7 +1892,7 @@ const WHISTLES={
    exhaust together: 4 too. 0: not tied to the wheels (the geared Shay keeps its usual beat). */
 /* the Lord Nelson (27 Nov 2026): four cylinders with the cranks set at 135 degrees, not paired, so its eight beats a turn
    are all separate: the soft, quick "eight-beat" for which the class is known */
-const STEAM_BPT={mn:6,wc:6,rscot:6,jub:6,v2:6,a1pc:6,a2:6,schools:6,nelson:8,k4lner:6,br44:6,shay:0,sentinel:0,fairlie:8};   /* (28 Nov 2026: the Sentinel's quick engine is geared to its wheels by chains, like the Shay's; the Fairlie's two engines, four beats each) */   /* (the LNER K4: three cylinders, 27 Nov 2026; the BR 44 too, 28 Nov 2026) */
+const STEAM_BPT={mn:6,wc:6,rscot:6,jub:6,v2:6,a1pc:6,a2:6,schools:6,nelson:8,k4lner:6,br44:6,vics:6,shay:0,sentinel:0,fairlie:8};   /* (28 Nov 2026: the Sentinel's quick engine is geared to its wheels by chains, like the Shay's; the Fairlie's two engines, four beats each) */   /* (the LNER K4: three cylinders, 27 Nov 2026; the BR 44 too, 28 Nov 2026) */
 const beatsPerTurn=k=>STEAM_BPT[k]!=null?STEAM_BPT[k]:4;
 const HERITAGE_SOUNDS={
   /* 26 Nov 2026 (Peter's go, docs/research/2026-11-26-sound-reference.md): every recipe brighter (lp about 1.6x, crisp
@@ -1971,6 +1980,15 @@ const HERITAGE_SOUNDS={
   c170:{kind:'diesel',pulse:[6.0,9.4],fire:[1,0.87,0.93,0.85,0.95,0.86],thump:86,dec:0.021,tw:0.4,body:2,rasp:0.42,rc:1550,rdec:0.026,clat:0.07,jit:0.04,lump:0.06,lp:[2300,4100],tc:0.5,whine:[1150,2250],wv:0.03,vol:0.052},   /* Class 170 (28 Nov 2026): the smooth, quiet purr of a modern underfloor engine, its turbocharger's whistle over it */
   c175:{kind:'diesel',pulse:[5.8,9.1],fire:[1,0.84,0.92,0.82,0.95,0.84],thump:80,dec:0.024,tw:0.4,body:2,rasp:0.46,rc:1450,rdec:0.028,clat:0.09,jit:0.05,lump:0.08,lp:[2200,4000],tc:0.5,whine:[1000,2000],wv:0.032,vol:0.055},   /* Class 175 (28 Nov 2026): the Class 180's smooth underfloor purr, a little quicker */
   c166:{kind:'diesel',pulse:[5.9,9.2],fire:[1,0.82,0.91,0.8,0.94,0.82],thump:84,dec:0.023,tw:0.4,body:2,rasp:0.45,rc:1500,rdec:0.027,clat:0.1,jit:0.05,lump:0.09,lp:[2200,4000],tc:0.5,whine:[950,1900],wv:0.034,vol:0.055},   /* Class 166 (28 Nov 2026): a smooth, busy hum, the hydraulic gearbox's whine rising with speed */
+  sa15f:{kind:'steam',accent:[1,0.86,0.96,0.84],lilt:[1,1.02,0.98,1.01],rate:1.02,pitch:0.82,len:1.15,thump:1.25,crisp:0.34,lp:3900},   /* Class 15F (28 Nov 2026, pack Around the world II): two big cylinders, a deep, heavy beat */
+  nsw38:{kind:'steam',accent:[1,0.9,0.97,0.88],lilt:[1,1.02,0.99,1],rate:1.06,pitch:0.92,len:1.0,thump:1.0,crisp:0.38,lp:4700},   /* NSW 38 (28 Nov 2026): two cylinders, a brisk express beat */
+  wdm2:{kind:'diesel',pulse:[4.2,7],fire:[1,0.58,0.86,0.5],thump:50,dec:0.068,tw:0.6,body:1.75,rasp:0.78,rc:900,rdec:0.072,clat:0.14,jit:0.11,lump:0.25,lp:[1250,3100],whine:[1200,2300],wv:0.06,vol:0.074},   /* WDM-2 (28 Nov 2026): the Alco's lumpy, uneven chant, deeper than the RS-3's, and its turbo's whine */
+  yp:{kind:'steam',accent:[1,0.88,0.95,0.86],lilt:[1,1.03,0.98,1],rate:1.12,pitch:1.05,len:0.92,thump:0.85,crisp:0.42,lp:4900},   /* YP (28 Nov 2026): small cylinders, a light, quick bark */
+  sy:{kind:'steam',accent:[1,0.84,0.93,0.82],lilt:[1,1.04,0.97,1.01],rate:1.1,pitch:0.98,len:1.0,thump:1.0,crisp:0.4,lp:4300},   /* SY (28 Nov 2026): a sharp, busy beat */
+  jf:{kind:'steam',accent:[1,0.85,0.95,0.83],lilt:[1,1.02,0.98,1.02],rate:1.03,pitch:0.86,len:1.1,thump:1.18,crisp:0.35,lp:4000},   /* JF (28 Nov 2026): a strong, deep freight beat */
+  sa25:{kind:'steam',accent:[1,0.95,0.98,0.94],lilt:[1,1.01,1,0.99],rate:1.0,pitch:0.8,len:1.3,thump:0.8,crisp:0.18,lp:2600},   /* Class 25 condenser (28 Nov 2026): its steam goes back to the tender, not up the chimney: a soft, muffled beat under the roar of the fans */
+  vics:{kind:'steam',accent:[1,0.92,0.95,0.97,0.92,0.95],lilt:[1,1.02,0.98,1,1.02,0.98],rate:1.05,pitch:0.93,len:0.95,thump:1.02,crisp:0.38,lp:4600},   /* Victorian S (28 Nov 2026): three cylinders, six even beats a turn */
+  nzja:{kind:'steam',accent:[1,0.87,0.96,0.85],lilt:[1,1.03,0.97,1.01],rate:1.07,pitch:0.96,len:1.02,thump:1.05,crisp:0.37,lp:4400},   /* Ja (28 Nov 2026): a clean, lively two-cylinder beat */
   c800:{kind:'electric',hum:100,whine:[230,1450],lp:1900,vol:0.042},   /* Class 800 (24 Nov 2026): a quiet modern hum, its motors' whine soft and smooth */
   nohab:{kind:'diesel',pulse:[4,7],fire:[1,0.8,0.9,0.74,0.96,0.78],thump:44,dec:0.06,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.07,clat:0.1,jit:0.06,lump:0.11,lp:[1200,2900],whine:[700,1200],wv:0.02,vol:0.07},   /* Scandinavian bulldog diesel (24 Nov 2026): the American two-stroke's deep, steady drum */
   c60:{kind:'diesel',pulse:[4,6.8],fire:[1,0.72,0.88,0.64],thump:42,dec:0.065,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.075,clat:0.1,jit:0.07,lump:0.14,lp:[1200,2900],whine:[800,1300],wv:0.045,vol:0.075},   /* Class 60 (24 Nov 2026): a slow, heavy beat, lowest of the diesels */
@@ -3799,6 +3817,31 @@ const TRAIN_TYPES={
      (ends) */
   c166:{name:'Class 166 Networker Turbo',short:'Class 166',group:'Diesel',era:'1992',desc:'The Networker Turbo of 1992, built for busy outer-suburban lines: three cars with an upright lower front and a big windscreen raked steeply back to the roof, a pillar in its middle, wide double sliding doors, air-conditioning and an engine under every car, in white with blue and green lines. 90 mph out of the city and along the river valley',cost:76000,speed:4.5,steam:false,run:760,fare:8.0,goods:false,hero:true,unitPax:4,unit:'a three-car unit',
     consist:['engF','engR','coach','pcR','pcF'],liv:{body:'#f1f2ee',stripe:'#1f4ea3',stripe2:'#2e9a4a',ends:'#f2c230',roof:'#8a8e92',wheel:'#202020',coachLo:'#f1f2ee',coachHi:'#f1f2ee',coachLine:'#1f4ea3',roof2:'#8a8e92',sleek:true}},
+  /* pack Around the world II (28 Nov 2026, backlog E3 pack P11): nine engines, ENGINE_SKUS.sa15f / nsw38 / wdm2 / yp / sy /
+     jf / sa25 / vics / nzja, not Pro and not Heritage, soon until their store items exist; hero models near the camera.
+     The seven steam engines with tenders on heroUSS2 (their look in USS2): body, lining (the running board's edge, the cab),
+     band (boiler bands), valance (the running board's edge in its own colour: the Chinese engines' red), wheel (USS2 o.wr:
+     the wheels in their own colour), pilot. The two streamliners on heroStreamliner (their look in STREAMS): body, lining
+     (the stripes). The WDM-2 on heroUSHood: body, band (the cream band along the hoods and cab), lining, rail, roof.
+     Generic colours of their era: no emblem, name or number */
+  sa15f:{name:'Class 15F 4-8-2',short:'15F',group:'Steam',era:'1938',desc:'South Africa’s great mixed-traffic engine of 1938, built for the narrow Cape-gauge lines: a huge boiler set high over four pairs of 60-inch driving wheels, a four-wheeled leading truck, a trailing truck under the wide firebox, a high running board, the headlight on top of the smokebox, a roomy cab and a big tender on two six-wheeled bogies, in black with red lining and red buffer beams. Hard-working and strong, 55 mph with a long goods train',cost:78000,speed:2.75,steam:true,run:820,fare:5.8,goods:true,hero:true,
+    consist:['engF','engR','tender','van','open','van','open','tankw','van','open','van','open','van'],liv:{body:'#191919',lining:'#b3262b',beam:'#b3262b',chimney:'#151515',dome:'#191919',smokebox:'#1b1b1b',wheel:'#191919'}},
+  nsw38:{name:'NSW 38 Class 4-6-2',short:'NSW 38',group:'Steam',era:'1943',desc:'The pride of New South Wales in 1943: an express Pacific in a smooth streamlined casing with a rounded nose, a headlight on top of it and skirts along the sides, in green with yellow lines that sweep round the nose and run back along the tender. Six 69-inch driving wheels between a leading bogie and a trailing truck; 80 mph with red-brown coaches',cost:96000,speed:4.0,steam:true,run:1080,fare:8.6,goods:false,hero:true,
+    consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#1f5a3a',lining:'#e3c34c',chimney:'#151515',dome:'#1f5a3a',smokebox:'#1f5a3a',wheel:'#1f5a3a',coachLo:'#5c2b22',coachHi:'#5c2b22',roof:'#45403c',roof2:'#3a3633'}},
+  wdm2:{name:'WDM-2',short:'WDM-2',group:'Diesel',era:'1962',desc:'India’s great all-round diesel of 1962, built from an American design and then in India itself for over thirty years: a long hood with rounded top edges, the radiator shutters and a big fan at the far end, the cab near one end behind a low short hood, walkways and handrails all round and two six-wheeled bogies, in blue with a broad cream band. Thousands hauled everything; 75 mph with maroon coaches, its engine thudding with a lumpy, uneven beat',cost:70000,speed:3.75,steam:false,run:960,fare:7.4,goods:false,hero:true,
+    consist:['engF','engR','coach','coach','coach','coach','coach','coach','coach'],liv:{body:'#2b4f8a',band:'#e8dfc4',lining:'#e8dfc4',rail:'#e9e6dc',roof:'#666a6e',roof2:'#575b5f',wheel:'#1e1e1e',coachLo:'#6b2a22',coachHi:'#6b2a22'}},
+  yp:{name:'YP 4-6-2',short:'YP',group:'Steam',era:'1949',desc:'The little express engine of India’s metre-gauge lines, 1949: a light Pacific for narrow track, its boiler set high over six 54-inch driving wheels, a leading bogie, a trailing truck under the wide firebox, a cowcatcher, the headlight on top of the smokebox and a neat tender, in deep green-black with polished brass bands and lines. Nearly nine hundred were built; 45 mph with red-brown coaches',cost:58000,speed:2.25,steam:true,run:700,fare:5.6,goods:false,hero:true,
+    consist:['engF','engR','tender','coach','coach','coach','coach','coach'],liv:{body:'#1e3327',lining:'#cfa53e',band:'#cfa53e',chimney:'#151515',dome:'#1e3327',smokebox:'#1b1b1b',wheel:'#1e3327',pilot:'#151515',coachLo:'#6b2a22',coachHi:'#6b2a22',roof:'#45403c',roof2:'#3a3633'}},
+  sy:{name:'SY 2-8-2',short:'SY',group:'Steam',era:'1960',desc:'China’s little Mikado of 1960, built for steelworks, mines and branch lines and the last steam engine made in China: a pony truck, four pairs of red 54-inch driving wheels, a trailing truck under the wide firebox, the big headlight on top of the smokebox, no smoke deflectors and a tender on two bogies, in black with red edges along the running board. Plain and tough, 45 mph with a short goods train',cost:56000,speed:2.25,steam:true,run:680,fare:5.2,goods:true,hero:true,
+    consist:['engF','engR','tender','open','open','van','open','tankw','open','van','open'],liv:{body:'#1a1a1a',valance:'#b3262b',chimney:'#1a1a1a',dome:'#1a1a1a',smokebox:'#161616',wheel:'#b3262b'}},
+  jf:{name:'JF 2-8-2',short:'JF',group:'Steam',era:'1934',desc:'The workhorse Mikado of China’s goods lines, first built in the 1930s and then in great numbers: a big boiler, big smoke deflectors, four pairs of red driving wheels between a pony truck and a trailing truck, the headlight on top of the smokebox, red edges along the high running board, red buffer beams and a big tender on two bogies, in black. Steady and strong, 50 mph with a long goods train',cost:64000,speed:2.5,steam:true,run:740,fare:5.5,goods:true,hero:true,
+    consist:['engF','engR','tender','van','open','open','van','tankw','open','van','open','open','van'],liv:{body:'#1a1a1a',valance:'#b3262b',beam:'#b3262b',chimney:'#1a1a1a',dome:'#1a1a1a',smokebox:'#161616',wheel:'#b3262b'}},
+  sa25:{name:'Class 25 Condenser 4-8-4',short:'Class 25',group:'Steam',era:'1953',desc:'South Africa’s answer to the dry Karoo, 1953: a big 4-8-4 with a huge tender that cooled its used steam back into water, so it could run hundreds of miles without stopping to drink. Big fans roar on the tender roof and radiators fill its sides; on the engine a huge boiler over eight 60-inch driving wheels, a four-wheeled truck at each end and a big pipe carrying the steam back. In black, 60 mph with a long goods train',cost:92000,speed:3.0,steam:true,run:900,fare:6.2,goods:true,hero:true,
+    consist:['engF','engR','tender','van','open','tankw','van','open','van','tankw','open','van','open'],liv:{body:'#181818',chimney:'#151515',dome:'#181818',smokebox:'#1b1b1b',wheel:'#181818',grille:'#9aa0a5'}},
+  vics:{name:'Victorian S Class 4-6-2',short:'S Class',group:'Steam',era:'1928',desc:'Victoria’s big three-cylinder express engine of 1928, dressed in 1937 in a smooth streamlined casing with a rounded, sloping nose and skirts along the sides for the state’s fastest express, in deep blue with gold lines that run the length of the engine and tender. Six 73-inch driving wheels between a leading bogie and a trailing truck; smooth and quick, 75 mph with blue coaches',cost:98000,speed:3.75,steam:true,run:1060,fare:8.4,goods:false,hero:true,
+    consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach','coach'],liv:{body:'#1b2f6b',lining:'#d6b04a',chimney:'#151515',dome:'#1b2f6b',smokebox:'#1b2f6b',wheel:'#1b2f6b',coachLo:'#1f3570',coachHi:'#1f3570',roof:'#4a4f57',roof2:'#3b3f46'}},
+  nzja:{name:'Ja 4-8-2',short:'Ja',group:'Steam',era:'1946',desc:'New Zealand’s handsome mixed-traffic engine of 1946, built in Dunedin for the narrow Cape-gauge lines: four pairs of 54-inch driving wheels between a four-wheeled leading truck and a trailing truck, a boiler set high with the headlight on top of the smokebox, a cowcatcher, a roomy cab and a tender on two bogies, in deep green with yellow lines. 50 mph with a train of red coaches',cost:66000,speed:2.5,steam:true,run:760,fare:6.0,goods:false,hero:true,
+    consist:['engF','engR','tender','coach','coach','coach','coach','coach','coach'],liv:{body:'#235236',lining:'#d9b84a',chimney:'#151515',dome:'#235236',smokebox:'#1b1b1b',wheel:'#235236',pilot:'#151515',coachLo:'#7a2622',coachHi:'#7a2622',roof:'#45403c',roof2:'#3a3633'}},
   /* the Class 800 (ENGINE_SKUS.c800): a driving car in two carriage places on two four-wheeled bogies, three smooth
      trailers (sleek, in its own colours) and a matching driving car at the far end, facing back (pcR its inner half, pcF
      its nose: cabs, not paying coaches); dark green (body) with a gold line (stripe) and a fine white one (band), a
@@ -7086,14 +7129,36 @@ const USS2={
      feedwater heater across its top, the headlight and bell in the middle, a big tender on six-wheeled trucks */
   rdg484:{YB:0.52,R0:0.162,R1:0.15,X0:-0.4,X1:0.56,XS:0.8,RBY:0.36,CF:-0.62,CB:-0.88,EAVE:0.755,fire:'wootten',FX0:-0.62,FW:0.215,cg:0.09,cr:0.062,
     hl:'front',bell:'front',pilot:'steps',pumps:'front',fwh:0.72,sandX:0.28,sandL:0.24,domeX:-0.14,stackX:0.6,bands:[0.4,0.1,-0.3],seg:14,spokes:11,sseg:7,sspokes:4,tender:{H:0.58,six:true,light:true}},
+  /* pack Around the world II (28 Nov 2026): seven more, none with a bell; the headlight on top of the smokebox.
+     Class 15F 4-8-2 (1938, Cape gauge): a huge boiler set high over small wheels, a high running board, a wide firebox, a
+     steel pilot, a big tender on six-wheeled bogies */
+  sa15f:{cov:'#2c2f32',YB:0.535,R0:0.17,R1:0.16,X0:-0.4,X1:0.55,XS:0.8,RBY:0.36,CF:-0.6,CB:-0.88,EAVE:0.785,fire:'wide',FX0:-0.6,FW:0.2,
+    hl:'top',bell:'none',pilot:'steps',pumps:'side',sandX:0.24,sandL:0.16,domeX:-0.12,stackX:0.585,stackH:0.03,bands:[0.42,0.12,-0.2],seg:14,spokes:12,sseg:7,sspokes:4,tender:{H:0.6,six:true}},
+  /* YP 4-6-2 (1949, metre gauge): a light boiler pitched high, a cowcatcher, silver bands, a neat tender */
+  yp:{cov:'#2c2f32',YB:0.49,R0:0.138,R1:0.13,X0:-0.33,X1:0.54,XS:0.79,RBY:0.33,CF:-0.55,CB:-0.82,EAVE:0.745,fire:'wide',FX0:-0.55,FW:0.17,
+    hl:'top',bell:'none',pilot:'slats',pumps:'side',sandX:0.22,sandL:0.1,domeX:-0.02,stackX:0.585,stackH:0.05,bands:[0.38,0.12,-0.14],spokes:14,tender:{H:0.53}},
+  /* SY 2-8-2 (1960): a small Mikado, no deflectors, red wheels and red running-board edges, a tender on two bogies */
+  sy:{cov:'#2c2f32',YB:0.49,R0:0.15,R1:0.142,X0:-0.36,X1:0.55,XS:0.79,RBY:0.33,CF:-0.56,CB:-0.84,EAVE:0.75,fire:'wide',FX0:-0.56,FW:0.18,
+    hl:'top',bell:'none',pilot:'steps',pumps:'side',sandX:0.24,sandL:0.12,domeX:-0.06,stackX:0.585,stackH:0.04,bands:[0.4,0.12,-0.2],spokes:12,wr:true,tender:{H:0.54}},
+  /* JF 2-8-2 (1930s): bigger, with big smoke deflectors, red wheels and edges, a bigger tender */
+  jf:{cov:'#2c2f32',YB:0.505,R0:0.158,R1:0.148,X0:-0.4,X1:0.55,XS:0.8,RBY:0.345,CF:-0.6,CB:-0.87,EAVE:0.765,fire:'wide',FX0:-0.6,FW:0.19,
+    hl:'top',bell:'none',pilot:'steps',pumps:'side',defl:true,sandX:0.26,sandL:0.14,domeX:-0.1,stackX:0.585,stackH:0.035,bands:[0.42,0.12,-0.22],seg:14,spokes:12,wr:true,tender:{H:0.57}},
+  /* Class 25 condensing 4-8-4 (1953): a huge boiler, a short stack, the exhaust pipe back to the condensing tender */
+  sa25:{cov:'#2c2f32',YB:0.535,R0:0.172,R1:0.162,X0:-0.42,X1:0.56,XS:0.8,RBY:0.365,CF:-0.62,CB:-0.88,EAVE:0.785,fire:'wide',FX0:-0.62,FW:0.21,cg:0.06,cr:0.06,
+    hl:'top',bell:'none',pilot:'steps',pumps:'side',cpipe:true,sandX:0.26,sandL:0.2,domeX:-0.14,stackX:0.585,stackH:0.02,bands:[0.4,0.1,-0.25],seg:14,spokes:11,sseg:7,sspokes:4,tender:{H:0.62,six:true,cond:true}},
+  /* Ja 4-8-2 (1946, Cape gauge): a boiler set high, a cowcatcher, green lined yellow, a tender on two bogies */
+  nzja:{cov:'#2c2f32',YB:0.5,R0:0.15,R1:0.142,X0:-0.36,X1:0.55,XS:0.79,RBY:0.34,CF:-0.55,CB:-0.83,EAVE:0.76,fire:'wide',FX0:-0.55,FW:0.18,
+    hl:'top',bell:'none',pilot:'slats',pumps:'side',sandX:0.24,sandL:0.12,domeX:-0.06,stackX:0.585,stackH:0.04,bands:[0.4,0.12,-0.2],spokes:12,tender:{H:0.55}},
 };
 /* the six from above (28 Nov 2026): running board, pilot, cylinders and rods, the boiler with its bands, domes and stack,
    the smokebox with its headlight (and pumps), the firebox, the cab roof (mid-boiler on the Camelback, with the fireman's
    hood at the back); the tender with its coal, tank top and water hatch */
-function heritUSS2(id,part,box,dt,poly,L){ const o=USS2[id], b=L.body, hi='rgba(255,255,255,0.14)', lo='rgba(0,0,0,0.3)', dark='#1b1b1b', TR=L.lining||null, DM=o.brass?'#cfa53e':b;
+function heritUSS2(id,part,box,dt,poly,L){ const o=USS2[id], b=L.body, hi='rgba(255,255,255,0.14)', lo='rgba(0,0,0,0.3)', dark='#1b1b1b', TR=L.lining||L.valance||null, DM=o.brass?'#cfa53e':b;   /* (valance: the Chinese engines' red edges, 28 Nov 2026) */
   const R=x=>o.R0+(o.R1-o.R0)*(x-o.X0)/(o.X1-o.X0);
   if(part==='tender'){ box(b,-0.385,0.36,-0.215,0.215,0.03); if(TR){ box(TR,-0.385,0.36,-0.215,-0.207); box(TR,-0.385,0.36,0.207,0.215); } box(hi,-0.385,0.36,-0.17,-0.12);
     box('#121212',0.07,0.34,-0.18,0.18,0.03); for(let q=0;q<7;q++) dt(q%2?'#2b2b2b':'#222',0.1+((q*37)%20)/100,(((q*53)%100)/100-0.5)*0.28,0.032);   /* the coal */
+    if(o.tender.cond){ box(b,-0.37,0.08,-0.2,0.2,0.02); box('rgba(255,255,255,0.08)',-0.37,0.08,-0.2,-0.15); for(const x of [-0.33,-0.235,-0.14,-0.045,0.05]){ dt('#0f0f0f',x,0,0.046); dt('#2a2c2e',x,0,0.038); box('#6d7276',x-0.035,x+0.035,-0.003,0.003); }
+      for(const s of [-1,1]) box(L.grille||'#6d7276',-0.355,0.06,s>0?0.207:-0.215,s>0?0.215:-0.207); return; }   /* the condensing tender: its fans, the radiator grilles at the edges */
     box('rgba(255,255,255,0.07)',-0.36,0.05,-0.18,0.18,0.02); dt('#2c2c2c',-0.22,0,0.04); dt('#555',-0.22,0,0.02); if(o.tender.light) dt('#fff2b8',-0.36,0,0.02); return; }
   const XS=o.XS, XP=XS+0.03, rb0=o.camel?-0.36:o.CB+0.02;
   for(const s of [-1,1]){ box(b,XS-0.3,XS-0.12,s>0?0.2:-0.24,s>0?0.24:-0.2,0.01); box('#b9bcbf',-0.45,0.4,s>0?0.222:-0.232,s>0?0.232:-0.222); }   /* cylinders, rods */
@@ -7106,7 +7171,10 @@ function heritUSS2(id,part,box,dt,poly,L){ const o=USS2[id], b=L.body, hi='rgba(
   box(L.smokebox||'#3f4448',o.X1,XS+0.01,-o.R1-0.01,o.R1+0.01,0.03); box('rgba(255,255,255,0.06)',o.X1,XS,-0.07,-0.02);   /* smokebox */
   if(o.diamond){ dt('#0c0c0c',o.stackX,0,0.085); dt('#1e1e1e',o.stackX,0,0.06); dt('#080808',o.stackX,0,0.04); } else { dt('#0c0c0c',o.stackX,0,0.05); dt('#1e1e1e',o.stackX,0,0.038); }   /* stack */
   if(o.fwh) box(b,o.fwh-0.03,o.fwh+0.03,-0.085,0.085);   /* feedwater heater */
+  if(o.defl) for(const s of [-1,1]) box(b,o.X1-0.01,XS+0.005,s>0?0.205:-0.217,s>0?0.217:-0.205);   /* smoke deflectors */
+  if(o.cpipe) box('#101010',o.CB+0.03,o.X1+0.03,-o.R1-0.067,-o.R1-0.003);   /* the exhaust pipe back to the tender */
   if(o.hl==='front'){ box('#141414',XS+0.01,XS+0.06,-0.05,0.05); box('#fff2b8',XS+0.055,XS+0.062,-0.04,0.04); }
+  else if(o.hl==='top'){ dt('#141414',XS-0.04,0,0.05); dt('#fff2b8',XS-0.005,0,0.022); }
   else { box('#141414',XS-0.08,XS,-0.038,0.038,0.01); box('#fff2b8',XS,XS+0.006,-0.028,0.028); }   /* headlight */
   if(o.bell==='top') dt('#cfa53e',o.bellX,0,0.028);
   if(o.pumps==='front') for(const s of [-1,1]) dt('#3a3f3c',XS+0.02,s*(o.R1+0.035),0.03); else for(const x of [o.X1+0.13,o.X1+0.04]) dt('#3a3f3c',x,-0.19,0.026);   /* air pumps */
@@ -7186,6 +7254,30 @@ function heritDRS(id,part,box,dt,poly,L){ const o=DRS[id], b=L.body, RED=L.frame
   box(BM,XB-0.015,XB+0.015,-0.21,0.21); for(const z of [-0.13,0.13]) dt('#2a2a2a',XB+0.05,z,0.033); for(const z of [-0.15,0.15]) dt('#ece6d6',XB-0.015,z,0.016);   /* buffer beam, buffers, lamps */
 }
 for(const id of Object.keys(DRS)) HERIT_2D[id]=(part,box,dt,poly,L)=>heritDRS(id,part,box,dt,poly,L);
+/* The two streamliners of Around the world II (28 Nov 2026), built on the Duchess Streamliner's model (heroStreamliner with
+   these looks; see it for what each number means): the NSW 38 (1943) with a rounder, higher nose, two yellow stripes and the
+   headlight on top of the nose; the Victorian S (1937) with a long, sloping nose that falls away early to a low tip and
+   three gold lines */
+const STREAMS={
+  nsw38:{YT:0.65,NX:0.32,TX:0.9,TY:0.37,ge:0.6,gw:0.7,STR:[0.355,0.388],SW:0.011,hl:true},
+  vics:{YT:0.645,NX:0.24,TX:0.91,TY:0.3,ge:1.7,gw:0.95,STR:[0.345,0.372,0.399],SW:0.008},
+};
+/* from above: the Duchess Streamliner's picture with their own nose, stripes and headlight */
+function heritStream(id,part,box,dt,poly,L){ const o=STREAMS[id], b=L.body, sv=L.lining, hi='rgba(255,255,255,0.17)', lo='rgba(0,0,0,0.24)';
+  if(part==='tender'){ box(b,-0.385,0.36,-0.215,0.215,0.05); box(lo,-0.385,0.36,0.13,0.215,0.04); box(hi,-0.385,0.36,-0.17,-0.12); for(const s of [-1,1]) box(sv,-0.385,0.36,s>0?0.207:-0.215,s>0?0.215:-0.207);
+    box('#151515',-0.17,0.33,-0.145,0.145,0.04); for(let q=0;q<8;q++) dt(q%2?'#2b2b2b':'#232323',-0.13+((q*37)%46)/100,(((q*53)%100)/100-0.5)*0.24,0.034);
+    box('rgba(255,255,255,0.1)',-0.37,-0.2,-0.14,0.14,0.02); dt('#2c2c2c',-0.3,0,0.035); return; }
+  const nx=o.NX, tx=o.TX, nz=t=>0.215*Math.pow(Math.max(0,1-t*t),0.4*o.gw/0.8), N=[]; for(let i=0;i<=10;i++){ const t=Math.sin(Math.PI/2*i/10); N.push([nx+(tx-nx)*t,nz(t)]); }
+  dt('#1e1e1e',0.885,-0.13,0.03); dt('#1e1e1e',0.885,0.13,0.03);                    /* buffers through the nose */
+  poly(b,[[-0.83,-0.215],...N.map(([x,z])=>[x,-z]),...N.slice().reverse().map(([x,z])=>[x,z]),[-0.83,0.215]]);
+  poly(lo,[[-0.83,0.13],...N.map(([x,z])=>[x,z*0.6]).slice(0,9),...N.slice(0,9).reverse().map(([x,z])=>[x,z]),[-0.83,0.215]]);
+  poly(hi,[[-0.83,-0.12],...N.map(([x,z])=>[x,-z*0.55]).slice(0,10),[tx-0.035,-0.02],[-0.83,-0.03]]);
+  o.STR.forEach((y,i)=>{ const f=1-i*0.16; for(const s of [-1,1]) poly(sv,[[0.6,s*0.215*f],[tx-0.005,s*0.004],[tx-0.005,0],[0.6,s*(0.215*f-0.008)]]); });   /* the stripes meeting at the nose */
+  for(const s of [-1,1]) box(sv,-0.83,0.6,s>0?0.207:-0.215,s>0?0.215:-0.207);   /* and along the sides */
+  box('#0c0c0c',0.63,0.69,-0.022,0.022,0.02); box(lo,-0.33,-0.27,-0.025,0.025,0.01);  /* chimney, safety valve cover */
+  if(o.hl){ box('#141414',0.73,0.8,-0.024,0.024); dt('#fff2b8',0.8,0,0.018); }       /* the headlight on the nose */
+  box('rgba(20,30,40,0.55)',-0.53,-0.47,-0.16,-0.1); box('rgba(20,30,40,0.55)',-0.53,-0.47,0.1,0.16); }   /* cab front windows */
+for(const id of Object.keys(STREAMS)) HERIT_2D[id]=(part,box,dt,poly,L)=>heritStream(id,part,box,dt,poly,L);
 /* Little engines II from above (28 Nov 2026, pack Little engines II), in their hero models' measurements. The Standard
    2MT tank: the running board, cylinders and rods, the side tanks (lined), the boiler, smokebox and chimney, dome, the cab
    roof, the bunker narrowing at the top with its coal, buffer beams with buffers and lamps */
@@ -7295,21 +7387,21 @@ function usCab2D(k,part,box,dt,poly,L){ if(part==='tender') return; const b=L.bo
 for(const id of ['emdft','e8','alcopa','sharknose']) HERIT_2D[id]=(part,box,dt,poly,L)=>usCab2D(id,part,box,dt,poly,L);
 /* the road switchers from above: the deck with its frame line and handrails, the long hood with its fans and stacks (the
    GP9's blister), the cab and its roof, the short hood, headlights, steps and couplers at both ends */
-function usHood2D(k,part,box,dt,poly,L){ if(part==='tender') return; const b=L.body, LN=L.lining||'#e8e4d6', RL=L.rail||'#d9b23a', R=L.roof||L.body, hi='rgba(255,255,255,0.16)', lo='rgba(0,0,0,0.26)', alco=k==='rs3';
-  const LH=alco?[-0.735,0.27]:[-0.735,0.235], CB=alco?[0.27,0.47]:[0.235,0.45], SH=alco?[0.47,0.725]:[0.45,0.735];
+function usHood2D(k,part,box,dt,poly,L){ if(part==='tender') return; const b=L.body, LN=L.lining||'#e8e4d6', RL=L.rail||'#d9b23a', R=L.roof||L.body, hi='rgba(255,255,255,0.16)', lo='rgba(0,0,0,0.26)', wd=k==='wdm2', alco=k==='rs3'||wd;   /* (wd: the WDM-2, an Alco in India, 28 Nov 2026) */
+  const LH=wd?[-0.735,0.33]:alco?[-0.735,0.27]:[-0.735,0.235], CB=wd?[0.33,0.53]:alco?[0.27,0.47]:[0.235,0.45], SH=wd?[0.53,0.735]:alco?[0.47,0.725]:[0.45,0.735];
   box('#2b2b2b',-0.775,0.775,-0.21,0.21,0.01); for(const s of [-1,1]){ box(LN,-0.775,0.775,s>0?0.203:-0.21,s>0?0.21:-0.203); box(RL,LH[0],SH[1],s>0?0.194:-0.2,s>0?0.2:-0.194); }
   for(const m of [-1,1]){ box(RL,m>0?0.762:-0.768,m>0?0.768:-0.762,-0.2,0.2); for(const s of [-1,1]) box('#3a3a3a',m>0?0.72:-0.775,m>0?0.775:-0.72,s>0?0.13:-0.2,s>0?0.2:-0.13); box('#2a2a2a',m>0?0.775:-0.84,m>0?0.84:-0.775,-0.04,0.04); }
-  for(const [x0,x1,w] of [[LH[0],LH[1],0.142],[SH[0],SH[1],0.128]]){ box(b,x0,x1,-w,w,alco?0.06:0.02); box(hi,x0+0.01,x1-0.01,-w*0.6,-w*0.2); box(lo,x0+0.01,x1-0.01,w*0.55,w); }
+  for(const [x0,x1,w] of [[LH[0],LH[1],0.142],[SH[0],SH[1],0.128]]){ box(b,x0,x1,-w,w,alco?0.06:0.02); box(hi,x0+0.01,x1-0.01,-w*0.6,-w*0.2); box(lo,x0+0.01,x1-0.01,w*0.55,w); if(wd) for(const s of [-1,1]) box(L.band,x0,x1,s>0?w-0.007:-w,s>0?w:-w+0.007); }   /* (the WDM-2's cream band just showing at the hoods' edges) */
   const fan=(x,r)=>{ dt('#141414',x,0,r+0.007); dt('#26282a',x,0,r); box('#b9bdc1',x-r*0.9,x+r*0.9,-0.003,0.003); box('#b9bdc1',x-0.003,x+0.003,-r*0.9,r*0.9); };
   if(alco) fan(LH[0]+0.11,0.06); else { fan(LH[0]+0.07,0.05); fan(LH[0]+0.19,0.05); }
   if(k==='gp9'){ box(b,-0.52,-0.32,-0.11,0.11,0.01); fan(-0.42,0.045); }
   for(const x of alco?[-0.3]:[-0.12,-0.2]) dt('#101010',x,0,alco?0.028:0.018);
   for(let i=0;i<5;i++) box('rgba(0,0,0,0.22)',LH[0]+0.3+i*0.12,LH[0]+0.36+i*0.12,-0.1,0.1);
   box(b,CB[0],CB[1],-0.2,0.2,0.01); box(R,CB[0]-0.015,CB[1]+0.015,-0.21,0.21,0.02); box('rgba(255,255,255,0.16)',CB[0],CB[1],-0.12,-0.04);
-  dt('#3a3a3a',(CB[0]+CB[1])/2+0.05,0,0.016); dt('#b89a3a',SH[1]-0.04,0.06,0.016);
+  dt('#3a3a3a',(CB[0]+CB[1])/2+0.05,0,0.016); if(!wd) dt('#b89a3a',SH[1]-0.04,0.06,0.016);   /* horn, bell (none on the WDM-2) */
   for(const [x,d] of [[SH[1],1],[LH[0],-1]]) dt('#fff3c4',x-d*0.012,0,0.022);
 }
-for(const id of ['gp7','gp9','rs3']) HERIT_2D[id]=(part,box,dt,poly,L)=>usHood2D(id,part,box,dt,poly,L);
+for(const id of ['gp7','gp9','rs3','wdm2']) HERIT_2D[id]=(part,box,dt,poly,L)=>usHood2D(id,part,box,dt,poly,L);
 /* pack Branch-line units from above (28 Nov 2026): the roof with its ventilators (or air-conditioning pods) and the
    exhaust, the line along the sides, the front: the windscreen showing over the yellow (the gangway door of the Classes
    150 and 156, the Class 170's curved nose), the coupler; the Class 121 with a cab at both ends (the roof dome, the small
@@ -9904,6 +9996,15 @@ ENGINE_SKUS.c156={sku:'trainmasters.engine.c156',added:'2026-11-28'};   /* on sa
 ENGINE_SKUS.c170={sku:'trainmasters.engine.c170',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 170 (28 Nov 2026, pack Branch-line units): soon until its store items exist */
 ENGINE_SKUS.c175={sku:'trainmasters.engine.c175',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 175 (28 Nov 2026, pack Branch-line units): soon until its store items exist */
 ENGINE_SKUS.c166={sku:'trainmasters.engine.c166',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 166 (28 Nov 2026, pack Branch-line units): soon until its store items exist */
+ENGINE_SKUS.sa15f={sku:'trainmasters.engine.sa15f',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 15F 4-8-2 (28 Nov 2026, pack Around the world II): soon until its store items exist */
+ENGINE_SKUS.nsw38={sku:'trainmasters.engine.nsw38',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* NSW 38 Class 4-6-2 (28 Nov 2026, pack Around the world II): soon until its store items exist */
+ENGINE_SKUS.wdm2={sku:'trainmasters.engine.wdm2',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* WDM-2 (28 Nov 2026, pack Around the world II): soon until its store items exist */
+ENGINE_SKUS.yp={sku:'trainmasters.engine.yp',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* YP 4-6-2 (28 Nov 2026, pack Around the world II): soon until its store items exist */
+ENGINE_SKUS.sy={sku:'trainmasters.engine.sy',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* SY 2-8-2 (28 Nov 2026, pack Around the world II): soon until its store items exist */
+ENGINE_SKUS.jf={sku:'trainmasters.engine.jf',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* JF 2-8-2 (28 Nov 2026, pack Around the world II): soon until its store items exist */
+ENGINE_SKUS.sa25={sku:'trainmasters.engine.sa25',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 25 Condenser 4-8-4 (28 Nov 2026, pack Around the world II): soon until its store items exist */
+ENGINE_SKUS.vics={sku:'trainmasters.engine.vics',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Victorian S Class 4-6-2 (28 Nov 2026, pack Around the world II): soon until its store items exist */
+ENGINE_SKUS.nzja={sku:'trainmasters.engine.nzja',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Ja 4-8-2 (28 Nov 2026, pack Around the world II): soon until its store items exist */
 ENGINE_SKUS.c800={sku:'trainmasters.engine.c800'};   /* Class 800 (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.saint={sku:'trainmasters.engine.saint'};   /* GWR Saint (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.k4={sku:'trainmasters.engine.k4'};   /* American K4 Pacific (24 Nov 2026): soon until its store item exists */
@@ -9996,6 +10097,10 @@ const ENGINE_PACKS=[
      together; soon (hidden everywhere) until its store items and its engines' exist */
   {id:'branchunits', name:'Branch-line units',               blurb:'Six British diesel units for the local lines, from the little green bubble car of 1960 to the Turbostar',
     types:['c121','c150','c156','c170','c175','c166'], added:'2026-11-28'},
+  /* Around the world II (backlog E3 pack P11, 28 Nov 2026): nine engines from South Africa, Australia, India, China and
+     New Zealand, built whole and released together; soon (hidden everywhere) until its store items and its engines' exist */
+  {id:'world2',    name:'Around the world II',             blurb:'Nine engines from South Africa, Australia, India, China and New Zealand, from the streamlined Pacifics of Sydney and Melbourne to the Karoo’s great condenser',
+    types:['sa15f','nsw38','wdm2','yp','sy','jf','sa25','vics','nzja'], added:'2026-11-28'},
 ];
 function packSku(p){ return 'trainmasters.pack.'+p.id; }
 function packById(id){ return ENGINE_PACKS.find(p=>p.id===id)||null; }
@@ -13048,6 +13153,16 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     return null;
   }
   const TINT_GREY=new THREE.Color(0.5,0.5,0.5);
+  /* the two streamliners of Around the world II far away (28 Nov 2026): the Duchess Streamliner's far model with their own
+     stripes (STREAMS), wheels and, on the NSW 38, the headlight on the nose */
+  function heroFarStream(K,part,id){ const {bx,cx,tp,wh,C,body,L}=K, o=STREAMS[id], sp=HERO_SPEC[id], DK=C('#222'), sil=C(L.lining), WIN=C('#26303a'), ROD=C('#9a9a9a');
+    if(part==='tender'){ bx(-0.385,0.36,0.4,0,0.32,0.43,body); for(const y of o.STR) bx(-0.38,0.355,y+o.SW/2,0,o.SW,0.436,sil);
+      bx(-0.3,0.33,0.565,0,0.02,0.3,C('#1d1d1d')); bx(-0.38,0.36,0.19,0,0.05,0.42,DK); wh(sp.small.filter(w=>w[2]==='t').map(w=>w[0]),0.088,C(L.wheel)); return; }
+    bx(-0.83,0.3,0.43,0,0.21,0.43,body); bx(-0.83,0.3,0.585,0,0.1,0.33,body); tp(0.3,0.9,0.2,0.43,0.44,0.05,0.08,0.11,body);
+    for(const y of o.STR) bx(-0.83,0.3,y+o.SW/2,0,o.SW,0.436,sil);
+    if(o.hl) cx(0.73,0.8,0.6,0,0.024,C('#fff2b8'),6);
+    bx(-0.8,0.8,0.2,0,0.08,0.3,DK); for(const s of [-1,1]){ bx(-0.775,-0.565,0.475,s*0.216,0.08,0.004,WIN); bx(-0.42,0.31,0.16,s*0.222,0.02,0.012,ROD); cx(0.38,0.45,0.19,s*0.24,0.05,body,8); }
+    wh(sp.dx,sp.rD,C(L.wheel)); wh([0.66,0.5],0.062,DK); wh([-0.62],0.078,DK); }
   /* Heritage step 2 engines far away: simple models built like the other engines (a few dozen boxes and cylinders, batched).
      A two-place engine is built whole in engine measurements and each carriage place keeps its own half: boxes and
      cylinders along the engine are cut at its centre, wheels and upright parts go to the half they stand in. */
@@ -13059,6 +13174,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       for(const y of [0.345,0.373,0.401,0.429]) bx(-0.83,0.3,y,0,0.009,0.436,sil);
       bx(-0.8,0.8,0.2,0,0.08,0.3,DK); for(const s of [-1,1]){ bx(-0.775,-0.565,0.475,s*0.216,0.08,0.004,WIN); bx(-0.42,0.31,0.16,s*0.222,0.02,0.012,ROD); cx(0.38,0.45,0.19,s*0.24,0.05,body,8); }
       wh([0.27,-0.05,-0.37],0.15,C(L.wheel)); wh([0.66,0.5],0.062,DK); wh([-0.62],0.078,DK); },
+    nsw38:(K,part)=>heroFarStream(K,part,'nsw38'), vics:(K,part)=>heroFarStream(K,part,'vics'),
     mn:(K,part)=>{ const {bx,cx,wh,C,body,L}=K, DK=C('#222'), ln=C(L.lining), WIN=C('#26303a'), ROD=C('#9a9a9a'), RED=C('#b3262b');
       if(part==='tender'){ bx(-0.385,0.36,0.415,0,0.38,0.43,body); for(const y of [0.325,0.445,0.551]) bx(-0.38,0.355,y,0,0.008,0.436,ln);
         bx(-0.3,0.33,0.6,0,0.02,0.3,C('#1d1d1d')); bx(-0.38,0.36,0.19,0,0.05,0.42,DK); wh([-0.26,0,0.26],0.082,DK); return; }
@@ -13646,11 +13762,14 @@ void main(){ gl_FragColor=texture2D(map,vUv);
   function heroFarUSS2(K,part,id){ const {bx,cx,up,wh,C,body,L}=K, o=USS2[id], sp=HERO_SPEC[id], DK=C('#222'), SMK=C(L.smokebox||'#3f4448'), WIN=C('#26303a'), ROD=C('#9a9a9a'), LENS=C('#fff2b8'), COAL=C('#181818');
     const CAB=o.wood?C(L.cab||'#6e3a20'):body, ROOF=o.wood?CAB.clone().multiplyScalar(0.62):C('#101010'), DOME=o.brass?C('#cfa53e'):body, PIL=C(L.pilot||'#151515');
     if(part==='tender'){ const H=o.tender.H; bx(-0.375,0.355,(0.19+H)/2,0,H-0.19,0.43,body); bx(-0.375,0.355,H+0.012,0,0.025,0.45,body); bx(0.06,0.34,H+0.04,0,0.05,0.36,COAL);
+      if(o.tender.cond){ const GR=C(L.grille||'#6d7276'); for(const s of [-1,1]) bx(-0.355,0.06,(0.24+H-0.03)/2,s*0.216,H-0.27,0.004,GR); bx(-0.375,0.09,H+0.045,0,0.03,0.3,body); }   /* (the fans' casing as one box far away) */
       bx(-0.38,0.36,0.175,0,0.05,0.42,DK); const tw=sp.small.filter(w=>w[2]==='t'); wh(tw.filter((w,i)=>!(tw.length===6&&i%3===1)).map(w=>w[0]),tw[0][1],DK); return; }   /* (six-wheeled trucks: their outer wheels only, far away) */
     const {YB,R0,R1,X0,X1,XS,RBY,CF,CB,EAVE}=o, XP=XS+0.03, Xc=sp.dx[sp.main]+sp.lcr, c0=Xc+(o.cg||0.2), rb0=o.camel?-0.36:CB+0.02;
     bx(rb0,XS,RBY,0,0.016,0.44,DK); bx(XP,XP+0.1,0.11,0,0.15,0.38,o.pilot==='slats'?PIL:DK); bx(-0.8,0.8,0.21,0,0.1,0.3,DK);
     cx(X0,X1,YB,0,(R0+R1)/2,body,10); cx(X1,XS,YB,0,R1+0.01,SMK,10);
-    if(o.hl==='front') cx(XS,XS+0.05,YB+0.06,0,0.05,LENS,6); else bx(XS-0.08,XS,YB+R1+0.06,0,0.075,0.075,DK);
+    if(o.hl==='front') cx(XS,XS+0.05,YB+0.06,0,0.05,LENS,6); else if(o.hl==='top') cx(XS-0.09,XS,YB+R1+0.055,0,0.056,DK,6); else bx(XS-0.08,XS,YB+R1+0.06,0,0.075,0.075,DK);
+    if(o.defl) for(const s of [-1,1]) bx(X1-0.01,XS+0.005,(RBY+YB+R1)/2,s*0.212,YB+R1-RBY-0.01,0.006,body);
+    if(o.cpipe) cx(CF,X1+0.02,YB-0.06,-(R1+0.035),0.032,C('#141414'),6);
     up(o.stackX,YB+R1+(o.diamond?0.08:0.03),0,o.diamond?0.06:0.046,o.diamond?0.16:(o.stackH||0.04)+0.03,C('#151515'));
     bx(o.sandX-0.07,o.sandX+0.07,YB+Rb2(o,o.sandX)+0.03,0,0.05,0.08,DOME); up(o.domeX,YB+Rb2(o,o.domeX)+0.02,0,0.055,0.05,DOME);
     const FW=o.fire==='narrow'?0.135:(o.FW||0.19); bx(o.FX0,X0,(RBY+YB+R0)/2,0,YB+R0-RBY,FW*2,body);
@@ -13659,7 +13778,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     for(const s of [-1,1]){ bx(CB+0.03,CF-0.03,EAVE-0.1,s*0.223,0.14,0.004,WIN); bx(sp.dx[sp.dx.length-1]-0.03,sp.dx[0]+0.03,sp.rD+0.01,s*0.224,0.018,0.012,ROD); cx(c0,c0+0.18,sp.yc,s*0.245,o.cr||0.058,body,6); }
     wh(sp.dx,sp.rD,C(L.wheel||L.body)); const sm=sp.small.filter(w=>w[2]==='e'); for(const [x,r] of sm) wh([x],r,DK); }
   const Rb2=(o,x)=>o.R0+(o.R1-o.R0)*(x-o.X0)/(o.X1-o.X0);
-  for(const id of ['mikado','consol','tenwheel','camel','mogul','rdg484']) HERO_FAR[id]=(K,part)=>heroFarUSS2(K,part,id);
+  for(const id of ['mikado','consol','tenwheel','camel','mogul','rdg484','sa15f','yp','sy','jf','sa25','nzja']) HERO_FAR[id]=(K,part)=>heroFarUSS2(K,part,id);   /* (and the seven of Around the world II, 28 Nov 2026) */
   /* German railways steam far away (28 Nov 2026, the five of pack German railways, from DRS and their wheels): the running
      board (and its drop), red frames and buffer beams, the boiler, smokebox (pointed on the BR 18), chimney, domes and
      feed-water heater, the firebox, the cab and roof, the deflectors, the side tanks and bunker, cylinders, rods and the red
@@ -13771,8 +13890,8 @@ void main(){ gl_FragColor=texture2D(map,vUv);
   for(const id of ['emdft','e8','alcopa','sharknose']) HERO_FAR[id]=K=>heroFarUSCab(K,id);
   /* the road switchers far away: the deck and its frame line, the long hood, the cab and its windows, the short hood,
      the radiator grilles, stacks, handrails, headlights, pilots and the bogies' wheels */
-  function heroFarUSHood(K,k){ const {bx,cx,up,wh,C,body,L}=K, DK=C('#2b2b2b'), BLK=C('#141414'), WIN=C('#2a3a48'), LN=C(L.lining||'#e8e4d6'), RAIL=C(L.rail||'#d9b23a'), ROOF=C(L.roof||L.body), LENS=C('#fff3c4'), GRL=C('#26282a'), alco=k==='rs3';
-    const LH=alco?[-0.735,0.27]:[-0.735,0.235], CB=alco?[0.27,0.47]:[0.235,0.45], SH=alco?[0.47,0.725]:[0.45,0.735], HT=0.505, HS=alco?0.462:0.475;
+  function heroFarUSHood(K,k){ const {bx,cx,up,wh,C,body,L}=K, DK=C('#2b2b2b'), BLK=C('#141414'), WIN=C('#2a3a48'), LN=C(L.lining||'#e8e4d6'), RAIL=C(L.rail||'#d9b23a'), ROOF=C(L.roof||L.body), LENS=C('#fff3c4'), GRL=C('#26282a'), wd=k==='wdm2', alco=k==='rs3'||wd, sp=HERO_SPEC[k];
+    const LH=wd?[-0.735,0.33]:alco?[-0.735,0.27]:[-0.735,0.235], CB=wd?[0.33,0.53]:alco?[0.27,0.47]:[0.235,0.45], SH=wd?[0.53,0.735]:alco?[0.47,0.725]:[0.45,0.735], HT=0.505, HS=alco?0.462:0.475;
     bx(-0.775,0.775,0.194,0,0.012,0.42,DK); bx(-0.775,0.775,0.172,0,0.044,0.414,body); bx(-0.775,0.775,0.172,0,0.012,0.42,LN);
     bx(LH[0],LH[1],(0.2+HT)/2,0,HT-0.2,0.284,body); bx(SH[0],SH[1],(0.2+HS)/2,0,HS-0.2,0.256,body); bx(CB[0],CB[1],0.39,0,0.38,0.4,body); bx(CB[0]-0.015,CB[1]+0.015,0.584,0,0.012,0.42,ROOF);
     bx(CB[1],CB[1]+0.004,0.522,0,0.085,0.34,WIN); bx(CB[0]-0.004,CB[0],0.54,0,0.058,0.34,WIN);
@@ -13780,9 +13899,10 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       bx(LH[0],CB[0],0.31,s*0.198,0.008,0.008,RAIL); bx(CB[1],SH[1],0.31,s*0.198,0.008,0.008,RAIL); }
     up(alco?-0.3:-0.16,HT,0,alco?0.028:0.02,0.025,BLK); if(k==='gp9') bx(-0.52,-0.32,HT+0.014,0,0.028,0.22,body);
     for(const m of [-1,1]){ const x=m>0?SH[1]:LH[0], h=m>0?HS:HT; cx(m>0?x:x-0.012,m>0?x+0.012:x,h-0.04,0,0.022,LENS,6); bx(m>0?0.775:-0.82,m>0?0.82:-0.775,0.13,0,0.06,0.2,DK); }
-    bx(-0.22,0.22,0.115,0,0.075,0.32,BLK);
-    wh([0.575,0.365,-0.365,-0.575],0.068,DK); }
-  for(const id of ['gp7','gp9','rs3']) HERO_FAR[id]=K=>heroFarUSHood(K,id);
+    if(wd){ const BD=C(L.band); for(const s of [-1,1]){ bx(LH[0],LH[1],0.38,s*0.143,0.06,0.004,BD); bx(SH[0],SH[1],0.38,s*0.129,0.06,0.004,BD); bx(CB[0],CB[1],0.38,s*0.201,0.06,0.004,BD); } }   /* the WDM-2's cream band */
+    bx(wd?-0.17:-0.22,wd?0.17:0.22,0.115,0,0.075,0.32,BLK);
+    if(wd){ const xs=[]; for(const c of [sp.bog,-sp.bog]) for(const a of sp.ax) xs.push(c+a); wh(xs,sp.rD,DK); } else wh([0.575,0.365,-0.365,-0.575],0.068,DK); }
+  for(const id of ['gp7','gp9','rs3','wdm2']) HERO_FAR[id]=K=>heroFarUSHood(K,id);
   /* pack Branch-line units far away (28 Nov 2026): the body with its lines and window band, the row of windows, the
      doors, the yellow front with its windscreen (and gangway door), the roof, the bogies; the Class 121 with a cab at
      both ends (small yellow panels, buffers), the others the gangway at the back. The Class 175 is heroFarDEMU's */
@@ -14666,6 +14786,14 @@ void main(){ gl_FragColor=texture2D(map,vUv);
        Walschaerts gear, rz: how far out the rods run (z of the coupling rod) */
     duchessS:{rD:0.15, dx:[0.27,-0.05,-0.37], main:1, small:[[0.66,0.062,'e'],[0.5,0.062,'e'],[-0.62,0.078,'e'],[0.26,0.088,'t'],[0,0.088,'t'],[-0.26,0.088,'t']],
       wz:0.19, rc:0.05, yc:0.19, lcr:0.34, K:[0.1,0.215], build:(L,sp)=>heroStreamliner(L,sp)},
+    /* Around the world II (28 Nov 2026): the NSW 38 (69-inch drivers) and the Victorian S (73-inch) on the Duchess
+       Streamliner's chassis and casing (heroStreamliner with their looks in STREAMS): a leading bogie, three coupled axles
+       driven on the middle one by outside Walschaerts gear, a trailing truck, a tender on two bogies. (The S class had a third
+       cylinder between the frames: it shows only in its beat.) */
+    nsw38:{rD:0.128, dx:[0.27,-0.05,-0.37], main:1, small:[[0.66,0.062,'e'],[0.5,0.062,'e'],[-0.62,0.078,'e'],[0.26,0.088,'t'],[0,0.088,'t'],[-0.26,0.088,'t']],
+      wz:0.19, rc:0.046, yc:0.19, lcr:0.34, K:[0.1,0.215], build:(L,sp)=>heroStreamliner(L,sp,STREAMS.nsw38)},
+    vics:{rD:0.136, dx:[0.27,-0.05,-0.37], main:1, small:[[0.66,0.062,'e'],[0.5,0.062,'e'],[-0.62,0.078,'e'],[0.26,0.088,'t'],[0,0.088,'t'],[-0.26,0.088,'t']],
+      wz:0.19, rc:0.048, yc:0.19, lcr:0.34, K:[0.1,0.215], build:(L,sp)=>heroStreamliner(L,sp,STREAMS.vics)},
     mn:{rD:0.137, dx:[0.27,-0.04,-0.35], main:1, small:[[0.66,0.058,'e'],[0.5,0.058,'e'],[-0.62,0.074,'e'],[0.26,0.082,'t'],[0,0.082,'t'],[-0.26,0.082,'t']],
       wz:0.19, rc:0.046, yc:0.18, lcr:0.33, gear:'rods', build:(L,sp)=>heroMN(L,sp)},
     f9:{rD:0.111, dx:[0.43,0.195,-0.04,-0.275,-0.51], main:2, small:[[0.69,0.067,'e'],[0.26,0.077,'t'],[0,0.077,'t'],[-0.26,0.077,'t']],
@@ -15057,6 +15185,32 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     rdg484:{rD:0.13, dx:[0.33,0.055,-0.22,-0.495], main:1, small:[[0.72,0.058,'e'],[0.56,0.058,'e'],[-0.695,0.06,'e'],[-0.815,0.06,'e'],
       [0.27,0.045,'t'],[0.17,0.045,'t'],[0.07,0.045,'t'],[-0.07,0.045,'t'],[-0.17,0.045,'t'],[-0.27,0.045,'t']],
       wz:0.19, rc:0.05, yc:0.21, lcr:0.36, K:[0.1925,0.215], V:[0.47,0.29], Le:0.14, build:(L,sp)=>heroUSS2(L,sp,USS2.rdg484)},
+    /* Around the world II (28 Nov 2026, heroUSS2 with each engine's look in USS2). Class 15F 4-8-2: a four-wheeled leading
+       truck, four coupled axles on 60-inch wheels driven on the third, a trailing truck under the wide firebox, outside
+       Walschaerts gear; a big tender on two six-wheeled bogies */
+    sa15f:{rD:0.112, dx:[0.37,0.135,-0.1,-0.335], main:2, small:[[0.735,0.054,'e'],[0.605,0.054,'e'],[-0.6,0.07,'e'],
+      [0.27,0.045,'t'],[0.17,0.045,'t'],[0.07,0.045,'t'],[-0.07,0.045,'t'],[-0.17,0.045,'t'],[-0.27,0.045,'t']],
+      wz:0.19, rc:0.042, yc:0.2, lcr:0.44, K:[0.02,0.215], V:[0.41,0.26], Le:0.13, build:(L,sp)=>heroUSS2(L,sp,USS2.sa15f)},
+    /* YP 4-6-2: a leading bogie, three coupled axles on 54-inch wheels driven on the middle one, a trailing truck; a tender on
+       two four-wheeled trucks */
+    yp:{rD:0.1, dx:[0.18,-0.04,-0.26], main:1, small:[[0.72,0.05,'e'],[0.6,0.05,'e'],[-0.5,0.065,'e'],[0.275,0.052,'t'],[0.125,0.052,'t'],[-0.125,0.052,'t'],[-0.275,0.052,'t']],
+      wz:0.19, rc:0.038, yc:0.185, lcr:0.38, K:[0.07,0.205], V:[0.41,0.24], Le:0.13, build:(L,sp)=>heroUSS2(L,sp,USS2.yp)},
+    /* SY 2-8-2: a pony truck, four coupled axles on 54-inch wheels driven on the third, a trailing truck; a tender on two
+       four-wheeled trucks */
+    sy:{rD:0.1, dx:[0.35,0.135,-0.08,-0.295], main:2, small:[[0.62,0.052,'e'],[-0.55,0.065,'e'],[0.275,0.052,'t'],[0.125,0.052,'t'],[-0.125,0.052,'t'],[-0.275,0.052,'t']],
+      wz:0.19, rc:0.038, yc:0.185, lcr:0.42, K:[0.03,0.205], V:[0.41,0.24], Le:0.13, build:(L,sp)=>heroUSS2(L,sp,USS2.sy)},
+    /* JF 2-8-2: the same wheels as the SY's, spread a little longer under its bigger boiler */
+    jf:{rD:0.1, dx:[0.36,0.14,-0.08,-0.3], main:2, small:[[0.635,0.052,'e'],[-0.57,0.066,'e'],[0.275,0.054,'t'],[0.125,0.054,'t'],[-0.125,0.054,'t'],[-0.275,0.054,'t']],
+      wz:0.19, rc:0.038, yc:0.19, lcr:0.42, K:[0.03,0.21], V:[0.41,0.245], Le:0.13, build:(L,sp)=>heroUSS2(L,sp,USS2.jf)},
+    /* Class 25 4-8-4: four-wheeled trucks front and back, four coupled axles on 60-inch wheels driven on the second, outside
+       Walschaerts gear; the condensing tender on two six-wheeled bogies */
+    sa25:{rD:0.112, dx:[0.36,0.12,-0.12,-0.36], main:1, small:[[0.73,0.054,'e'],[0.6,0.054,'e'],[-0.6,0.06,'e'],[-0.72,0.06,'e'],
+      [0.27,0.045,'t'],[0.17,0.045,'t'],[0.07,0.045,'t'],[-0.07,0.045,'t'],[-0.17,0.045,'t'],[-0.27,0.045,'t']],
+      wz:0.19, rc:0.044, yc:0.2, lcr:0.34, K:[0.24,0.215], V:[0.485,0.28], Le:0.14, build:(L,sp)=>heroUSS2(L,sp,USS2.sa25)},
+    /* Ja 4-8-2: a four-wheeled leading truck, four coupled axles on 54-inch wheels driven on the third, a trailing truck; a
+       tender on two four-wheeled trucks */
+    nzja:{rD:0.1, dx:[0.34,0.125,-0.09,-0.305], main:2, small:[[0.705,0.05,'e'],[0.585,0.05,'e'],[-0.55,0.065,'e'],[0.275,0.052,'t'],[0.125,0.052,'t'],[-0.125,0.052,'t'],[-0.275,0.052,'t']],
+      wz:0.19, rc:0.038, yc:0.185, lcr:0.42, K:[0.02,0.205], V:[0.4,0.24], Le:0.13, build:(L,sp)=>heroUSS2(L,sp,USS2.nzja)},
     /* German railways steam (28 Nov 2026, heroDRS with each engine's look and coupled wheels in DRS). BR 18 4-6-2: 1.87 m
        coupled wheels, a leading bogie and a trailing axle under the wide firebox; four cylinders, the outside pair driving
        the middle axle with outside Walschaerts (Heusinger) gear, the inside pair hidden; a tender on two bogies */
@@ -15141,6 +15295,9 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
     c166:{rD:0.0625, bog:0.53, wb:0.125, ax:[-0.125,0.125], wz:0.19, cars:2, build:(L,sp)=>heroBranchDMU(L,sp,'c166'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
       tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    /* the WDM-2 (28 Nov 2026, pack Around the world II): the RS-3's kind of hoods on two six-wheeled bogies, 40" wheels */
+    wdm2:{rD:0.07, bog:0.46, wb:0.165, ax:[-0.165,0,0.165], wz:0.19, cars:2, build:(L,sp)=>heroUSHood(L,sp,'wdm2'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:12*heroTris(e.drvR)})},
     /* the stainless streamliner's power car: two carriage places on two four-wheeled bogies, 36" wheels */
     streamliner:{rD:0.068, bog:0.5, wb:0.1, ax:[-0.1,0.1], wz:0.19, cars:2, build:(L,sp)=>heroStainless(L,sp), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
       tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
@@ -15716,12 +15873,16 @@ void main(){ gl_FragColor=texture2D(map,vUv);
 
   /* Duchess Streamliner: the Duchess chassis in its bulbous casing. The casing's cross-section shrinks to a rounded point at
      the nose (a bullet, not the A4's wedge); the four speed stripes are bands of that same surface, so they sweep into the
-     nose as "whiskers" and run back along the tender. The skirt is cut away above the driving wheels. */
-  function heroStreamliner(L,sp){
-    const c=heroCols(L), {body,bodyDk,line,BLK,DK,FR,STEEL,BRASS,WIN,COAL,COAL2}=c, W=0.215, YS=0.53, YT=0.64, NX=0.3, TX=0.895, TY=0.33, STR=[0.34,0.368,0.396,0.424], SW=0.0085;
-    const hs=yb=>[yb,...STR.flatMap(y=>[y,y+SW])];
-    const nose=(x,p)=>{ if(x<=NX) return p; const t=Math.min(1,(x-NX)/(TX-NX)), f=Math.sqrt(Math.max(0,1-t*t)), gl=Math.pow(f,0.35), gh=Math.pow(f,0.9);
-      return [p[0]*Math.pow(f,0.8), TY+(p[1]-TY)*(p[1]<TY?gl:gh)]; };
+     nose as "whiskers" and run back along the tender. The skirt is cut away above the driving wheels.
+     o (28 Nov 2026, pack Around the world II: the NSW 38 and the Victorian S, their looks in STREAMS; the Duchess's own
+     numbers when left out): YT the casing's top, NX where the nose begins, TX its tip, TY the tip's height, ge and gw how
+     soon the nose's top and sides fall away (bigger: a more sloping nose), STR and SW the stripes' heights and width, hl a
+     headlight on top of the nose. */
+  function heroStreamliner(L,sp,o={}){
+    const c=heroCols(L), {body,bodyDk,line,BLK,DK,FR,STEEL,BRASS,WIN,COAL,COAL2,LENS}=c, W=0.215, YS=0.53, YT=o.YT||0.64, NX=o.NX||0.3, TX=o.TX||0.895, TY=o.TY||0.33, STR=o.STR||[0.34,0.368,0.396,0.424], SW=o.SW||0.0085, GE=o.ge||0.9, GW=o.gw||0.8;
+    const hs=yb=>[yb,...STR.flatMap(y=>[y,y+SW])], PW=2*STR.length+4;   /* PW: the first point of the shoulder's arc past the cab windows */
+    const nose=(x,p)=>{ if(x<=NX) return p; const t=Math.min(1,(x-NX)/(TX-NX)), f=Math.sqrt(Math.max(0,1-t*t)), gl=Math.pow(f,0.35), gh=Math.pow(f,GE);
+      return [p[0]*Math.pow(f,GW), TY+(p[1]-TY)*(p[1]<TY?gl:gh)]; };
     const skirt=x=>{ const u=clamp((x-0.555)/0.07,0,1); return 0.325-0.155*u*u*(3-2*u); };   /* cut away over the wheels and cylinders, down round the bogie */
     const prof=yb=>x=>heroProf(W,hs(yb==null?skirt(x):yb),YS,YT,2.4,8).map(p=>nose(x,p));
     const bands=STR.map((y,i)=>[1+2*i,2+2*i,line]);
@@ -15738,9 +15899,10 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       LZ(-0.715,0.4,z,0.08,0.004,s,line);
       rod3([-0.79,0.34,s*(W+0.008)],[-0.79,0.51,s*(W+0.008)],0.007,STEEL); rod3([-0.548,0.34,s*(W+0.008)],[-0.548,0.51,s*(W+0.008)],0.007,STEEL);   /* cab handrails */
       B(-0.8,0.25,s*0.21,0.05,0.006,0.03,DK); B(-0.8,0.18,s*0.21,0.05,0.006,0.03,DK); B(-0.775,0.22,s*0.218,0.006,0.1,0.006,DK); B(-0.825,0.22,s*0.218,0.006,0.1,0.006,DK);   /* cab steps */
-      const p=prof(0.325)(-0.5); G.quad([-0.47,p[12][1],s*p[12][0]],[-0.53,p[12][1],s*p[12][0]],[-0.53,p[14][1],s*p[14][0]],[-0.47,p[14][1],s*p[14][0]],WIN,[0,0.6,s*0.8]);   /* cab front windows on the shoulder */
+      const p=prof(0.325)(-0.5); G.quad([-0.47,p[PW][1],s*p[PW][0]],[-0.53,p[PW][1],s*p[PW][0]],[-0.53,p[PW+2][1],s*p[PW+2][0]],[-0.47,p[PW+2][1],s*p[PW+2][0]],WIN,[0,0.6,s*0.8]);   /* cab front windows on the shoulder */
       for(const x of [0.07,-0.2]) B(x,0.335,s*0.205,0.022,0.014,0.022,body); });
     heroBeam(k,c,0.83,1,{noBeam:true,lamps:false});                                       /* buffers through the nose skirt */
+    if(o.hl){ const x=0.8, yt=nose(x,[0,YT])[1]-0.004; coneX(x-0.07,x,yt+0.024,0,0.026,0.024,body,12); discX(x,yt+0.024,0,0.021,1,LENS,12); coneX(x-0.004,x+0.002,yt+0.024,0,0.025,0.025,STEEL,12); }   /* the headlight on top of the nose */
     G.cyl(-0.47,YT+0.015,0.05,0.004,0.03,'y',BRASS,5); G.cyl(-0.47,YT+0.032,0.05,0.011,0.02,'y',BRASS,8);   /* whistle */
     B(-0.3,YT+0.002,0,0.06,0.008,0.05,bodyDk);                                          /* safety valve cover */
     /* ---- the streamlined tender: the same casing, its top turned in round the coal ---- */
@@ -16604,11 +16766,16 @@ void main(){ gl_FragColor=texture2D(map,vUv);
      'box' (an old square oil headlamp on top of the smokebox), 'top' (a round electric headlight up on the smokebox front)
      or 'front' (a round headlight in the middle of the smokebox door); o.pumps: the air pumps 'side' (on the left beside the
      smokebox) or 'front' (hung on the smokebox front over the pilot); o.fwh: a feedwater heater across the smokebox top;
-     o.wood: a varnished wooden cab; o.diamond: a diamond spark-arresting stack; o.brass: brass domes and bands. ---- */
+     o.wood: a varnished wooden cab; o.diamond: a diamond spark-arresting stack; o.brass: brass domes and bands.
+     Around the world II (28 Nov 2026): o.bell 'none' (no bell: the engines of Africa, Asia and Australasia); o.wr: the
+     wheels in their own colour (L.wheel, the Chinese engines' red); L.valance: the running board's edge in its own colour;
+     o.defl: big smoke deflectors standing on the running board beside the smokebox (the JF); o.cpipe: the big exhaust
+     pipe along the boiler's right side back to a condensing tender, and tender.cond: that tender (the Class 25), its
+     sides filled with radiator grilles, a row of big fans along its roof, the coal only at the front. ---- */
   function heroUSS2(L,sp,o){
     const c=heroCols(L), {C,body,bodyDk,line,BLK,DK,FR,STEEL,BRASS,WIN,LENS,COAL,COAL2}=c;
     const SMKF=C(L.smokebox||'#3f4448'), TRIM=C(L.lining||'#c9cdd1'), CABC=o.wood?C(L.cab||'#6e3a20'):body, CABDK=CABC.clone().multiplyScalar(0.62), ROOFC=o.wood?CABDK:C('#101010');
-    const PIL=C(L.pilot||'#151515'), DOME=o.brass?BRASS:body, BAND=o.brass?BRASS:(L.band?C(L.band):BLK), GRY=C('#3a3f3c');
+    const PIL=C(L.pilot||'#151515'), DOME=o.brass?BRASS:body, BAND=o.brass?BRASS:(L.band?C(L.band):BLK), GRY=C('#3a3f3c'), VAL=L.valance?C(L.valance):body, COV=o.cov?C(o.cov):null;   /* (o.cov: the cylinder covers in their own dark colour, not bright; L.beam: the buffer beams in their own colour; Around the world II, 28 Nov 2026) */
     const {YB,R0,R1,X0,X1,XS,RBY,CF,CB,EAVE}=o, CW=o.CW||0.222, Rb=x=>R0+(R1-R0)*(x-X0)/(X1-X0), XP=XS+0.03;
     const G=new Geo(), k=heroKitSteam(G), {B,coneX,discX,rod3,plateZ,LZ}=k;
     const lead=sp.small.filter(w=>w[2]==='e'&&w[0]>sp.dx[0]).map(w=>w[0]), trail=sp.small.filter(w=>w[2]==='e'&&w[0]<sp.dx[sp.dx.length-1]).map(w=>w[0]);
@@ -16627,9 +16794,9 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     /* ---- the outside cylinders with their valve chests (a flat-topped slide-valve chest on the older engines), drain
        cocks, slide bars and the guide yoke; with Walschaerts gear the expansion link's bracket and the reach rod ---- */
     heroBoth(s=>{ const z=s*0.245;
-      coneX(cx0,cx1,yc,z,CR,CR,body,14); discX(cx1,yc,z,CR,1,o.brass?BRASS:TRIM,14); discX(cx0,yc,z,CR,-1,body,14);
+      coneX(cx0,cx1,yc,z,CR,CR,body,14); discX(cx1,yc,z,CR,1,COV||(o.brass?BRASS:TRIM),14); discX(cx0,yc,z,CR,-1,body,14);
       if(o.chest==='box'){ B((cx0+cx1)/2,yc+CR+0.03,z-s*0.012,cx1-cx0-0.01,0.06,0.07,body); B((cx0+cx1)/2,yc+CR+0.062,z-s*0.012,cx1-cx0+0.004,0.006,0.076,o.brass?BRASS:DK); }
-      else { coneX(cx0-0.005,cx1+0.01,yc+CR+0.032,z-s*0.006,0.038,0.038,body,12); discX(cx1+0.01,yc+CR+0.032,z-s*0.006,0.038,1,TRIM,12); B((cx0+cx1)/2,yc+CR*0.75,z,cx1-cx0,0.012,0.1,body); }
+      else { coneX(cx0-0.005,cx1+0.01,yc+CR+0.032,z-s*0.006,0.038,0.038,body,12); discX(cx1+0.01,yc+CR+0.032,z-s*0.006,0.038,1,COV||TRIM,12); B((cx0+cx1)/2,yc+CR*0.75,z,cx1-cx0,0.012,0.1,body); }
       B(cx0+0.05,yc-CR-0.006,z,0.01,0.024,0.008,STEEL); B(cx1-0.05,yc-CR-0.006,z,0.01,0.024,0.008,STEEL);
       const y0=Xc-0.075; B((y0+cx0)/2,yc+0.03,z,cx0-y0,0.01,0.014,STEEL); B((y0+cx0)/2,yc-0.03,z,cx0-y0,0.01,0.014,STEEL);
       B(y0-0.01,(yc+0.035+RBY)/2,s*0.226,0.024,RBY-yc-0.035,0.05,FR);
@@ -16640,12 +16807,12 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     /* ---- the high running board with its steps at the front; trim along its edge ---- */
     const rb0=o.camel?-0.36:CB+0.02, rb1=XS-0.01;
     B((rb0+rb1)/2,RBY,0,rb1-rb0,0.014,0.44,DK);
-    heroBoth(s=>{ const z=s*0.219; B((rb0+rb1)/2,RBY-0.014,z,rb1-rb0,0.028,0.006,body); if(L.lining) LZ((rb0+rb1)/2,RBY-0.004,s*0.2225,rb1-rb0,0.007,s,TRIM);
+    heroBoth(s=>{ const z=s*0.219; B((rb0+rb1)/2,RBY-0.014,z,rb1-rb0,0.028,0.006,VAL); if(L.lining) LZ((rb0+rb1)/2,RBY-0.004,s*0.2225,rb1-rb0,0.007,s,TRIM);
       B(XS-0.02,RBY-0.05,s*0.21,0.03,0.006,0.04,DK); B(XS-0.02,RBY-0.11,s*0.21,0.03,0.006,0.04,DK); B(XS-0.03,RBY-0.08,s*0.226,0.004,0.12,0.004,DK); });
     if(o.pumps!=='front'){ for(const x of [X1+0.13,X1+0.04]){ G.cyl(x,RBY+0.075,-0.19,0.03,0.14,'y',GRY,10); G.cyl(x,RBY+0.15,-0.19,0.022,0.012,'y',DK,8); B(x,RBY+0.03,-0.19,0.07,0.01,0.07,DK); }
       rod3([X1+0.13,RBY+0.12,-0.16],[X1+0.16,YB-0.06,-0.12],0.01,DK); }
     /* ---- the pilot: a slatted cowcatcher, or a steel pilot with footboards; its beam and the centre coupler ---- */
-    B(XP,0.2,0,0.03,0.08,0.42,o.pilot==='slats'?PIL:BLK);
+    B(XP,0.2,0,0.03,0.08,0.42,L.beam?C(L.beam):o.pilot==='slats'?PIL:BLK);
     if(o.pilot==='slats'){ const top=(t,s)=>[XP+0.015+0.02*t,0.17,s*0.205*(1-t)], bot=(t,s)=>[XP+0.03+0.08*t,0.03,s*0.215*(1-t)];
       heroBoth(s=>{ for(let i=0;i<5;i++){ const t=i/5; rod3(top(t,s),bot(t,s),0.012,PIL); } rod3(top(0,s),top(1,s),0.014,PIL); rod3(bot(0,s),bot(1,s),0.014,PIL); }); }
     else { G.hexa([[XP-0.01,0.03,-0.19],[XP+0.07,0.03,-0.17],[XP+0.07,0.03,0.17],[XP-0.01,0.03,0.19],[XP-0.01,0.16,-0.21],[XP+0.02,0.16,-0.21],[XP+0.02,0.16,0.21],[XP-0.01,0.16,0.21]],BLK);
@@ -16661,13 +16828,14 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     if(o.hl==='box'){ const x=XS-0.04, y=YB+R1+0.06; B(x,y-0.045,0,0.05,0.03,0.04,BLK); B(x,y,0,0.075,0.075,0.075,BLK);
       heroBoth(s=>LZ(x-0.002,y,s*0.0378,0.055,0.055,s,C('#2a2a2a'))); B(x,y+0.042,0,0.085,0.01,0.085,o.brass?BRASS:BLK); G.cyl(x-0.012,y+0.06,0,0.01,0.03,'y',BLK,6);
       coneX(x+0.037,x+0.045,y,0,0.03,0.03,o.brass?BRASS:STEEL,12); discX(x+0.045,y,0,0.027,1,LENS,12); }
-    else if(o.hl==='top'){ const y=YB+R1+0.055, x=XS-0.04; B(x-0.01,YB+R1-0.005,0,0.06,0.03,0.08,DK); coneX(x-0.05,x+0.04,y,0,0.056,0.056,BLK,14); discX(x+0.04,y,0,0.05,1,LENS,14); coneX(x+0.036,x+0.044,y,0,0.057,0.057,STEEL,14,-1.2,1.2);
+    else if(o.hl==='top'){ const y=YB+R1+0.055, x=XS-0.04; B(x-0.01,YB+R1-0.005,0,0.06,0.03,0.08,DK); coneX(x-0.05,x+0.04,y,0,0.056,0.056,BLK,14); discX(x-0.05,y,0,0.056,-1,BLK,14); discX(x+0.04,y,0,0.05,1,LENS,14);   /* (its back closed, 28 Nov 2026: first used by Around the world II) */ coneX(x+0.036,x+0.044,y,0,0.057,0.057,STEEL,14,-1.2,1.2);
       B(x-0.005,y+0.06,0,0.08,0.005,0.07,BLK); B(x-0.1,y-0.02,0,0.05,0.04,0.05,DK); G.cyl(x-0.1,y+0.01,0,0.012,0.03,'y',DK,6); }
     else { const y=YB+0.06; coneX(XS+0.008,XS+0.06,y,0,0.05,0.05,BLK,14); discX(XS+0.06,y,0,0.044,1,LENS,14); coneX(XS+0.056,XS+0.062,y,0,0.05,0.05,STEEL,14,-1.2,1.2);
       B(XS+0.032,y+0.056,0,0.05,0.006,0.1,BLK); if(!o.fwh){ B(XS-0.04,YB+R1+0.015,0,0.05,0.04,0.05,DK); G.cyl(XS-0.04,YB+R1+0.045,0,0.012,0.03,'y',DK,6); } }
     /* the bell: on the smokebox front under the headlight, or on its yoke on top of the boiler */
     const bell=(x,y)=>{ G.cyl(x,y,0,0.03,0.04,'y',BRASS,10); G.dome(x,y+0.02,0,0.03,BRASS,10,2,0.7); };
-    if(o.bell==='front') bell(XS+0.04,YB-0.05);
+    if(o.bell==='none'){}
+    else if(o.bell==='front') bell(XS+0.04,YB-0.05);
     else { const x=o.bellX, yt=YB+Rb(x)-0.006; heroBoth(s=>rod3([x,yt,s*0.03],[x,yt+0.075,s*0.03],0.008,DK)); rod3([x,yt+0.075,-0.034],[x,yt+0.075,0.034],0.008,DK); bell(x,yt+0.018); }
     /* the stack: a plain one with a lip, a tall one, or a diamond spark arrester */
     { const x=o.stackX, y0=YB+R1+0.004, h=o.stackH||0.04;
@@ -16676,6 +16844,14 @@ void main(){ gl_FragColor=texture2D(map,vUv);
         ring(y0+0.1,y0+0.16,0.034,0.085); ring(y0+0.16,y0+0.2,0.085,0.05); G.cyl(x,y0+0.2,0,0.05,0.004,'y',C('#0a0a0a'),12); }
       else { G.cyl(x,y0+0.008,0,0.056,0.02,'y',SMKF,14); G.cyl(x,y0+0.02+h/2,0,0.044,h,'y',BLK,14); G.cyl(x,y0+0.02+h,0,0.05,0.01,'y',BLK,14); G.cyl(x,y0+0.026+h,0,0.04,0.003,'y',C('#060606'),12); } }
     if(o.fwh){ B(o.fwh,YB+R1+0.02,0,0.06,0.04,0.17,body); G.cyl(o.fwh,YB+R1+0.035,0,0.03,0.17,'z',body,10); }   /* the feedwater heater across the smokebox top */
+    /* the big smoke deflectors on the running board beside the smokebox, their tops turned in, on stays to the smokebox */
+    if(o.defl) heroBoth(s=>{ const z=s*0.212, Xa=X1-0.01, Xb=XS+0.005, Yt=YB+R1-0.01;
+      plateZ([[Xa,RBY+0.008],[Xb,RBY+0.008],[Xb,Yt-0.025],[Xb-0.025,Yt],[Xa,Yt]],z,0.005,body);
+      G.hexa([[Xa,Yt-0.006,s*0.2145],[Xb-0.025,Yt-0.006,s*0.2145],[Xb-0.025,Yt-0.006,s*0.2095],[Xa,Yt-0.006,s*0.2095],[Xa,Yt+0.003,s*0.202],[Xb-0.025,Yt+0.003,s*0.202],[Xb-0.025,Yt+0.003,s*0.197],[Xa,Yt+0.003,s*0.197]],body);
+      const xm=(Xa+Xb)/2-0.02; rod3([xm,Yt-0.035,s*0.209],[xm,YB+0.05,s*(R1+0.005)],0.006,body); rod3([xm,RBY+0.06,s*0.209],[xm,YB-0.08,s*(R1-0.01)],0.006,body); });
+    /* the Class 25's exhaust pipe: from the smokebox side along the boiler on the right, down past the cab to the tender */
+    if(o.cpipe){ const z=-(R1+0.035), y=YB-0.06; G.cyl((X1+0.02+CF)/2,y,z,0.032,X1+0.02-CF,'x',BLK,10); rod3([X1+0.03,y,z],[X1+0.06,YB-0.02,-(R1-0.02)],0.05,BLK);
+      rod3([CF,y,z],[CB+0.03,RBY+0.05,-0.19],0.05,BLK); B(CB+0.015,RBY+0.05,-0.19,0.04,0.06,0.06,BLK); heroBoth(s=>{ for(const x of [0.3,0.0,-0.3]) B(x,y-0.04,-(R1+0.035),0.012,0.05,0.012,DK); }); }
     /* ---- the boiler with its bands and handrails, the sand dome and steam dome, the whistle and safety valves ---- */
     coneX(X0,X1,YB,0,R0,R1,body,20);
     for(const x of o.bands) coneX(x-0.004,x+0.004,YB,0,Rb(x)+0.003,Rb(x)+0.003,BAND,12,-2.0,2.0);
@@ -16725,7 +16901,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
         TB(xc,0.1,s*0.226,0.05,0.02,0.016,C('#3a3a3a')); });
       TB(xc,0.125,0,0.06,0.03,0.44,FR); }
     const yb=0.19, xa=-0.375, xb=0.355;
-    TB(0,0.175,0,0.74,0.04,0.42,FR); TB(xb,0.175,0,0.02,0.06,0.42,BLK); TB(-0.37,0.175,0,0.02,0.07,0.42,o.pilot==='slats'?PIL:BLK);
+    TB(0,0.175,0,0.74,0.04,0.42,FR); TB(xb,0.175,0,0.02,0.06,0.42,BLK); TB(-0.37,0.175,0,0.02,0.07,0.42,L.beam?C(L.beam):o.pilot==='slats'?PIL:BLK);
     TB(-0.01,(yb+H)/2,0,0.73,H-yb,0.43,body);
     heroBoth(s=>{ T.hexa([[xa,H,s*0.215],[xb,H,s*0.215],[xb,H,s*0.2],[xa,H,s*0.2],[xa,H+0.025,s*0.225],[xb,H+0.025,s*0.225],[xb,H+0.025,s*0.205],[xa,H+0.025,s*0.205]],body);   /* the flared top edge */
       TB(0.22,H+0.055,s*0.2,0.24,0.06,0.012,body);
@@ -16733,10 +16909,18 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       trod([0.37,yb+0.03,s*0.2],[0.37,H+0.01,s*0.2],0.007,o.brass?BRASS:STEEL); trod([-0.385,yb+0.03,s*0.19],[-0.385,H+0.01,s*0.19],0.006,STEEL); });
     TB(0.34,H+0.055,0,0.012,0.06,0.38,body);
     T.arc(0.2,H+0.025,0,0.3,0.38,0.06,0.03,COAL,8); for(let q=0;q<7;q++){ const x=0.08+((q*37)%24)/100, z=((((q*53)%100)/100)-0.5)*0.26; T.pyr(x,H+0.025+0.06*(1-(z/0.18)**2)-0.01,z,0.02,0.018,q%2?COAL2:COAL); }
-    TB(-0.16,H+0.027,0,0.42,0.008,0.38,DK); T.cyl(-0.22,H+0.04,0,0.04,0.02,'y',DK,10); TB(-0.22,H+0.052,0,0.06,0.006,0.008,STEEL);   /* tank top, water hatch */
+    if(td.cond){ /* the condensing tender: behind the coal its sides are radiator grilles (dark, with light upright slats), its roof
+         a raised casing with a row of five big fans in their rings; the exhaust pipe comes in at the front on the right */
+      const GRL=C('#17191a'), SLT=C(L.grille||'#6d7276'), xa0=-0.355, xa1=0.06, ya0=yb+0.05, ya1=H-0.03;
+      heroBoth(s=>{ const z=s*0.2155, z2=s*0.217; TLZ((xa0+xa1)/2,(ya0+ya1)/2,z,xa1-xa0,ya1-ya0,s,GRL); for(let q=0;q<14;q++) TLZ(xa0+0.012+q*(xa1-xa0-0.024)/13,(ya0+ya1)/2,z2,0.008,ya1-ya0-0.01,s,SLT);
+        TLZ((xa0+xa1)/2,ya1+0.006,z2,xa1-xa0+0.01,0.006,s,body); TLZ((xa0+xa1)/2,ya0-0.006,z2,xa1-xa0+0.01,0.006,s,body); });
+      TB(-0.15,H+0.035,0,0.47,0.02,0.4,body); TB(-0.15,H+0.047,0,0.45,0.004,0.38,DK);
+      for(const x of [-0.33,-0.235,-0.14,-0.045,0.05]){ T.cyl(x,H+0.06,0,0.044,0.022,'y',body,12); T.cyl(x,H+0.0715,0,0.038,0.002,'y',GRL,12); TB(x,H+0.073,0,0.07,0.003,0.006,SLT); TB(x,H+0.073,0,0.006,0.003,0.07,SLT); }
+      T.cyl(0.33,H-0.06,-0.19,0.03,0.05,'x',BLK,10); }
+    else { TB(-0.16,H+0.027,0,0.42,0.008,0.38,DK); T.cyl(-0.22,H+0.04,0,0.04,0.02,'y',DK,10); TB(-0.22,H+0.052,0,0.06,0.006,0.008,STEEL); }   /* tank top, water hatch */
     if(td.light){ T.cyl(-0.36,H+0.04,0,0.03,0.04,'y',BLK,8); kt.discX(-0.381,H+0.04,0,0.022,-1,LENS,10); }   /* back-up light */
     for(let q=0;q<Math.floor((H-0.22)/0.055);q++) TB(-0.386,0.24+q*0.055,0.12,0.004,0.004,0.06,STEEL);   /* ladder */
-    const wc=heroWC(c,{rim:body,rimIn:bodyDk}), wd=L.tyre?{...wc,tyre:C(L.tyre)}:wc;
+    const WR=o.wr?C(L.wheel):body, wc=heroWC(c,{rim:WR,rimIn:WR.clone().multiplyScalar(0.72)}), wd=L.tyre?{...wc,tyre:C(L.tyre)}:wc;
     return {eng:G, ten:T,
       drvR:heroWheel(sp.rD,1,{...wd,th:0.035,seg:o.seg||16,spokes:o.spokes||14,hub:0.23,weight:true,crank:sp.rc}), drvL:heroWheel(sp.rD,-1,{...wd,th:0.035,seg:o.seg||16,spokes:o.spokes||14,hub:0.23,weight:true,crank:sp.rc}),
       whlR:heroWheel(1,1,{...wc,rimIn:null,th:0.03,seg:o.sseg||8,spokes:o.sspokes||6,hub:0.3}), whlL:heroWheel(1,-1,{...wc,rimIn:null,th:0.03,seg:o.sseg||8,spokes:o.sspokes||6,hub:0.3})};
@@ -25829,19 +26013,21 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       BLK=C('#141414'), DK=C('#232323'), UF=C('#1e1f1f'), STEEL=C('#b9bdc1'), WIN=C('#2a3a48'), RUB=C('#0c0c0c'), LENS=C('#fff3c4'), GRL=C('#26282a'), GREY=C('#8a9096'), HORN=C('#3a3a3a'),
       mix=(c,d,f)=>c.clone().lerp(d,f), SLAT=mix(BODY,GREY,0.3), SEAM=mix(mix(BODY,BLK,0.4),GREY,0.12), DECK=C('#2b2b2b'), NB=C('#e9e6dc');
     const G=new Geo(), {B,LZ,LX,LY,rod3,coneX,discX,discY}=heroKit(G), both=f=>{ f(1); f(-1); };
-    const alco=k==='rs3', D=0.2, XE=0.775;   /* deck top, deck ends */
+    const wd=k==='wdm2', alco=k==='rs3'||wd, D=0.2, XE=0.775;   /* deck top, deck ends (wd: the WDM-2, an Alco design built in India, 28 Nov 2026) */
     const slab=(a,b,c,d,t,col)=>{ const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]], v=[d[0]-a[0],d[1]-a[1],d[2]-a[2]], n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]], l=Math.hypot(n[0],n[1],n[2])||1, o=n.map(q=>q/l*t); G.hexa([a,b,c,d].map(p=>[p[0]-o[0],p[1]-o[1],p[2]-o[2]]).concat([a,b,c,d]),col); };
-    const LH=alco?[-0.735,0.27]:[-0.735,0.235], CB=alco?[0.27,0.47]:[0.235,0.45], SH=alco?[0.47,0.725]:[0.45,0.735];   /* long hood, cab, short hood (x from, to) */
+    const LH=wd?[-0.735,0.33]:alco?[-0.735,0.27]:[-0.735,0.235], CB=wd?[0.33,0.53]:alco?[0.27,0.47]:[0.235,0.45], SH=wd?[0.53,0.735]:alco?[0.47,0.725]:[0.45,0.735];   /* long hood, cab, short hood (x from, to) */
     const WL=0.142, WS=0.128, HT=0.505, HS=alco?0.462:0.475, CW=0.2, CT=0.578, R=alco?0.05:0.022;   /* half widths, tops */
+    const BAND=L.band?C(L.band):BODY, BA=0.35, BB=0.41, bcol=(x,y,z,p)=>wd&&p!=='top'&&y>BA&&y<BB?BAND:BODY;   /* the WDM-2's cream band along the hoods and the cab: rows of their shells at its edges */
+    const brows=(rows,lo,hi)=>wd?rows.concat([[BA],[BB]].filter(([y])=>y>lo&&y<hi).map(([y])=>[y,rows[0][1],rows[0][2]])).sort((a,b)=>a[0]-b[0]):rows;
     /* the deck: its plate, the side sills (with the frame line), the end platforms */
     B(0,D-0.006,0,2*XE,0.012,0.42,DECK); both(s=>{ B(0,0.172,s*0.207,2*XE,0.044,0.008,BODY); LZ(0,0.172,s*0.2115,2*XE-0.02,0.012,s,LN); });
     B(0,0.155,0,2*XE-0.04,0.03,0.36,UF);
     /* the long hood and the short hood: straight sides, rounded top edges (the Alco's well rounded) */
-    const hood=(x0,x1,w,h,yb)=>heroShell(G,[[yb,w,0.012],[h-R*0.9,w,0.012],[h-R*0.35,w-R*0.28,0.012],[h,w-R,0.012]].map(([y,ww,r])=>({y,f:x1,b:x0,w:ww,r})),
-      ()=>BODY,{nS:6,nC:2,zs:[1,0.5,0,-0.5,-1]});
+    const hood=(x0,x1,w,h,yb)=>heroShell(G,brows([[yb,w,0.012],[h-R*0.9,w,0.012],[h-R*0.35,w-R*0.28,0.012],[h,w-R,0.012]],yb,h-R*0.9).map(([y,ww,r])=>({y,f:x1,b:x0,w:ww,r})),
+      bcol,{nS:6,nC:2,zs:[1,0.5,0,-0.5,-1]});
     hood(LH[0],LH[1]+0.01,WL,HT,D); hood(SH[0]-0.01,SH[1],WS,HS,D);   /* (their inner ends 1 cm inside the cab: no corner shared with it) */
     /* the cab: square, its roof overhanging a little all round; windows front, back and sides */
-    heroShell(G,[[D,CW,0.01],[CT-0.01,CW,0.01],[CT,CW,0.01]].map(([y,w,r])=>({y,f:CB[1],b:CB[0],w,r})),()=>BODY,{nS:3,nC:2,zs:[1,0.5,0,-0.5,-1]});
+    heroShell(G,brows([[D,CW,0.01],[CT-0.01,CW,0.01],[CT,CW,0.01]],D,CT-0.01).map(([y,w,r])=>({y,f:CB[1],b:CB[0],w,r})),bcol,{nS:3,nC:2,zs:[1,0.5,0,-0.5,-1]});
     B((CB[0]+CB[1])/2,CT+0.006,0,CB[1]-CB[0]+0.03,0.012,2*CW+0.02,ROOF); B((CB[0]+CB[1])/2,CT+0.016,0,CB[1]-CB[0]-0.02,0.008,2*CW-0.06,ROOF);
     both(s=>{ /* front and back windows over the hoods, side windows (one sliding, its frame), the cab doors' grab irons */
       for(const [x,d,y,h] of [[CB[1],1,0.522,0.085],[CB[0],-1,0.54,0.058]]){ LX(x+d*0.0015,y,s*0.12,0.1,h,d,RUB); LX(x+d*0.0025,y+0.002,s*0.12,0.088,h-0.013,d,WIN); }
@@ -25873,7 +26059,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
         both(s=>{ B(x+d*0.006,h-0.035,s*0.075,0.012,0.03,0.05,DK); LX(x+d*0.0125,h-0.035,s*0.075,0.04,0.02,d,NB); }); }
       if(k==='gp9') for(const s of [-1,1]) LX(x+d*0.0013,0.31,s*0.06,0.035,0.11,d,LN);   /* yellow stripes on the ends */
     }
-    G.cyl(SH[1]-0.04,HS+0.016,0.06,0.016,0.03,'y',C('#b89a3a'),8);   /* the bell */
+    if(!wd) G.cyl(SH[1]-0.04,HS+0.016,0.06,0.016,0.03,'y',C('#b89a3a'),8);   /* the bell (none on the WDM-2) */
     G.cyl((CB[0]+CB[1])/2,CT+0.022,0,0.01,0.014,'y',DK,6); for(const [dz,l] of [[-0.03,0.05],[0,0.07],[0.03,0.04]]) coneX((CB[0]+CB[1])/2+l,(CB[0]+CB[1])/2,CT+0.034,dz,0.011,0.005,HORN,6);
     /* handrails along the walkways on stanchions, across the ends; the steps and the pilot at each corner */
     both(s=>{ const z=s*0.198;
@@ -25885,8 +26071,9 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       both(s=>slab([X(XE+0.005),0.135,0],[X(XE+0.005),0.135,s*0.11],[X(XE+0.04),0.05,s*0.1],[X(XE+0.04),0.05,0],0.006,DK));   /* the pilot */
       B(X(XE+0.03),0.13,0,0.05,0.035,0.04,DK); B(X(XE+0.06),0.13,0,0.024,0.05,0.05,BLK); both(s=>rod3([X(XE+0.02),0.1,s*0.07],[X(XE+0.04),0.06,s*0.08],0.01,BLK)); });
     /* the fuel tank and air reservoirs between the bogies */
-    B(0,0.115,0,0.44,0.075,0.32,BLK); both(s=>{ for(const x of [-0.15,0,0.15]) LZ(x,0.115,s*0.1602,0.008,0.075,s,UF); G.cyl(0,0.148,s*0.14,0.016,0.5,'x',UF,8); });
-    return {eng:G, ...heroBoBo(sp)};
+    const ft=wd?0.32:0.44;   /* (shorter between the WDM-2's six-wheeled bogies) */
+    B(0,0.115,0,ft,0.075,0.32,BLK); both(s=>{ for(const x of wd?[-0.1,0,0.1]:[-0.15,0,0.15]) LZ(x,0.115,s*0.1602,0.008,0.075,s,UF); G.cyl(0,0.148,s*0.14,0.016,wd?0.34:0.5,'x',UF,8); });
+    return {eng:G, ...(sp.ax.length===3?heroCoCo(sp):heroBoBo(sp))};
   }
   /* ---- Stainless streamliner (1934; 28 Nov 2026, pack American diesel classics, sold on its own as
      trainmasters.engine.streamliner): the power car of the first diesel streamlined train, in two carriage places on two
@@ -27708,6 +27895,15 @@ const SHED_HISTORY={
   c170:'The first Turbostar ran in 1998, built in Derby, and it was such a success that hundreds of cars followed for lines all over Britain, from the Scottish Highlands to the south coast. Light aluminium bodies, smooth underfloor engines and big windows made them quick, quiet and pleasant to ride. Their family grew to include electric versions too, and they are still a common sight today.',
   c175:'Built in Birmingham from 1999, these twenty-seven units brought new comfort to routes in Wales and the North West of England, along the coast and down through the border country. They are close cousins of the fast intercity units built at the same works, with the same smooth nose, and each car has its own engine. They carried passengers faithfully for more than twenty years.',
   c166:'Twenty-one of these three-car units were built in York in 1992 and 1993 for the busy outer-suburban lines west of London, the first of their family with air-conditioning for the longer runs. Each car has its own engine, and wide sliding doors let crowds on and off quickly. In later years they moved west to carry commuters and holiday-makers round Bristol and the West Country.',
+  sa15f:'South Africa ordered the first of these big engines in 1938 and kept ordering them for ten years, 255 in all, built in Britain and Germany. On the narrow Cape gauge they carried a boiler as big as many a main-line engine in Europe, and they hauled heavy passenger and goods trains across the high, open grasslands of the Free State and the Transvaal. Crews counted them among the best engines on the railway, and some were still steaming near the end of the century.',
+  nsw38:'Thirty of these Pacifics were built in New South Wales between 1943 and 1949, the first five in smooth streamlined casings, painted green in the middle of the war. They hauled the fastest expresses out of Sydney, north to Newcastle and south towards Melbourne, and they could run at well over 70 mph. Their streamlining came off in later years, but the first of the class was saved, and it is one of the most famous engines in Australia: it once ran right across the country from Sydney to Perth.',
+  wdm2:'India bought its first of these diesels from America in 1962, and from 1964 began building them at its own works in Varanasi. About 2,700 were made, and for decades they hauled almost everything on India’s broad-gauge lines: mail trains, goods trains and expresses across the plains. Their deep, thudding engines and loud horns were part of every journey, and many were rebuilt and kept working well into the 2010s.',
+  yp:'India’s metre-gauge lines needed a light express engine that could run on thin track, and in 1949 the first of these little Pacifics arrived, built at first in America and Europe and later in India itself. 871 were made, the last in 1970, among the last main-line steam engines built anywhere. They worked passenger trains across the plains and into the hills until the 1990s, and several are kept, a few still in steam.',
+  sy:'China built these small Mikados from 1960 until 1999, about 1,800 of them, for steelworks, coal mines, factories and quiet branch lines. They were the last steam engines built anywhere for everyday work, and a few were still busy in mines and factories well into the 2010s, when railway lovers came from all over the world to see and hear them.',
+  jf:'The first of these sturdy Mikados were built in the 1930s, many of them in Japan, for the railways of north-east China, and after the war Chinese works built many more. Well over a thousand hauled goods trains across China for half a century, some still at work in the 1990s, and their red wheels and big smoke deflectors set the look of the Chinese steam engines that followed.',
+  sa25:'Between 1953 and 1955 ninety of these big engines were built in Britain and Germany for the line across the Karoo, where water was scarce and often salty. Their huge tenders turned the used steam back into water through radiators cooled by big fans, so one fill lasted hundreds of miles. They were noisy and complicated, and from the 1970s most were rebuilt as ordinary engines, but in their day they were a wonder of the railway world.',
+  vics:'Victoria built four of these big three-cylinder Pacifics in 1928 to haul its heaviest expresses. In 1937 they were dressed in streamlined casings and painted blue and gold to haul a new fast train from Melbourne to the New South Wales border, a train famous all over Australia for its speed and comfort. They worked the line until diesels came in the early 1950s.',
+  nzja:'Built from 1946, first in New Zealand’s own workshops in Dunedin and later in Scotland, the Ja class hauled expresses and goods trains along the South Island’s long main lines. They were among the last steam engines New Zealand ever built, and among the best loved: the last ones worked until 1971, and several are kept and still steam on special trips.',
   c800:'Built from 2014, many of them in a new factory in the north-east of England to a Japanese design, these trains took over the fast services from London to the West Country, Wales, Yorkshire and Scotland from 2017. Each one can run from the overhead wires or, where there are none, from diesel engines under its floors, changing over on the move. Hundreds of their cars now run on Britain\'s main lines.',
   saint:'In 1902 the Great Western built a bold new express engine with two big outside cylinders, a tapered boiler and long-travel valves, ideas gathered from America and France. Over seventy followed, many named after saints, ladies of legend and the heroes of famous novels. They ran the fastest expresses to the West Country and South Wales, and in 1924 one was rebuilt with smaller wheels to become the very first Hall.',
   nohab:'In 1954 a Swedish engine works began building diesels under licence from America, with the same rounded "bulldog" nose as the famous streamliners but on six-wheeled bogies for lighter European track. Denmark, Norway, Belgium, Luxembourg and Hungary bought them too. They were so well built that many ran for fifty years, and they are still loved across Scandinavia.',
