@@ -1798,6 +1798,12 @@ const WHISTLES={
   re44:{horn:true,notes:[69,64],step:0.4,len:0.46,lp:2100,vol:0.14},   /* Re 4/4 II (28 Nov 2026): the Swiss two-tone, high then low, a shade below the Ae 4/7's */
   ob1020:{horn:true,notes:[78],step:0,len:0.7,lp:2400,vol:0.13},   /* Class 1020 (28 Nov 2026): an old electric's single shrill whistle, a shade lower than the E 94's */
   bb9200:{horn:true,notes:[70,65],step:0.34,len:0.4,lp:2200,vol:0.14},   /* BB 9200 (28 Nov 2026): a French two-tone, a little lower and slower than the CC 6500's */
+  c121:{horn:true,notes:[70,65],step:0.36,len:0.34,lp:1400,vol:0.13},   /* Class 121 (28 Nov 2026, pack Branch-line units): an old, mellow two-tone, lower and slower than the Class 101's */
+  c150:{horn:true,notes:[75,70],step:0.3,len:0.3,lp:1900,vol:0.13},   /* Class 150 (28 Nov 2026, pack Branch-line units): a short, clear two-tone */
+  c156:{horn:true,notes:[74,68],step:0.34,len:0.34,lp:1800,vol:0.13},   /* Class 156 (28 Nov 2026, pack Branch-line units): a two-tone a little lower and wider than the Class 150's */
+  c170:{horn:true,notes:[78,73],step:0.3,len:0.32,lp:2300,vol:0.13},   /* Class 170 (28 Nov 2026, pack Branch-line units): a clean, bright modern two-tone */
+  c175:{horn:true,notes:[77,71],step:0.32,len:0.34,lp:2200,vol:0.13},   /* Class 175 (28 Nov 2026, pack Branch-line units): a bright high-low two-tone, a shade below the Class 180's */
+  c166:{horn:true,notes:[76,71],step:0.28,len:0.3,lp:2100,vol:0.13},   /* Class 166 (28 Nov 2026, pack Branch-line units): a brisk two-tone for the busy suburban lines */
   c800:{horn:true,notes:[80,75],step:0.28,len:0.32,lp:2600,vol:0.13},   /* Class 800 (24 Nov 2026): a clean, modern high-low two-tone, a shade above the Class 91's */
   saint:{notes:[88,95],mix:[1,0.45],len:0.62,att:0.035},   /* GWR Saint (24 Nov 2026): the shrill GWR whistle, a shade higher and shorter again than the Hall's */
   nohab:{horn:true,notes:[50,55],step:0.5,len:0.62,lp:1000,vol:0.16},   /* Scandinavian bulldog diesel (24 Nov 2026): a deep, mellow low-high two-tone */
@@ -1959,6 +1965,12 @@ const HERITAGE_SOUNDS={
   re44:{kind:'electric',hum:88,whine:[200,1400],lp:1900,vol:0.056},   /* Re 4/4 II (28 Nov 2026): the Swiss transformer's hum and a smooth, rising whine */
   ob1020:{kind:'electric',hum:69,whine:[125,780],lp:1150,vol:0.064},   /* Class 1020 (28 Nov 2026): the deep hum and the growl of heavy nose-hung motors, like the E 94's */
   bb9200:{kind:'electric',hum:56,whine:[210,1350],lp:1850,vol:0.056},   /* BB 9200 (28 Nov 2026): direct current: a faint hum under its motors' whine */
+  c121:{kind:'diesel',pulse:[5.1,8.1],fire:[1,0.6,0.86,0.56,0.9,0.62],thump:72,dec:0.032,tw:0.4,body:2,rasp:0.58,rc:1150,rdec:0.036,clat:0.32,jit:0.09,lump:0.22,lp:[2100,3800],tc:0.5,whine:[420,780],wv:0.03,vol:0.065},   /* Class 121 (28 Nov 2026): the lumpy, clattering chug of its two old bus-type engines and the mechanical gearbox's low whine */
+  c150:{kind:'diesel',pulse:[5.6,8.8],fire:[1,0.76,0.9,0.72,0.92,0.74],thump:80,dec:0.026,tw:0.4,body:2,rasp:0.5,rc:1350,rdec:0.03,clat:0.16,jit:0.06,lump:0.12,lp:[2200,4000],tc:0.5,whine:[800,1500],wv:0.035,vol:0.06},   /* Class 150 (28 Nov 2026): a busy, steady underfloor chug, the gearbox singing as it gathers speed */
+  c156:{kind:'diesel',pulse:[5.7,9.0],fire:[1,0.78,0.9,0.75,0.93,0.76],thump:82,dec:0.025,tw:0.4,body:2,rasp:0.48,rc:1400,rdec:0.029,clat:0.14,jit:0.055,lump:0.11,lp:[2200,4000],tc:0.5,whine:[900,1650],wv:0.035,vol:0.058},   /* Class 156 (28 Nov 2026): the Class 150's sister: the same chug, a little smoother and higher */
+  c170:{kind:'diesel',pulse:[6.0,9.4],fire:[1,0.87,0.93,0.85,0.95,0.86],thump:86,dec:0.021,tw:0.4,body:2,rasp:0.42,rc:1550,rdec:0.026,clat:0.07,jit:0.04,lump:0.06,lp:[2300,4100],tc:0.5,whine:[1150,2250],wv:0.03,vol:0.052},   /* Class 170 (28 Nov 2026): the smooth, quiet purr of a modern underfloor engine, its turbocharger's whistle over it */
+  c175:{kind:'diesel',pulse:[5.8,9.1],fire:[1,0.84,0.92,0.82,0.95,0.84],thump:80,dec:0.024,tw:0.4,body:2,rasp:0.46,rc:1450,rdec:0.028,clat:0.09,jit:0.05,lump:0.08,lp:[2200,4000],tc:0.5,whine:[1000,2000],wv:0.032,vol:0.055},   /* Class 175 (28 Nov 2026): the Class 180's smooth underfloor purr, a little quicker */
+  c166:{kind:'diesel',pulse:[5.9,9.2],fire:[1,0.82,0.91,0.8,0.94,0.82],thump:84,dec:0.023,tw:0.4,body:2,rasp:0.45,rc:1500,rdec:0.027,clat:0.1,jit:0.05,lump:0.09,lp:[2200,4000],tc:0.5,whine:[950,1900],wv:0.034,vol:0.055},   /* Class 166 (28 Nov 2026): a smooth, busy hum, the hydraulic gearbox's whine rising with speed */
   c800:{kind:'electric',hum:100,whine:[230,1450],lp:1900,vol:0.042},   /* Class 800 (24 Nov 2026): a quiet modern hum, its motors' whine soft and smooth */
   nohab:{kind:'diesel',pulse:[4,7],fire:[1,0.8,0.9,0.74,0.96,0.78],thump:44,dec:0.06,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.07,clat:0.1,jit:0.06,lump:0.11,lp:[1200,2900],whine:[700,1200],wv:0.02,vol:0.07},   /* Scandinavian bulldog diesel (24 Nov 2026): the American two-stroke's deep, steady drum */
   c60:{kind:'diesel',pulse:[4,6.8],fire:[1,0.72,0.88,0.64],thump:42,dec:0.065,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.075,clat:0.1,jit:0.07,lump:0.14,lp:[1200,2900],whine:[800,1300],wv:0.045,vol:0.075},   /* Class 60 (24 Nov 2026): a slow, heavy beat, lowest of the diesels */
@@ -3757,6 +3769,36 @@ const TRAIN_TYPES={
     consist:['engF','engR','van','open','van','van','open','van','tankw','van','open','van'],liv:{body:'#57301f',lining:'#202020',roof:'#5f6366',wheel:'#1c1c1c'}},
   bb9200:{name:'BB 9200',short:'BB 9200',group:'Electric',era:'1957',desc:'The French express electric of 1957: a neat, boxy body with a flat cab front at each end and two big windscreens, four-wheeled bogies, grilles and small windows along the sides and two diamond-shaped pantographs, in deep blue with a white band. Some were the first French engines to run trains at 124 mph every day; 100 mph with blue coaches',cost:112000,speed:5.0,steam:false,run:1250,fare:8.6,goods:false,hero:true,
     consist:['engF','engR','coach','coach','coach','coach','coach','coach','coach'],liv:{body:'#23437a',stripe:'#ecebe6',roof:'#5f6366',wheel:'#1e1e1e',coachLo:'#2b4a7e',coachHi:'#2b4a7e',roof2:'#4f5256'}},
+  /* pack Branch-line units (backlog E3 pack P10, 28 Nov 2026): ENGINE_SKUS.c121 / c150 / c156 / c170 / c175 / c166, not
+     Pro and not Heritage, soon until their store items exist; hero models near the camera. Generic era colours: no
+     logos, no names, no numbers. Each driving car is two carriage places on two four-wheeled bogies; a two-car unit's
+     other car is the same turned round at the far end (pcR, pcF, as the Class 158's), a three-car unit has one smooth
+     middle car (coach, sleek, in its own colours) between them. The cars carry the passengers (unitPax: paxCars counts
+     the unit as that many coaches; unit: shown in the works list in place of a coach count).
+     The Class 121: one car with a cab at both ends (engF, engR); BR green (body) with cream lines (stripe), a small
+     yellow panel on each front (ends), a grey roof */
+  c121:{name:'Class 121 Bubble Car',short:'Class 121',group:'Diesel',era:'1960',desc:'The little “bubble car” of 1960: a single diesel railcar with a cab at both ends, so it needs no locomotive and never has to turn round. A rounded roof dome over two windscreens at each end, a small yellow warning panel, slam doors all along its sides and two engines under the floor, in BR green with cream lines. 70 mph on its own up and down the quietest branch lines, with a lumpy old-fashioned chug',cost:22000,speed:3.5,steam:false,run:220,fare:5.4,goods:false,hero:true,unitPax:2,unit:'a single railcar',
+    consist:['engF','engR'],liv:{body:'#2f5a3a',stripe:'#e6dcb8',ends:'#f2c230',roof:'#5b605d',wheel:'#202020'}},
+  /* the Class 150: two cars (engF, engR, then pcR, pcF); white (body) with a dark blue window band (band) and a light blue
+     line under it (stripe), a yellow front (ends), a grey roof */
+  c150:{name:'Class 150 Sprinter',short:'Class 150',group:'Diesel',era:'1984',desc:'The Sprinter of 1984, the first of a new generation of diesel units for local lines: two boxy cars with flat fronts, a gangway door in the middle of each front between two windscreens, a yellow front below them, wide double sliding doors for busy stops and an engine under each car, in white with a dark blue window band and a light blue line. No locomotive and no coaches: 75 mph on local lines all over Britain',cost:40000,speed:3.75,steam:false,run:420,fare:6.6,goods:false,hero:true,unitPax:3,unit:'a two-car unit',
+    consist:['engF','engR','pcR','pcF'],liv:{body:'#e9ebea',band:'#22336b',stripe:'#5b9fd6',ends:'#f2c230',roof:'#7d8286',wheel:'#202020'}},
+  /* the Class 156: two cars (engF, engR, then pcR, pcF); two-tone green: light green above (body), dark green below
+     (lower) with a white line between (stripe), dark green doors, a yellow front (ends) */
+  c156:{name:'Class 156 Super Sprinter',short:'Class 156',group:'Diesel',era:'1987',desc:'The Super Sprinter of 1987, built for longer country routes: two cars with rounded fronts, a gangway door between windscreens set in a black surround, single sliding doors near the ends of each car so the seats between are comfortable, and an engine under each car, in two-tone green with a white line. No locomotive and no coaches: 75 mph across the hills and moors',cost:48000,speed:3.75,steam:false,run:480,fare:7.2,goods:false,hero:true,unitPax:3,unit:'a two-car unit',
+    consist:['engF','engR','pcR','pcF'],liv:{body:'#9cc68a',lower:'#235a3a',stripe:'#f0f0ea',doors:'#235a3a',ends:'#f2c230',roof:'#6e7276',wheel:'#202020'}},
+  /* the Class 170: three cars (engF, engR, one smooth middle car, pcR, pcF); silver (body) with a dark window band
+     (band), a purple line low down (stripe) and purple doors, a yellow nose (ends) */
+  c170:{name:'Class 170 Turbostar',short:'Class 170',group:'Diesel',era:'1998',desc:'The Turbostar of 1998: three smooth cars with curved fronts, one big wraparound windscreen in a black surround and a yellow nose bulging forward round the coupler, wide plug doors a third of the way along each side and an engine under every car, in silver with a purple line and purple doors. 100 mph on busy regional routes, quick, quiet and smooth',cost:84000,speed:5.0,steam:false,run:800,fare:8.6,goods:false,hero:true,unitPax:4,unit:'a three-car unit',
+    consist:['engF','engR','coach','pcR','pcF'],liv:{body:'#c3c7cb',band:'#33363b',stripe:'#5e2a74',doors:'#5e2a74',ends:'#f2c230',roof:'#5a5e62',wheel:'#202020',coachLo:'#c3c7cb',coachHi:'#c3c7cb',coachLine:'#5e2a74',coachBand:'#33363b',roof2:'#5a5e62',sleek:true}},
+  /* the Class 175: three cars, heroDEMU's smooth rounded nose (as the Class 180's, its intercity cousin); teal (body)
+     with a white line (stripe), a yellow nose (ends) */
+  c175:{name:'Class 175 Coradia',short:'Class 175',group:'Diesel',era:'1999',desc:'The Coradia of 1999, a regional cousin of the fast intercity units: three cars with a smooth, rounded nose, a big raked windscreen and a yellow front, plug doors near the ends of the cars and an engine under every car, in teal with a white line. 100 mph along the coast and through the hills of Wales and the North West',cost:88000,speed:5.0,steam:false,run:840,fare:8.8,goods:false,hero:true,unitPax:4,unit:'a three-car unit',
+    consist:['engF','engR','coach','pcR','pcF'],liv:{body:'#23878a',stripe:'#e9f2ee',ends:'#f2c230',roof:'#4a5054',wheel:'#202020',coachLo:'#23878a',coachHi:'#23878a',coachLine:'#e9f2ee',roof2:'#4a5054',sleek:true}},
+  /* the Class 166: three cars; white (body) with a blue line (stripe) and a green one under it (stripe2), a yellow front
+     (ends) */
+  c166:{name:'Class 166 Networker Turbo',short:'Class 166',group:'Diesel',era:'1992',desc:'The Networker Turbo of 1992, built for busy outer-suburban lines: three cars with an upright lower front and a big windscreen raked steeply back to the roof, a pillar in its middle, wide double sliding doors, air-conditioning and an engine under every car, in white with blue and green lines. 90 mph out of the city and along the river valley',cost:76000,speed:4.5,steam:false,run:760,fare:8.0,goods:false,hero:true,unitPax:4,unit:'a three-car unit',
+    consist:['engF','engR','coach','pcR','pcF'],liv:{body:'#f1f2ee',stripe:'#1f4ea3',stripe2:'#2e9a4a',ends:'#f2c230',roof:'#8a8e92',wheel:'#202020',coachLo:'#f1f2ee',coachHi:'#f1f2ee',coachLine:'#1f4ea3',roof2:'#8a8e92',sleek:true}},
   /* the Class 800 (ENGINE_SKUS.c800): a driving car in two carriage places on two four-wheeled bogies, three smooth
      trailers (sleek, in its own colours) and a matching driving car at the far end, facing back (pcR its inner half, pcF
      its nose: cabs, not paying coaches); dark green (body) with a gold line (stripe) and a fine white one (band), a
@@ -7268,6 +7310,30 @@ function usHood2D(k,part,box,dt,poly,L){ if(part==='tender') return; const b=L.b
   for(const [x,d] of [[SH[1],1],[LH[0],-1]]) dt('#fff3c4',x-d*0.012,0,0.022);
 }
 for(const id of ['gp7','gp9','rs3']) HERIT_2D[id]=(part,box,dt,poly,L)=>usHood2D(id,part,box,dt,poly,L);
+/* pack Branch-line units from above (28 Nov 2026): the roof with its ventilators (or air-conditioning pods) and the
+   exhaust, the line along the sides, the front: the windscreen showing over the yellow (the gangway door of the Classes
+   150 and 156, the Class 170's curved nose), the coupler; the Class 121 with a cab at both ends (the roof dome, the small
+   yellow panel, buffers) and its rain strips; the others the gangway bellows at the back. The Class 175 is heritDEMU2D's */
+function heritBranch2D(box,dt,poly,L,k){ const b=L.body, R=L.roof||'#6e7276', Y=L.ends||'#f2c230', ST=L.stripe||b, hi='rgba(255,255,255,0.12)', lo='rgba(0,0,0,0.16)', dbl=k==='c121', WS='#1c2731';
+  const fx={c121:0.8,c150:0.83,c156:0.828,c170:0.856,c166:0.834}[k], rr={c121:0.03,c150:0.035,c156:0.07,c170:0.09,c166:0.05}[k], xb=dbl?-fx:-0.81;
+  box(b,xb,fx,-0.205,0.205,rr);
+  if(ST!==b){ box(ST,xb+0.03,fx-0.06,-0.211,-0.203); box(ST,xb+0.03,fx-0.06,0.203,0.211); }
+  box(R,xb+0.02,fx-(dbl?0.06:0.07),-0.188,0.188,0.04); box(hi,xb+0.03,fx-0.08,-0.08,-0.02); box(lo,xb+0.03,fx-0.08,0.11,0.188);
+  for(const m of dbl?[1,-1]:[1]){ const X=(a,c)=>m>0?[a,c]:[-c,-a];
+    if(dbl){ box(b,...X(0.74,0.79),-0.16,0.16,0.04); box('rgba(0,0,0,0.25)',...X(0.755,0.775),-0.04,0.04); box(WS,...X(0.79,0.8),-0.17,0.17); box(Y,...X(0.8,0.806),-0.09,0.09);
+      box('#141414',...X(0.806,0.818),-0.2,0.2); for(const z of [-0.135,0.135]) dt('#2a2a2a',m*0.83,z,0.022); continue; }
+    if(k==='c170'){ poly(WS,[[fx-0.12,-0.19],[fx-0.05,-0.17],[fx-0.025,-0.1],[fx-0.018,0],[fx-0.025,0.1],[fx-0.05,0.17],[fx-0.12,0.19],[fx-0.1,0]]); poly(Y,[[fx-0.035,-0.15],[fx-0.008,-0.08],[fx,0],[fx-0.008,0.08],[fx-0.035,0.15],[fx-0.05,0]]); }
+    else if(k==='c166'){ box(WS,fx-0.11,fx-0.025,-0.18,0.18,0.02); box('#141414',fx-0.07,fx-0.06,-0.18,0.18); box(Y,fx-0.025,fx,-0.19,0.19,0.01); }
+    else { box('#141414',fx-0.06,fx-0.012,-0.19,0.19,0.02); box(WS,fx-0.045,fx-0.012,-0.17,0.17); box(Y,fx-0.012,fx,-0.19,0.19,0.01); }
+    if(k==='c150'||k==='c156') box(Y,fx-0.05,fx+0.006,-0.045,0.045);
+    box('#141414',fx,fx+0.04,-0.03,0.03); }
+  if(k==='c170'||k==='c166') for(const x of [-0.3,0.25]){ box('rgba(0,0,0,0.25)',x-0.12,x+0.12,-0.1,0.1,0.02); for(let i=0;i<4;i++) box('rgba(0,0,0,0.3)',x-0.08+i*0.05,x-0.07+i*0.05,-0.08,0.08); }
+  else if(dbl){ for(const z of [-0.17,0.17]) box('rgba(0,0,0,0.25)',-0.72,0.72,z-0.004,z+0.004); for(let i=0;i<8;i++) dt('rgba(0,0,0,0.28)',-0.56+i*0.16,0,0.016); for(const x of [-0.6,0.6]) dt('#1b1b1b',x,0.12,0.012); }
+  else for(let i=0;i<5;i++) dt('rgba(0,0,0,0.3)',-0.4+i*0.2,0,0.03);
+  if(!dbl){ box('#1b1b1b',-0.645,-0.595,0.03,0.07); box('#141414',-0.825,-0.805,-0.085,0.085); }
+}
+for(const id of ['c121','c150','c156','c170','c166']) HERIT_2D[id]=(part,box,dt,poly,L)=>{ if(part==='tender') return; heritBranch2D(box,dt,poly,L,id); };
+HERIT_2D.c175=(part,box,dt,poly,L)=>{ if(part==='tender') return; heritDEMU2D(box,dt,poly,L,{w:0.52,n:[[0.52,0.205],[0.66,0.2],[0.75,0.18],[0.81,0.14],[0.835,0.08],[0.845,0]]}); };
 /* the stainless streamliner from above: the fluted roof, the red stripe showing at the edges, the rounded shovel nose
    with its windscreens, grille and headlight, the bellows at the back */
 HERIT_2D.streamliner=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.body, R=L.roof||'#b9bdc1', RD=L.stripe||'#b5202a', hi='rgba(255,255,255,0.18)', lo='rgba(0,0,0,0.16)';
@@ -9832,6 +9898,12 @@ ENGINE_SKUS.cc6500={sku:'trainmasters.engine.cc6500',added:'2026-11-28'};   /* o
 ENGINE_SKUS.re44={sku:'trainmasters.engine.re44',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Re 4/4 II (28 Nov 2026, pack France & the Alps): soon until its store items exist */
 ENGINE_SKUS.ob1020={sku:'trainmasters.engine.ob1020',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 1020 (28 Nov 2026, pack France & the Alps): soon until its store items exist */
 ENGINE_SKUS.bb9200={sku:'trainmasters.engine.bb9200',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* BB 9200 (28 Nov 2026, pack France & the Alps): soon until its store items exist */
+ENGINE_SKUS.c121={sku:'trainmasters.engine.c121',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 121 (28 Nov 2026, pack Branch-line units): soon until its store items exist */
+ENGINE_SKUS.c150={sku:'trainmasters.engine.c150',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 150 (28 Nov 2026, pack Branch-line units): soon until its store items exist */
+ENGINE_SKUS.c156={sku:'trainmasters.engine.c156',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 156 (28 Nov 2026, pack Branch-line units): soon until its store items exist */
+ENGINE_SKUS.c170={sku:'trainmasters.engine.c170',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 170 (28 Nov 2026, pack Branch-line units): soon until its store items exist */
+ENGINE_SKUS.c175={sku:'trainmasters.engine.c175',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 175 (28 Nov 2026, pack Branch-line units): soon until its store items exist */
+ENGINE_SKUS.c166={sku:'trainmasters.engine.c166',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 166 (28 Nov 2026, pack Branch-line units): soon until its store items exist */
 ENGINE_SKUS.c800={sku:'trainmasters.engine.c800'};   /* Class 800 (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.saint={sku:'trainmasters.engine.saint'};   /* GWR Saint (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.k4={sku:'trainmasters.engine.k4'};   /* American K4 Pacific (24 Nov 2026): soon until its store item exists */
@@ -9920,6 +9992,10 @@ const ENGINE_PACKS=[
      released together; soon (hidden everywhere) until its store items and its engines' exist */
   {id:'alps',      name:'France & the Alps',               blurb:'Seven engines from France, Switzerland and Austria, from the little crocodile of the Swiss mountains to the broken-nosed CC 6500',
     types:['ge66','r141','p241','cc6500','re44','ob1020','bb9200'], added:'2026-11-28'},
+  /* Branch-line units (backlog E3 pack P10, 28 Nov 2026): six British diesel multiple units, built whole and released
+     together; soon (hidden everywhere) until its store items and its engines' exist */
+  {id:'branchunits', name:'Branch-line units',               blurb:'Six British diesel units for the local lines, from the little green bubble car of 1960 to the Turbostar',
+    types:['c121','c150','c156','c170','c175','c166'], added:'2026-11-28'},
 ];
 function packSku(p){ return 'trainmasters.pack.'+p.id; }
 function packById(id){ return ENGINE_PACKS.find(p=>p.id===id)||null; }
@@ -13707,6 +13783,30 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     bx(-0.22,0.22,0.115,0,0.075,0.32,BLK);
     wh([0.575,0.365,-0.365,-0.575],0.068,DK); }
   for(const id of ['gp7','gp9','rs3']) HERO_FAR[id]=K=>heroFarUSHood(K,id);
+  /* pack Branch-line units far away (28 Nov 2026): the body with its lines and window band, the row of windows, the
+     doors, the yellow front with its windscreen (and gangway door), the roof, the bogies; the Class 121 with a cab at
+     both ends (small yellow panels, buffers), the others the gangway at the back. The Class 175 is heroFarDEMU's */
+  function heroFarBranch(K,k){ const {bx,cx,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#1f2a35'), YEL=C(L.ends||'#f2c230'), ROOF=C(L.roof||'#6e7276'),
+      ST=C(L.stripe||L.body), ST2=C(L.stripe2||L.stripe||L.body), BAND=C(L.band||L.body), LOW=C(L.lower||L.body), DOOR=C(L.doors||L.body), dbl=k==='c121', xb=dbl?-0.79:-0.81, xf=dbl?0.79:0.8;
+    const lines={c121:[[0.405,0.008,ST],[0.545,0.007,ST]],c150:[[0.4,0.02,ST],[0.478,0.135,BAND]],c156:[[0.265,0.13,LOW],[0.338,0.015,ST]],c170:[[0.368,0.015,ST],[0.488,0.115,BAND]],c166:[[0.338,0.015,ST],[0.362,0.015,ST2]]}[k];
+    const doors={c121:[],c150:[[0.27,0.11],[-0.32,0.11]],c156:[[0.6,0.075],[-0.66,0.075]],c170:[[0.3,0.12],[-0.32,0.12]],c166:[[0.27,0.11],[-0.3,0.11]]}[k];
+    bx(xb,xf,0.39,0,0.36,0.41,body); bx(xb+0.01,xf-0.03,0.595,0,0.045,0.38,ROOF);
+    for(const [y,h,c] of lines) bx(xb,xf,y,0,h,0.414,c);
+    bx(dbl?-0.7:-0.74,dbl?0.7:0.66,dbl?0.474:0.482,0,0.09,0.416,WIN);
+    for(const [x,w] of doors) bx(x-w/2,x+w/2,0.39,0,0.32,0.418,DOOR);
+    for(const m of dbl?[1,-1]:[1]){ const X=(a,b)=>m>0?[a,b]:[-b,-a];
+      if(dbl){ bx(...X(0.79,0.802),0.474,0,0.1,0.34,WIN); bx(...X(0.79,0.804),0.33,0,0.11,0.2,YEL); bx(...X(0.795,0.81),0.17,0,0.05,0.4,BLK); for(const s of [-1,1]) cx(...X(0.8,0.84),0.17,s*0.135,0.022,DK,6); continue; }
+      const raked=k==='c166', fr=k==='c170'?0.845:0.828;
+      bx(0.8,fr,0.29,0,0.2,0.38,YEL); bx(0.8,fr-0.002,0.33+0.002,0,0.02,0.39,YEL);
+      if(raked){ bx(0.74,0.8,0.48,0,0.15,0.38,BLK); bx(0.76,0.802,0.47,0,0.12,0.3,WIN); }
+      else { bx(0.8,fr-0.006,0.49,0,0.15,0.37,BLK); bx(0.8,fr-0.004,0.48,0,0.11,0.32,WIN); }
+      if(k==='c150'||k==='c156') bx(fr-0.004,fr+0.01,0.39,0,0.36,0.08,YEL);
+      bx(fr,fr+0.04,0.15,0,0.04,0.07,BLK); }
+    if(!dbl) bx(-0.825,-0.8,0.39,0,0.34,0.16,BLK);
+    bx(-0.3,0.3,0.11,0,0.08,0.32,BLK);
+    wh([0.655,0.405,-0.405,-0.655],0.0625,DK); }
+  for(const id of ['c121','c150','c156','c170','c166']) HERO_FAR[id]=K=>heroFarBranch(K,id);
+  HERO_FAR.c175=(K)=>heroFarDEMU(K,{xs:0.52,tip:0.84,yl:0.4});
   /* the stainless streamliner far away: the fluted body down over the bogies, the red stripe, the shovel nose in two
      steps with its windscreens, grille and headlight, the windows, the roof, the wheels */
   HERO_FAR.streamliner=(K)=>{ const {bx,cx,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#2a3a48'), RED=C(L.stripe||'#b5202a'), ROOF=C(L.roof||'#b9bdc1'), GRL=C('#2e3134'), LENS=C('#fff6cf');
@@ -15026,6 +15126,20 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     gp9:{rD:0.068, bog:0.47, wb:0.105, ax:[-0.105,0.105], wz:0.19, cars:2, build:(L,sp)=>heroUSHood(L,sp,'gp9'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
       tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
     rs3:{rD:0.068, bog:0.46, wb:0.11, ax:[-0.11,0.11], wz:0.19, cars:2, build:(L,sp)=>heroUSHood(L,sp,'rs3'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    /* pack Branch-line units (28 Nov 2026): each driving car in two carriage places on two four-wheeled bogies, 0.84 m
+       wheels; the Class 121 with a cab at both ends; the Class 175 heroDEMU's, set as the Class 180 */
+    c121:{rD:0.0625, bog:0.53, wb:0.125, ax:[-0.125,0.125], wz:0.19, cars:2, build:(L,sp)=>heroBranchDMU(L,sp,'c121'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    c150:{rD:0.0625, bog:0.53, wb:0.125, ax:[-0.125,0.125], wz:0.19, cars:2, build:(L,sp)=>heroBranchDMU(L,sp,'c150'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    c156:{rD:0.0625, bog:0.53, wb:0.125, ax:[-0.125,0.125], wz:0.19, cars:2, build:(L,sp)=>heroBranchDMU(L,sp,'c156'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    c170:{rD:0.0625, bog:0.53, wb:0.125, ax:[-0.125,0.125], wz:0.19, cars:2, build:(L,sp)=>heroBranchDMU(L,sp,'c170'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    c175:{rD:0.064, bog:0.52, wb:0.13, ax:[-0.13,0.13], wz:0.19, cars:2, build:(L,sp)=>heroDEMU(L,sp,'c175'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    c166:{rD:0.0625, bog:0.53, wb:0.125, ax:[-0.125,0.125], wz:0.19, cars:2, build:(L,sp)=>heroBranchDMU(L,sp,'c166'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
       tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
     /* the stainless streamliner's power car: two carriage places on two four-wheeled bogies, 36" wheels */
     streamliner:{rD:0.068, bog:0.5, wb:0.1, ax:[-0.1,0.1], wz:0.19, cars:2, build:(L,sp)=>heroStainless(L,sp), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
@@ -24166,7 +24280,10 @@ void main(){ gl_FragColor=texture2D(map,vUv);
         yw0:0.425,yw1:0.56,yy:0.34,yl:0.27,xn:0.42,win:[6,0.13,0.13,0.1,0.08],doors:[0.33],lights:'band',hatch:true},
       c222:{P:[[0.17,0.895,W,0.155,0.02],[0.2,0.922,W,0.162,0.028],[0.235,0.932,W,0.166,0.03],[0.27,0.925,W,0.166,0.03],[0.31,0.904,W,0.162,0.028],[0.35,0.872,W,0.157,0.026],[0.39,0.83,W-0.001,0.151,0.022],
           [0.43,0.776,W-0.002,0.143,0.018],[0.47,0.714,W-0.003,0.133,0.014],[0.51,0.648,W-0.005,0.12,0.01],[0.55,0.578,W-0.007,0.106,0.006],[YC,0.5,W-0.012,0.09,0.003],[0.603,0.432,0.178,0.075,0],[0.616,0.36,0.13,0.05,0],[0.623,0.29,0.08,0.03,0]],
-        yw0:0.415,yw1:0.555,yy:0.36,yl:0.4,xn:0.4,win:[6,0.12,0.13,0.104,0.08],doors:[0.32],lights:'band'}}[k];
+        yw0:0.415,yw1:0.555,yy:0.36,yl:0.4,xn:0.4,win:[6,0.12,0.13,0.104,0.08],doors:[0.32],lights:'band'},
+      c175:{P:[[0.17,0.81,W,0.1,0.01],[0.2,0.832,W,0.11,0.012],[0.25,0.842,W,0.115,0.012],[0.3,0.838,W,0.115,0.012],[0.35,0.824,W,0.112,0.01],[0.4,0.796,W-0.001,0.108,0.008],[0.45,0.76,W-0.002,0.104,0.006],
+          [0.5,0.72,W-0.004,0.1,0.004],[0.545,0.682,W-0.005,0.095,0.002],[YC,0.642,W-0.01,0.09,0],[0.603,0.606,0.178,0.075,0],[0.616,0.562,0.13,0.05,0],[0.623,0.518,0.08,0.03,0]],
+        yw0:0.41,yw1:0.56,yy:0.36,yl:0.4,xn:0.52,win:[7,0.24,0.124,0.1,0.08],doors:[0.42],lights:'band'}}[k];
     const P=O.P, x0=XB+P[3][3]+0.01, xd=x0+0.05;   /* the back corners are rounded in plan as the nose is: the lines start, and the back door sits, on the flat of the side */
     const S=P.map(([y,f,w,r,bf])=>({y,f,b:y<=YC?XB:y<0.61?XB+0.006:XB+0.016,w,r,bf}));
     const nC=3, zs=[1,0.6,0.2,-0.2,-0.6,-1];
@@ -24222,6 +24339,145 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     both(s=>{ B(-0.02,0.15,s*0.199,0.42,0.06,0.008,GRY); for(const x of [-0.2,-0.06,0.08]) LZ(x,0.15,s*0.2032,0.004,0.06,s,DK); LZ(0.15,0.15,s*0.2032,0.06,0.04,s,BLK); });
     B(-0.02,0.115,0,0.42,0.07,0.34,BLK);
     G.hexa([[0.72,0.06,-0.19],[P[1][1]-0.02,0.08,-0.09],[P[1][1]-0.02,0.08,0.09],[0.72,0.06,0.19],[0.72,0.17,-0.2],[P[1][1],0.17,-0.09],[P[1][1],0.17,0.09],[0.72,0.17,0.2]],DK);   /* the spoiler under the nose */
+    return {eng:G, ...heroBoBo(sp)};
+  }
+  /* ---- Branch-line units (28 Nov 2026, pack Branch-line units): one builder for the Class 121 single railcar and the
+     second-generation units (Classes 150, 156, 170 and 166; the Class 175 is heroDEMU's). One car in two carriage places
+     on two four-wheeled bogies, built round its own centre (x forward, the cab at +x); a two- or three-car unit's far
+     driving car is the same, turned round (pcR / pcF, drawn by its far model). k picks the unit:
+       c121 (1960): a cab at both ends (the same, turned round), each a flat front leaning back a little into a rounded
+         roof dome, two windscreens either side of a centre pillar, a small yellow panel, marker lights, a route indicator
+         box on the dome, buffers and a drawhook; slam doors all along the sides with droplights; BR green, cream lines;
+       c150 (1984): a flat, upright front with a gangway door in the middle between two windscreens, all yellow below them
+         and black above; double sliding doors a third of the way along; white, a dark blue window band, a light blue line;
+       c156 (1987): a rounder front, the gangway door between windscreens that wrap round the corners in a black surround;
+         single sliding doors near each end; two-tone green with a white line;
+       c170 (1998): a smooth curved front with no gangway, one big wraparound windscreen in a black surround and the
+         yellow nose bulging forward round the coupler; double plug doors a third of the way along; silver with a dark
+         window band, a purple line and purple doors; air-conditioning pods on the roof;
+       c166 (1992): the lower front upright, the windscreen raked steeply back to the roof, a pillar in its middle, no
+         gangway; double sliding doors; white with blue and green lines; air-conditioning pods on the roof.
+     The back (-x) of a second-generation car: a flat end with the gangway's bellows. Under the floor the engine raft,
+     fuel tank and equipment cases (the Class 121's two engines and gearboxes). No logos, no numbers. ---- */
+  function heroBranchDMU(L,sp,k){
+    const C=h=>new THREE.Color(h), BODY=C(L.body), ROOF=C(L.roof||'#6e7276'), YEL=C(L.ends||'#f2c230'), BAND=C(L.band||L.body), ST=C(L.stripe||L.body),
+      ST2=C(L.stripe2||L.stripe||L.body), LOW=C(L.lower||L.body), DOOR=C(L.doors||L.body),
+      BLK=C('#141414'), DK=C('#232323'), UF=C('#262728'), STEEL=C('#aab0b5'), WIN=C('#1f2a35'), RUB=C('#0c0c0c'), LENS=C('#fff3c4'), RLENS=C('#c0392b'),
+      SEAM=BODY.clone().multiplyScalar(0.72), ROOFDK=ROOF.clone().multiplyScalar(0.6), ROOFGR=ROOF.clone().multiplyScalar(0.4), GRY=C('#5b6066'), BX=C('#2e2f30'), BLIND=C('#d8d8d0');
+    const G=new Geo(), {B,LZ,LX,LY,rod3,coneX,discX,discY}=heroKit(G), both=f=>{ f(1); f(-1); };
+    const W=0.205, yc=0.565, XB=-0.81, nC=3;
+    const wAt=y=>y<=yc?W:y<=0.586?0.195:y<=0.601?0.172:y<=0.612?0.135:0.09;   /* the roof's crown: its half width above the eaves */
+    /* each unit: its front in side view (prof: [height, front x, how far the middle of the face bulges, half width, corner
+       radius], the last two from the crown and r if not given), the corner radius in plan (r), the end split across
+       (zs), the side colours bottom to top (zones: [top, colour]), more heights for the shell to break at (cuts), the
+       front's colours (fc: height, part, index across), the doors ([x, width, kind]), the windows ([height, tall, wide,
+       pitch]) and where the saloon ends (sx) */
+    const O={
+      c121:{dbl:true, r:0.03, zs:[1,0.86,0.07,-0.07,-0.86,-1],
+        prof:[[0.195,0.8,0,W-0.006],[0.215,0.8,0],[0.42,0.8,0],[0.528,0.794,0,W-0.001],[0.556,0.784,0,W-0.004,0.034],[0.582,0.766,0,W-0.013,0.045],[0.6,0.74,0,0.168,0.055],[0.612,0.705,0,0.115,0.05],[0.617,0.67,0,0.06,0.04]],
+        cuts:[0.272,0.385], zones:[[yc+0.001,BODY]],
+        fc:(y,p,q)=>y<0.215?BLK:p!=='f'?BODY:y>0.272&&y<0.385&&q>=1&&q<=3?YEL:y>0.42&&y<0.528&&(q===1||q===3)?WIN:BODY,
+        doors:[[0.715,0.05,'slam'],[0.47,0.05,'slam'],[0.15,0.05,'slam'],[-0.15,0.05,'slam'],[-0.47,0.05,'slam'],[-0.715,0.05,'slam']], win:[0.474,0.092,0.068,0.078], sx:0.75},
+      c150:{r:0.035, zs:[1,0.84,0.32,-0.32,-0.84,-1], gang:true, w0:0.42, w2:0.545,
+        prof:[[0.17,0.826,0.006],[0.42,0.83,0.006],[0.545,0.818,0.005],[yc,0.812,0.004],[0.586,0.8,0.002],[0.601,0.784,0],[0.612,0.762,0],[0.618,0.735,0]],
+        cuts:[0.2,0.39,0.41], zones:[[0.2,DK],[0.39,BODY],[0.41,ST],[0.545,BAND],[yc+0.001,BODY]],
+        fc:(y,p,q)=>y<0.2?BLK:y<0.42?YEL:y<0.545?(p==='f'&&(q===1||q===3)?WIN:p==='f'&&q===2?YEL:BLK):y<yc+0.001?BLK:null,
+        doors:[[0.72,0.05,'cab'],[0.27,0.11,'dbl'],[-0.32,0.11,'dbl']], win:[0.478,0.1,0.12,0.13], sx:0.68},
+      c156:{r:0.07, zs:[1,0.92,0.37,-0.37,-0.92,-1], gang:true, w0:0.41, w2:0.56,
+        prof:[[0.17,0.818,0.018],[0.33,0.828,0.022],[0.41,0.825,0.02],[0.49,0.812,0.018],[0.56,0.795,0.014],[yc,0.792,0.013],[0.586,0.776,0.008],[0.601,0.755,0.004],[0.612,0.73,0.002],[0.618,0.7,0]],
+        cuts:[0.2,0.345], zones:[[0.2,DK],[0.33,LOW],[0.345,ST],[yc+0.001,BODY]],
+        fc:(y,p,q)=>y<0.2?BLK:y<0.41?YEL:y<0.56?(p==='f'?(q===1||q===3?WIN:q===2?YEL:BLK):(q===nC-1||q===nC?WIN:BLK)):y<yc+0.001?BLK:null,
+        doors:[[0.72,0.045,'cab'],[0.6,0.075,'one'],[-0.66,0.075,'one']], win:[0.482,0.095,0.09,0.102], sx:0.66},
+      c170:{r:0.09, zs:[1,0.5,0,-0.5,-1], w0:0.4, w2:0.555,
+        prof:[[0.17,0.83,0.03],[0.21,0.85,0.035],[0.26,0.856,0.036],[0.31,0.852,0.035],[0.37,0.838,0.032],[0.4,0.828,0.03],[0.46,0.806,0.027],[0.51,0.784,0.022],[0.555,0.762,0.018],[yc,0.756,0.016],[0.586,0.738,0.01],[0.601,0.714,0.005],[0.612,0.684,0.002],[0.618,0.65,0]],
+        cuts:[0.2,0.36,0.375,0.43,0.545], zones:[[0.2,DK],[0.36,BODY],[0.375,ST],[0.43,BODY],[0.545,BAND],[yc+0.001,BODY]],
+        fc:(y,p,q)=>{ const a1=p==='f'||q===nC-1||q===nC, a2=p==='f'||(q>=nC-2&&q<=nC+1);
+          return y<0.2?BLK:!a2?null:y<0.37?YEL:y<0.4?BLK:y<0.555?(a1?WIN:BLK):y<yc+0.001?BLK:null; },
+        doors:[[0.3,0.12,'plug'],[-0.32,0.12,'plug']], win:[0.488,0.1,0.13,0.15], sx:0.62},
+      c166:{r:0.05, zs:[1,0.88,0.04,-0.04,-0.88,-1], w0:0.41, w2:0.56,
+        prof:[[0.17,0.83,0.01],[0.39,0.834,0.012],[0.41,0.828,0.011],[0.47,0.79,0.009],[0.53,0.752,0.007],[0.56,0.733,0.006],[yc,0.73,0.006],[0.586,0.716,0.004],[0.601,0.7,0.002],[0.612,0.68,0],[0.618,0.655,0]],
+        cuts:[0.2,0.33,0.345,0.355,0.37], zones:[[0.2,DK],[0.33,BODY],[0.345,ST],[0.355,BODY],[0.37,ST2],[yc+0.001,BODY]],
+        fc:(y,p,q)=>y<0.2?BLK:y<0.39?YEL:y<0.41?BLK:y<0.56?(p==='f'&&(q===1||q===3)?WIN:BLK):y<yc+0.001?BLK:null,
+        doors:[[0.67,0.045,'cab'],[0.27,0.11,'dbl'],[-0.3,0.11,'dbl']], win:[0.48,0.1,0.11,0.12], sx:0.63}}[k];
+    const P=O.prof;
+    const at=y=>{ let i=0; while(i<P.length-2&&P[i+1][0]<y) i++; const a=P[i], b=P[i+1], u=clamp((y-a[0])/(b[0]-a[0]),0,1),
+      m=(j,d)=>{ const va=a[j]!=null?a[j]:d(a[0]), vb=b[j]!=null?b[j]:d(b[0]); return va+(vb-va)*u; };
+      return {f:m(1), bf:m(2), w:m(3,wAt), r:m(4,yy=>Math.min(O.r,wAt(yy)-0.03))}; };
+    const ys=[...new Set(P.map(p=>p[0]).concat(O.cuts))].sort((a,b)=>a-b);
+    const S=ys.map(y=>{ const q=at(y); return {y,f:q.f,b:O.dbl?-q.f:XB+(y>0.6?0.02:y>yc?0.006:0),w:q.w,r:q.r,bf:q.bf,bb:O.dbl?q.bf:0}; });
+    const sideCol=y=>{ for(const [t,c] of O.zones) if(y<t) return c; return ROOF; };
+    heroShell(G,S,(x,y,z,p,q)=>{
+      if(p==='top') return ROOF;
+      const end=p==='f'||p==='cf'?1:p==='b'||p==='cb'?-1:0;
+      if(end>0||(end<0&&O.dbl)){ const c=O.fc(y,p==='b'?'f':p==='cb'?'cf':p,q); if(c) return c; }
+      if(end<0&&y<0.2) return DK;
+      return sideCol(y);
+    },{nS:8,nC,zs:O.zs});
+    /* the front's x at height y, z across (on the flat of the face) */
+    const fX=(y,z)=>{ const q=at(y), zw=q.w-q.r, u=Math.min(1,Math.abs(z)/zw); return q.f+q.bf*(1-u*u); };
+    if(O.dbl){
+      /* ---- the Class 121's two ends: rubber round the windscreens, wipers, the marker and tail lights, the centre lamp, the
+         route indicator box on the dome, buffers, the drawhook, the air pipes and jumper cables, the horn ---- */
+      for(const m of [1,-1]){ const X=x=>m*x, F=(y,z,d=0.0012)=>X(fX(y,z)+d), xa=(a,b)=>[Math.min(X(a),X(b)),Math.max(X(a),X(b))];
+        both(s=>{ const z=s*0.094;
+          LX(F(0.528,z),0.525,z,0.15,0.007,m,RUB); LX(F(0.42,z),0.423,z,0.15,0.007,m,RUB); LX(F(0.474,s*0.17),0.474,s*0.17,0.007,0.11,m,RUB); LX(F(0.474,s*0.016),0.474,s*0.016,0.012,0.11,m,RUB);
+          rod3([F(0.43,s*0.13,0.004),0.43,s*0.13],[F(0.5,s*0.085,0.004),0.5,s*0.085],0.005,BLK);   /* wipers */
+          B(F(0.258,s*0.155,0.004),0.258,s*0.155,0.008,0.028,0.032,RUB); discX(F(0.258,s*0.155,0.0095),0.258,s*0.155,0.011,m,s>0?LENS:RLENS,8);
+          const zb=s*0.135; coneX(...xa(0.802,0.826),0.17,zb,0.016,0.016,BLK,6); coneX(...xa(0.824,0.838),0.17,zb,0.01,0.01,STEEL,5); G.cyl(X(0.839),0.17,zb,0.026,0.006,'x',STEEL,8);   /* buffers */
+          rod3([X(0.806),0.24,s*0.06],[X(0.828),0.16,s*0.075],0.009,BLK); rod3([X(0.806),0.24,s*0.03],[X(0.822),0.17,s*0.035],0.007,DK); });
+        discX(F(0.357,0,0.0015),0.357,0,0.012,m,LENS,8);   /* the centre lamp */
+        B(X(fX(0.575,0)-0.004),0.575,0,0.016,0.03,0.085,BLK); LX(X(fX(0.575,0)+0.007),0.575,0,0.06,0.016,m,BLIND);   /* the route indicator box */
+        B(X(0.805),0.17,0,0.01,0.05,0.4,BLK); B(X(0.82),0.168,0,0.03,0.014,0.014,BLK); B(X(0.835),0.163,0,0.01,0.01,0.026,STEEL);   /* buffer beam, drawhook */
+        G.cyl(X(0.66),0.625,0,0.012,0.05,'x',BX,6); }   /* the horn on the roof */
+    } else {
+      const xc=fX(0.17,0), w0=O.w0, w2=O.w2;
+      /* ---- the cab end: the gangway door (Classes 150 and 156), wipers, the light clusters, the coupler with its air
+         pipes, the skirt and plough, the destination blind ---- */
+      if(O.gang){ const Y=[0.2,0.27,0.34,w0+0.012,w2-0.022,w2], xd=y=>fX(y,0)+0.007;
+        for(let i=0;i<Y.length-1;i++){ const ya=Y[i], yb=Y[i+1]; G.quad([xd(ya),ya,-0.04],[xd(ya),ya,0.04],[xd(yb),yb,0.04],[xd(yb),yb,-0.04],i===3?WIN:YEL,[1,0,0]);   /* the door, proud of the front */
+          for(const z of [-0.047,0.047]) rod3([xd(ya)-0.002,ya,z],[xd(yb)-0.002,yb,z],0.012,BLK); }   /* and its frame, following the front's lean */
+        rod3([xd(w2)-0.002,w2,-0.047],[xd(w2)-0.002,w2,0.047],0.012,BLK); B(xd(0.36),0.36,0.026,0.006,0.03,0.008,STEEL); }
+      else { const y=(w2+yc)/2+0.002; LX(fX(y,0)+0.003,y,0,0.16,0.016,1,RUB); LX(fX(y,0)+0.0042,y,0,0.15,0.01,1,C('#e8a23a')); }   /* the destination display over the windscreen */
+      both(s=>{ const z=s*(k==='c170'?0.12:0.135), y=k==='c170'?0.29:0.3, x=fX(y,z);
+        B(x+0.004,y,z,0.012,0.042,0.075,RUB); discX(x+0.011,y,z-s*0.02,0.013,1,LENS,10); discX(x+0.011,y,z+s*0.006,0.011,1,LENS,10); discX(x+0.011,y,z+s*0.028,0.009,1,RLENS,8);
+        const zw=O.gang?0.1:0.07; rod3([fX(w0+0.012,s*zw)+0.005,w0+0.012,s*zw],[fX(w0+0.075,s*(zw-0.04))+0.005,w0+0.075,s*(zw-0.04)],0.004,BLK);   /* wipers */
+        rod3([xc+0.01,0.14,s*0.04],[xc+0.032,0.1,s*0.05],0.01,BLK); });
+      B(xc+0.012,0.15,0,0.04,0.035,0.06,BLK); B(xc+0.037,0.15,0,0.012,0.05,0.07,DK); B(xc+0.045,0.15,0,0.006,0.03,0.05,STEEL);   /* the coupler */
+      G.hexa([[xc-0.03,0.04,-0.19],[xc+0.015,0.035,-0.07],[xc+0.015,0.035,0.07],[xc-0.03,0.04,0.19],[xc-0.03,0.12,-0.2],[xc-0.005,0.12,-0.07],[xc-0.005,0.12,0.07],[xc-0.03,0.12,0.2]],BLK);   /* skirt and plough */
+      /* ---- the back: the gangway's rubber bellows and a small coupler to the next car ---- */
+      B(XB-0.006,0.39,0,0.012,0.36,0.17,RUB); B(XB-0.012,0.39,0,0.004,0.31,0.12,DK); B(XB-0.015,0.15,0,0.03,0.035,0.05,BLK);
+    }
+    /* ---- the sides: the doors (slam doors with droplights, the cab doors, sliding or plug doors with their windows), the
+       windows filling the panels between them, the Class 121's cream lines, the cantrail gutter ---- */
+    both(s=>{ const z=s*(W+0.0012), z2=s*(W+0.0024), z3=s*(W+0.0034), z4=s*(W+0.0044);
+      for(const [x,w,kind] of O.doors){
+        if(kind==='slam'){ for(const d of [-w/2,w/2]) LZ(x+d,0.37,z2,0.003,0.33,s,SEAM); LZ(x,0.535,z2,w,0.003,s,SEAM); LZ(x,0.474,z3,w-0.016,0.08,s,WIN); B(x+w*0.3,0.37,s*(W+0.004),0.004,0.03,0.004,STEEL); continue; }
+        if(kind==='cab'){ for(const d of [-w/2,w/2]) LZ(x+d,0.385,z2,0.003,0.33,s,SEAM); LZ(x,0.55,z2,w,0.003,s,SEAM); LZ(x,0.485,z3,w-0.012,0.08,s,WIN); B(x+w*0.3,0.37,s*(W+0.004),0.004,0.02,0.004,STEEL); continue; }
+        LZ(x,0.385,z2,w,0.34,s,RUB); LZ(x,0.385,z3,w-0.007,0.33,s,DOOR);
+        if(kind==='one') LZ(x,0.48,z4,w-0.026,0.1,s,WIN); else { for(const d of [-w/4,w/4]) LZ(x+d,0.48,z4,w/2-0.022,0.1,s,WIN); LZ(x,0.385,z4,0.002,0.33,s,RUB); }
+        B(x,0.21,s*(W-0.004),w,0.008,0.016,DK); }
+      const [wy,wh,ww,wp]=O.win, obs=O.doors.map(([x,w])=>[x-w/2-0.012,x+w/2+0.012]).concat([[O.sx,9],[-9,O.dbl?-O.sx:-0.76]]).sort((a,b)=>a[0]-b[0]);
+      for(let i=0;i<obs.length-1;i++){ const a=obs[i][1], b=obs[i+1][0], n=Math.floor((b-a)/wp); if(n<1) continue; const pw=(b-a)/n, w=Math.min(ww,pw-0.012);
+        for(let j=0;j<n;j++){ const x=a+pw*(j+0.5); LZ(x,wy,z2,w,wh,s,RUB); LZ(x,wy,z3,w-0.008,wh-0.01,s,WIN); } }
+      if(O.dbl){ LZ(0,0.405,z3,1.5,0.007,s,ST); LZ(0,0.545,z3,1.5,0.006,s,ST); }   /* the cream lines */
+      else LZ(-0.06,yc-0.003,z2,1.4,0.004,s,SEAM);
+      LZ(0,0.2,z2,O.dbl?1.56:1.6,0.004,s,DK); });
+    /* ---- the roof: the Class 121's rain strips, round ventilators and exhaust pipes; the others' exhaust stack and
+       ventilator domes, or air-conditioning pods (Classes 170 and 166) ---- */
+    const yt=0.618;
+    if(O.dbl){ both(s=>rod3([-0.72,0.597,s*0.17],[0.72,0.597,s*0.17],0.006,ROOFDK)); for(let i=0;i<8;i++) G.cyl(-0.56+i*0.16,0.62,0,0.016,0.012,'y',ROOFDK,5);
+      for(const x of [-0.6,0.6]) G.cyl(x,0.632,0.12,0.011,0.04,'y',BLK,6); }
+    else { B(-0.62,yt+0.01,0.05,0.05,0.02,0.04,DK); G.cyl(-0.62,yt+0.03,0.05,0.012,0.03,'y',BLK,8);
+      if(k==='c170'||k==='c166') for(const x of [-0.3,0.25]){ B(x,yt+0.008,0,0.24,0.026,0.2,ROOFDK); LY(x,yt+0.0215,0,0.22,0.18,ROOF); for(let i=0;i<4;i++) LY(x-0.075+i*0.05,yt+0.022,0,0.012,0.16,ROOFGR); }
+      else for(let i=0;i<5;i++){ const x=-0.4+i*0.2; G.cyl(x,yt+0.002,0,0.03,0.008,'y',ROOFDK,10); discY(x,yt+0.0065,0,0,0.024,ROOFGR,10); } }
+    /* ---- underframe: the solebar, the engine raft (the Class 121's two engines and gearboxes), the fuel tank, the
+       equipment cases and air tanks ---- */
+    if(O.dbl) B(0,0.18,0,1.6,0.03,0.4,UF); else B(0,0.162,0,1.6,0.026,0.4,UF);   /* (the Class 121's body comes down to 0.195) */
+    if(O.dbl){ for(const x of [-0.16,0.16]){ B(x,0.12,0,0.15,0.08,0.24,BLK); B(x+(x>0?-0.105:0.105),0.12,0,0.04,0.06,0.16,DK); }
+      B(0,0.12,0,0.06,0.07,0.32,DK); both(s=>{ for(const x of [-0.16,0.16]) B(x,0.15,s*0.13,0.12,0.012,0.012,STEEL); }); }
+    else { B(-0.12,0.108,0,0.34,0.08,0.3,BLK); both(s=>{ for(let q=0;q<5;q++) LZ(-0.24+q*0.06,0.11,s*0.1505,0.04,0.05,s,GRY); });
+      B(0.2,0.115,0,0.18,0.07,0.32,DK); both(s=>{ for(const x of [0.14,0.26]) LZ(x,0.115,s*0.1605,0.006,0.07,s,UF); }); }
+    both(s=>G.cyl(0,0.12,s*0.172,0.022,0.1,'x',DK,8));
     return {eng:G, ...heroBoBo(sp)};
   }
   /* ---- Class 158 express diesel unit (1989; sold on its own as trainmasters.engine.c158): one car of the two-car unit in two
@@ -27446,6 +27702,12 @@ const SHED_HISTORY={
   re44:'From 1964 Switzerland built 277 of these neat, strong engines, and they became the backbone of the national railway: they hauled expresses, local trains and heavy goods trains alike, under the Gotthard and through the Alps. More than sixty years on many are still at work, often in pairs, and their cheerful two-tone horn is one of the best-known sounds in Switzerland.',
   ob1020:'When the war ended in 1945, more than forty of the big E 94 goods electrics were left in Austria, and the Austrian railway kept them as its Class 1020. For half a century they worked the steep mountain lines over the Arlberg and through the Tauern, hauling heavy goods trains and helping passenger trains up the passes. The last were retired in the 1990s, and several are kept by museums.',
   bb9200:'In 1957 France ordered ninety-two of these smart electric engines for its newly electrified main lines. A few were tuned to run at 124 mph and, from 1967, hauled the first regular French train to run that fast every day, an express from Paris to Toulouse. The rest worked expresses and goods trains for half a century, and the last were retired in the 2010s.',
+  c121:'In 1960 a factory better known for making car bodies built sixteen single diesel railcars, each with a cab at both ends so that one driver could run it up and down a quiet branch line all day without ever turning round. People called them bubble cars. They shuttled to little country towns and along short city branches for more than forty years, some later worked as route-learning and parcels cars, and the last carried passengers until 2017. Several are kept on heritage railways today.',
+  c150:'In the early 1980s British Rail needed to replace hundreds of tired old diesel units without spending much, and in 1984 the first Sprinters arrived from York, built on the body of the new electric trains. They were quicker, quieter and far more reliable than the old units, and more than a hundred and thirty sets followed. They are still busy today on local lines from Cornwall to the North, carrying shoppers, students and children to school.',
+  c156:'From 1987 a Birmingham works built 114 of these two-car units to take over longer country and cross-country routes. Their doors are only near the ends of each car, so the seats between are quiet and comfortable for long journeys. They soon became the backbone of trains across the North and Scotland, and more than thirty-five years later almost all of them are still at work, many on the scenic lines through the hills.',
+  c170:'The first Turbostar ran in 1998, built in Derby, and it was such a success that hundreds of cars followed for lines all over Britain, from the Scottish Highlands to the south coast. Light aluminium bodies, smooth underfloor engines and big windows made them quick, quiet and pleasant to ride. Their family grew to include electric versions too, and they are still a common sight today.',
+  c175:'Built in Birmingham from 1999, these twenty-seven units brought new comfort to routes in Wales and the North West of England, along the coast and down through the border country. They are close cousins of the fast intercity units built at the same works, with the same smooth nose, and each car has its own engine. They carried passengers faithfully for more than twenty years.',
+  c166:'Twenty-one of these three-car units were built in York in 1992 and 1993 for the busy outer-suburban lines west of London, the first of their family with air-conditioning for the longer runs. Each car has its own engine, and wide sliding doors let crowds on and off quickly. In later years they moved west to carry commuters and holiday-makers round Bristol and the West Country.',
   c800:'Built from 2014, many of them in a new factory in the north-east of England to a Japanese design, these trains took over the fast services from London to the West Country, Wales, Yorkshire and Scotland from 2017. Each one can run from the overhead wires or, where there are none, from diesel engines under its floors, changing over on the move. Hundreds of their cars now run on Britain\'s main lines.',
   saint:'In 1902 the Great Western built a bold new express engine with two big outside cylinders, a tapered boiler and long-travel valves, ideas gathered from America and France. Over seventy followed, many named after saints, ladies of legend and the heroes of famous novels. They ran the fastest expresses to the West Country and South Wales, and in 1924 one was rebuilt with smaller wheels to become the very first Hall.',
   nohab:'In 1954 a Swedish engine works began building diesels under licence from America, with the same rounded "bulldog" nose as the famous streamliners but on six-wheeled bogies for lighter European track. Denmark, Norway, Belgium, Luxembourg and Hungary bought them too. They were so well built that many ran for fifty years, and they are still loved across Scandinavia.',
