@@ -286,6 +286,7 @@ body.shed #shedUI{display:block}
 #shedUI .shnote{font:700 13px Nunito,sans-serif;color:#e8d6b0;padding:8px 6px}
 #shedUI .shrow{display:flex;align-items:center;gap:8px;width:100%;appearance:none;border:0;background:none;color:var(--ink);text-align:left;font:700 14px/1.2 Nunito,sans-serif;padding:6px 8px;border-radius:10px;min-height:36px;cursor:pointer}
 #shedUI .shrow .rn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#shedUI .shrow .newtag{flex:none;margin-left:-2px}   /* outside the name, so a long name gets "..." and keeps its badge (28 Nov 2026, seen on the TV) */
 #shedUI .shrow .mine{margin-right:5px;font-size:12px}
 #shedUI .shrow.dim .rn{opacity:.62}
 #shedUI .shrow.extra .rn{color:#ffe6b8;font-style:italic}
@@ -1782,6 +1783,14 @@ const WHISTLES={
   fairlie:{notes:[84,89],mix:[1,0.6],len:0.7,att:0.04},   /* Fairlie double engine (28 Nov 2026): a mellow narrow-gauge whistle that echoes round the hills */
   planet:{notes:[93,99],mix:[1,0.4],len:0.36,att:0.025},   /* Planet (28 Nov 2026): a bright, cheeky little toot like the Rocket's, a shade lower */
   c14:{horn:true,notes:[69,63],step:0.28,len:0.34,vol:0.13,lp:1400},   /* Class 14 (28 Nov 2026): a short, friendly two-tone, between the Class 03's and the Class 08's */
+  alcopa:{horn:true,notes:[50,57,62],step:0,len:1.4,lp:1150,vol:0.17},   /* Alco PA (28 Nov 2026, pack American diesel classics): a deep, open three-chime chord, the fifth and octave ringing over the low note */
+  gp9:{horn:true,notes:[54,58,61,66],step:0,len:1.05,lp:1400,vol:0.16},   /* GP9 (28 Nov 2026): a bright four-chime chord, a shade above the GP7's */
+  e8:{horn:true,notes:[49,53,56,61,65],step:0,len:1.6,lp:1250,vol:0.17},   /* E8 (28 Nov 2026): the big five-chime passenger horn, full and rich */
+  streamliner:{horn:true,notes:[62,66,69],step:0,len:1.2,lp:1800,vol:0.15},   /* stainless streamliner (28 Nov 2026): a high, clear three-note chime, light like the train */
+  emdft:{horn:true,notes:[47,54],step:0,len:1.3,lp:1000,vol:0.17},   /* FT (28 Nov 2026): one big early air horn, deep and rough */
+  gp7:{horn:true,notes:[51,55,58],step:0,len:1.1,lp:1350,vol:0.16},   /* GP7 (28 Nov 2026): a plain three-chime road-switcher horn */
+  sharknose:{horn:true,notes:[48,52,55,59],step:0,len:1.35,lp:1100,vol:0.17},   /* Sharknose (28 Nov 2026): a low, mournful four-chime chord */
+  rs3:{horn:true,notes:[55,60,64],step:0,len:0.95,lp:1500,vol:0.16},   /* RS-3 (28 Nov 2026): Alco's short, brassy three-chime blast */
   c800:{horn:true,notes:[80,75],step:0.28,len:0.32,lp:2600,vol:0.13},   /* Class 800 (24 Nov 2026): a clean, modern high-low two-tone, a shade above the Class 91's */
   saint:{notes:[88,95],mix:[1,0.45],len:0.62,att:0.035},   /* GWR Saint (24 Nov 2026): the shrill GWR whistle, a shade higher and shorter again than the Hall's */
   nohab:{horn:true,notes:[50,55],step:0.5,len:0.62,lp:1000,vol:0.16},   /* Scandinavian bulldog diesel (24 Nov 2026): a deep, mellow low-high two-tone */
@@ -1928,6 +1937,14 @@ const HERITAGE_SOUNDS={
   dehst:{kind:'electric',hum:67,whine:[260,1950],lp:2700,vol:0.05},   /* German high-speed train (28 Nov 2026): the same low hum, its motors' whine rising high and smooth */
   v100:{kind:'diesel',pulse:[5,8],fire:[1,0.8,0.9,0.76,0.94,0.82],thump:58,dec:0.04,tw:0.6,body:1.5,rasp:0.6,rc:1100,rdec:0.045,clat:0.1,jit:0.06,lump:0.1,lp:[1500,3600],whine:[1300,2300],wv:0.04,vol:0.066},   /* V100 (28 Nov 2026): one twelve-cylinder engine's busy chug over its hydraulic gearbox's whine */
   c14:{kind:'diesel',pulse:[5.6,9.4],fire:[1,0.72,0.88,0.66,0.94,0.7],thump:62,dec:0.035,tw:0.6,body:1.5,rasp:0.66,rc:1250,rdec:0.04,clat:0.1,jit:0.06,lump:0.1,lp:[1600,3800],whine:[1200,2200],wv:0.045,vol:0.066},   /* Class 14 (28 Nov 2026): its fast-running V12's busy buzz over the hydraulic gearbox's whine */
+  alcopa:{kind:'diesel',pulse:[4.1,6.9],fire:[1,0.58,0.9,0.52,0.82,0.64],thump:50,dec:0.07,tw:0.6,body:1.7,rasp:0.78,rc:900,rdec:0.072,clat:0.12,jit:0.1,lump:0.24,lp:[1250,3100],whine:[1500,2700],wv:0.06,vol:0.072},   /* Alco PA (28 Nov 2026, pack American diesel classics): Alco's four-stroke chant, a lumpy, uneven thud under the turbocharger's whistle, not EMD's smooth drone */
+  gp9:{kind:'diesel',pulse:[4.3,7.3],fire:[1,0.84,0.94,0.8,0.96,0.82],thump:47,dec:0.056,tw:0.6,body:1.6,rasp:0.73,rc:870,rdec:0.064,clat:0.1,jit:0.055,lump:0.09,lp:[1220,3000],whine:[680,1150],wv:0.025,vol:0.07},   /* GP9 (28 Nov 2026): the EMD two-stroke's smooth, steady drone */
+  e8:{kind:'diesel',pulse:[4.4,7.4],fire:[1,0.86,0.94,0.82,0.97,0.84],thump:48,dec:0.054,tw:0.6,body:1.6,rasp:0.72,rc:880,rdec:0.062,clat:0.09,jit:0.05,lump:0.08,lp:[1250,3000],whine:[640,1080],wv:0.02,vol:0.07},   /* E8 (28 Nov 2026): two EMD engines drumming together, the smoothest of the lot */
+  streamliner:{kind:'diesel',pulse:[5,8.2],fire:[1,0.78,0.9,0.74],thump:56,dec:0.045,tw:0.6,body:1.6,rasp:0.66,rc:1050,rdec:0.05,clat:0.12,jit:0.07,lump:0.13,lp:[1500,3500],whine:[800,1400],wv:0.03,vol:0.068},   /* stainless streamliner (28 Nov 2026): its small, early eight-cylinder engine's quick, light chug */
+  emdft:{kind:'diesel',pulse:[4,6.8],fire:[1,0.84,0.95,0.8],thump:45,dec:0.058,tw:0.6,body:1.6,rasp:0.74,rc:850,rdec:0.066,clat:0.1,jit:0.06,lump:0.09,lp:[1200,2900],whine:[560,950],wv:0.02,vol:0.07},   /* FT (28 Nov 2026): the first EMD freight engines' deep, even two-stroke drum */
+  gp7:{kind:'diesel',pulse:[4.2,7.2],fire:[1,0.82,0.93,0.79],thump:46,dec:0.058,tw:0.6,body:1.6,rasp:0.74,rc:860,rdec:0.066,clat:0.11,jit:0.06,lump:0.1,lp:[1200,2950],whine:[600,1020],wv:0.025,vol:0.07},   /* GP7 (28 Nov 2026): the smooth EMD drone, a touch rougher than the GP9's */
+  sharknose:{kind:'diesel',pulse:[4,6.6],fire:[1,0.72,0.9,0.66],thump:40,dec:0.07,tw:0.6,body:1.7,rasp:0.8,rc:800,rdec:0.075,clat:0.11,jit:0.08,lump:0.17,lp:[1100,2800],whine:[480,860],wv:0.03,vol:0.074},   /* Sharknose (28 Nov 2026): Baldwin's slow, heavy four-stroke, deep and a little lumpy */
+  rs3:{kind:'diesel',pulse:[4.4,7.2],fire:[1,0.6,0.88,0.54],thump:53,dec:0.066,tw:0.6,body:1.7,rasp:0.76,rc:940,rdec:0.07,clat:0.13,jit:0.1,lump:0.23,lp:[1300,3200],whine:[1300,2400],wv:0.055,vol:0.072},   /* RS-3 (28 Nov 2026): the Alco chant, lumpy and uneven, with its turbo's whine */
   c800:{kind:'electric',hum:100,whine:[230,1450],lp:1900,vol:0.042},   /* Class 800 (24 Nov 2026): a quiet modern hum, its motors' whine soft and smooth */
   nohab:{kind:'diesel',pulse:[4,7],fire:[1,0.8,0.9,0.74,0.96,0.78],thump:44,dec:0.06,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.07,clat:0.1,jit:0.06,lump:0.11,lp:[1200,2900],whine:[700,1200],wv:0.02,vol:0.07},   /* Scandinavian bulldog diesel (24 Nov 2026): the American two-stroke's deep, steady drum */
   c60:{kind:'diesel',pulse:[4,6.8],fire:[1,0.72,0.88,0.64],thump:42,dec:0.065,tw:0.6,body:1.6,rasp:0.75,rc:830,rdec:0.075,clat:0.1,jit:0.07,lump:0.14,lp:[1200,2900],whine:[800,1300],wv:0.045,vol:0.075},   /* Class 60 (24 Nov 2026): a slow, heavy beat, lowest of the diesels */
@@ -3681,6 +3698,30 @@ const TRAIN_TYPES={
     consist:['engT','coach','coach','coach','coach'],liv:{body:'#6b2328',lining:'#d9b45a',chimney:'#151515',dome:'#d4a73a',smokebox:'#1a1a1a',wheel:'#6b2328',coachLo:'#7a2f2a',coachHi:'#7a2f2a',roof:'#4a4440',roof2:'#4a4440',short4:true}},
   planet:{name:'Planet 2-2-0',short:'Planet',group:'Steam',era:'1830',desc:'Stephenson’s next great engine after the Rocket, 1830: a level boiler with the smokebox in front and the cylinders tucked inside under it, a big pair of driving wheels at the back and a smaller pair in front, outside frames of oak, a tall chimney and a brass dome on the firebox, with a little four-wheeled tender. The pattern for many early engines, 30 mph with three little coaches',cost:15000,speed:1.5,steam:true,run:170,fare:5.6,goods:false,hero:true,
     consist:['engT','tender','coach','coach','coach'],liv:{body:'#2f5a35',lining:'#cfa53e',chimney:'#1b1b1b',dome:'#cfa53e',smokebox:'#1d1d1d',wheel:'#2a2a2a',coachLo:'#d9a92e',coachHi:'#d9a92e',roof:'#3b3530',roof2:'#3b3530',short4:true}},
+  /* pack American diesel classics (28 Nov 2026, backlog E3 pack P8): eight North American diesels, ENGINE_SKUS.alcopa /
+     gp9 / e8 / streamliner / emdft / gp7 / sharknose / rs3, not Pro and not Heritage, soon until their store items exist;
+     hero models near the camera, each in two carriage places. Generic colours of their era: no herald, railroad name or
+     number. The cab units (heroUSCab): body, the nose (ends, if not body), the bands round them (stripe, stripe2; band:
+     the E8's grey lower half), the roof. The road switchers (heroUSHood): body, the frame line (lining), the handrails
+     (rail). The FT: the A unit (engF, engR) and its cabless B unit (pcF, pcR: bUnit, drawn as the A unit's body with no
+     nose), with a long goods train. The streamliner: its trailers articulated over shared bogies (artic), fluted
+     (flutes), the red line at the stripe's height (lineY), the last with a rounded observation end (obsEnd) */
+  alcopa:{name:'Alco PA',short:'Alco PA',group:'Diesel',era:'1946',desc:'Alco’s great passenger diesel of 1946, often called the most beautiful diesel ever built: a long, flat-topped nose with its headlight high on the front over a grille, the windscreens set far back, long grilles high along the sides and six-wheeled bogies, in maroon with gold bands. 90 mph with six maroon coaches, its engine thudding with Alco’s lumpy beat',cost:92000,speed:4.5,steam:false,run:1000,fare:8.4,goods:false,hero:true,
+    consist:['engF','engR','coach','coach','coach','coach','coach','coach'],liv:{body:'#5e1d24',stripe:'#d4a63c',roof:'#4a4a4c',wheel:'#1e1e1e',coachLo:'#5e1d24',coachHi:'#5e1d24',coachLine:'#d4a63c',roof2:'#4a4a4c'}},
+  gp9:{name:'EMD GP9',short:'EMD GP9',group:'Diesel',era:'1954',desc:'The best-selling road switcher of the 1950s, 1954: a narrow long hood and a short hood either side of the cab, walkways and handrails all round, fewer louvres than the GP7, a dynamic brake blister with its fan on top of the long hood, twin headlights at both ends and four-wheeled bogies, in black with yellow stripes and handrails. Nearly four thousand were built; 65 mph with a long goods train',cost:66000,speed:3.25,steam:false,run:820,fare:5.8,goods:true,hero:true,
+    consist:['engF','engR','open','van','tankw','open','flat','van','open','tankw','van'],liv:{body:'#1d1d1d',lining:'#e9b92e',rail:'#e9b92e',roof:'#1d1d1d',wheel:'#1e1e1e'}},
+  e8:{name:'EMD E8',short:'EMD E8',group:'Diesel',era:'1949',desc:'The long-distance passenger diesel of 1949: two engines in one long body, a rounded bulldog nose raked well back with a big headlight and a second lamp under the windscreens, square windows and a band of grilles along the sides, and six-wheeled bogies with an unpowered middle axle, in blue over grey with a yellow line. 92 mph with seven matching coaches',cost:96000,speed:4.6,steam:false,run:1050,fare:8.6,goods:false,hero:true,
+    consist:['engF','engR','coach','coach','coach','coach','coach','coach','coach'],liv:{body:'#28406e',band:'#b9bec4',stripe:'#e3b53a',roof:'#5f656b',wheel:'#1e1e1e',coachLo:'#b9bec4',coachHi:'#28406e',coachLine:'#e3b53a',roof2:'#5f656b'}},
+  streamliner:{name:'Stainless Streamliner (1934)',short:'Stainless Streamliner',group:'Diesel',era:'1934',desc:'The shining train that began the age of the diesel streamliner, 1934: a low power car with a rounded shovel nose and a big grille, built of fluted stainless steel with a red stripe, its coaches joined to it and to each other over shared bogies so the whole train rides as one, the last with a rounded observation end. Light and fast, 96 mph with three articulated coaches',cost:90000,speed:4.8,steam:false,run:900,fare:8.8,goods:false,hero:true,
+    consist:['engF','engR','coach','coach','coach'],liv:{body:'#c4c8cc',stripe:'#b5202a',roof:'#b3b8bd',wheel:'#1e1e1e',coachLo:'#c4c8cc',coachHi:'#c4c8cc',coachLine:'#b5202a',roof2:'#b3b8bd',artic:true,flutes:true,lineY:0.363,obsEnd:true}},
+  emdft:{name:'EMD FT',short:'EMD FT',group:'Diesel',era:'1939',desc:'The freight diesel of 1939 that proved diesels could beat steam: two units coupled for good, the A unit with its rounded bulldog nose and the cabless B unit behind it, four portholes along each side and four-wheeled bogies, in dark green with yellow bands. On a famous tour it hauled heavy goods trains over mountain lines for 83,000 miles; 65 mph with a long goods train',cost:78000,speed:3.25,steam:false,run:950,fare:6.0,goods:true,hero:true,
+    consist:['engF','engR','pcF','pcR','open','van','open','tankw','open','van','open','open'],liv:{body:'#26432f',stripe:'#e3b53a',roof:'#2c3a30',wheel:'#1e1e1e',bUnit:true}},
+  gp7:{name:'EMD GP7',short:'EMD GP7',group:'Diesel',era:'1949',desc:'The first "Geep", 1949: the general-purpose road switcher that changed American railroads, with a narrow long hood and a short hood either side of the cab and walkways all round, so the crew could see both ways and do any job, louvres along the tops of its hood doors and four-wheeled bogies, in blue with a white frame line and yellow handrails. 65 mph with a local train of four coaches',cost:62000,speed:3.25,steam:false,run:750,fare:6.6,goods:false,hero:true,
+    consist:['engF','engR','coach','coach','coach','coach'],liv:{body:'#22448c',lining:'#e9e6dc',rail:'#e2b83a',roof:'#22448c',wheel:'#1e1e1e',coachLo:'#22448c',coachHi:'#22448c',coachLine:'#e9e6dc',roof2:'#4a4e52'}},
+  sharknose:{name:'Baldwin Sharknose',short:'Sharknose',group:'Diesel',era:'1949',desc:'Baldwin’s striking cab unit of 1949: a pointed nose with a sharp crease up its middle, sloping steeply back to the windscreens like a shark’s snout, twin headlights at the top, three portholes and four-wheeled bogies, in black with orange and yellow stripes. Its slow, heavy engine pulls hard; 70 mph with a long goods train',cost:80000,speed:3.5,steam:false,run:980,fare:6.1,goods:true,hero:true,
+    consist:['engF','engR','open','van','open','tankw','flat','open','van','open','tankw','van'],liv:{body:'#1b1b1b',stripe:'#e8742a',stripe2:'#efc23a',roof:'#2a2a2a',wheel:'#1e1e1e'}},
+  rs3:{name:'Alco RS-3',short:'Alco RS-3',group:'Diesel',era:'1950',desc:'Alco’s road switcher of 1950: hoods with well-rounded tops, tall radiator shutters at the far end, the cab set near one end, one big exhaust stack, walkways and handrails all round and four-wheeled bogies, in deep red with a cream line. A tough all-rounder on branch lines and in yards, 60 mph with a goods train, its engine thudding with Alco’s lumpy beat',cost:60000,speed:3.0,steam:false,run:760,fare:5.6,goods:true,hero:true,
+    consist:['engF','engR','open','van','open','tankw','van','open','van'],liv:{body:'#7a2a22',lining:'#e6d7a8',rail:'#e8e4dc',roof:'#7a2a22',wheel:'#1e1e1e'}},
   /* the Class 800 (ENGINE_SKUS.c800): a driving car in two carriage places on two four-wheeled bogies, three smooth
      trailers (sleek, in its own colours) and a matching driving car at the far end, facing back (pcR its inner half, pcF
      its nose: cabs, not paying coaches); dark green (body) with a gold line (stripe) and a fine white one (band), a
@@ -7138,6 +7179,60 @@ HERIT_2D.planet=(part,box,dt,poly,L)=>{ const b=L.body, BR=L.dome||'#cfa53e', WO
   box(b,-0.335,-0.215,-0.1,0.1,0.03); dt(BR,-0.275,0,0.058); dt('rgba(255,255,255,0.3)',-0.285,-0.018,0.02);
   for(const d of [1,-1]){ box(WOOD,...(d>0?[0.36,0.39]:[-0.39,-0.36]),-0.22,0.22); for(const z of [-0.14,0.14]) dt('#3b2a1f',d*0.41,z,0.03); }
 };
+/* American diesel classics from above (28 Nov 2026, pack American diesel classics), in their hero models' measurements.
+   The cab units: the roof with its fans and stacks, the body colour and bands at the edges, the nose in front with its
+   windscreens and headlight, the pilot and coupler, the diaphragm at the back; the FT's cabless B unit (part 'pc') the
+   same body to both ends */
+const US2D_ROUND=(x0,xt,w,rr)=>{ const P=[[x0,-w],[xt-rr,-w]]; for(let i=1;i<6;i++){ const a=i/6*Math.PI/2; P.push([xt-rr+Math.sin(a)*rr,-w+rr-Math.cos(a)*rr]); } P.push([xt,-w+rr],[xt,w-rr]);
+  for(let i=1;i<6;i++){ const a=i/6*Math.PI/2; P.push([xt-rr+Math.cos(a)*rr,w-rr+Math.sin(a)*rr]); } P.push([xt-rr,w],[x0,w]); return P; };
+function usCab2D(k,part,box,dt,poly,L){ if(part==='tender') return; const b=L.body, N=L.ends||L.body, R=L.roof||'#5a5e62', S=L.stripe||'#e9b92e', hi='rgba(255,255,255,0.14)', lo='rgba(0,0,0,0.2)', pc=part==='pc';
+  const F={emdft:{nb:0.3,ws:[0.65,0.7],tip:0.82,rr:0.13,fans:[-0.72,-0.62,-0.52,-0.42],stacks:[-0.26,-0.18]},
+    e8:{nb:0.3,ws:[0.62,0.69],tip:0.83,rr:0.15,fans:[-0.72,-0.62,0.18,0.28],stacks:[-0.38,-0.3,-0.06,0.02]},
+    alcopa:{nb:0.22,ws:[0.53,0.565],tip:0.868,rr:0.085,fans:[-0.7,-0.6],stacks:[-0.2]},
+    sharknose:{nb:0.3,ws:[0.6,0.66],tip:0.87,rr:0,fans:[-0.72,-0.62],stacks:[-0.28,-0.2]}}[k];
+  const xe=pc?0.79:F.nb;
+  box(b,-0.79,xe,-0.205,0.205,0.02); for(const s of [-1,1]) box(S,-0.79,xe,s>0?0.199:-0.205,s>0?0.205:-0.199);
+  box(R,-0.77,pc?0.77:xe,-0.17,0.17,0.04); box(hi,-0.76,pc?0.76:xe,-0.08,-0.02); box(lo,-0.76,pc?0.76:xe,0.1,0.17);
+  const fans=pc?[-0.72,-0.62,-0.52,-0.42,0.42,0.52]:F.fans;
+  for(const x of fans){ dt('#141414',x,0,0.046); dt('#34373a',x,0,0.038); box('#c9cdd1',x-0.036,x+0.036,-0.003,0.003); box('#c9cdd1',x-0.003,x+0.003,-0.036,0.036); }
+  for(const x of pc?[-0.26,-0.18]:F.stacks) dt('#1b1b1b',x,0,k==='alcopa'?0.024:0.017);
+  for(const m of pc?[1,-1]:[-1]){ box('#141414',m>0?0.79:-0.8,m>0?0.8:-0.79,-0.1,0.1); box('#2a2a2a',m>0?0.8:-0.87,m>0?0.87:-0.8,-0.04,0.04); }
+  if(pc) return;
+  if(k==='sharknose') poly(N,[[F.nb,-0.205],[0.67,-0.205],[0.72,-0.165],[F.tip,0],[0.72,0.165],[0.67,0.205],[F.nb,0.205]]);
+  else poly(N,US2D_ROUND(F.nb,F.tip,0.205,F.rr));
+  for(const s of [-1,1]) box(S,F.nb,F.ws[1],s>0?0.199:-0.205,s>0?0.205:-0.199);
+  box(R,F.nb,F.ws[0]-0.03,-0.15,0.15,0.04); box(hi,F.nb,F.ws[0]-0.04,-0.08,-0.02);
+  box('#1c2731',F.ws[0],F.ws[1],-0.18,0.18,0.03); box(N,F.ws[0]-0.012,F.ws[0],-0.18,0.18);
+  box('rgba(255,255,255,0.12)',F.ws[1]+0.01,F.tip-0.06,-0.1,-0.03,0.02);
+  dt('#fff6cf',F.tip-0.03,0,0.025); box('#2a2a2a',F.tip,F.tip+(k==='sharknose'?0.05:0.07),-0.04,0.04);
+}
+for(const id of ['emdft','e8','alcopa','sharknose']) HERIT_2D[id]=(part,box,dt,poly,L)=>usCab2D(id,part,box,dt,poly,L);
+/* the road switchers from above: the deck with its frame line and handrails, the long hood with its fans and stacks (the
+   GP9's blister), the cab and its roof, the short hood, headlights, steps and couplers at both ends */
+function usHood2D(k,part,box,dt,poly,L){ if(part==='tender') return; const b=L.body, LN=L.lining||'#e8e4d6', RL=L.rail||'#d9b23a', R=L.roof||L.body, hi='rgba(255,255,255,0.16)', lo='rgba(0,0,0,0.26)', alco=k==='rs3';
+  const LH=alco?[-0.735,0.27]:[-0.735,0.235], CB=alco?[0.27,0.47]:[0.235,0.45], SH=alco?[0.47,0.725]:[0.45,0.735];
+  box('#2b2b2b',-0.775,0.775,-0.21,0.21,0.01); for(const s of [-1,1]){ box(LN,-0.775,0.775,s>0?0.203:-0.21,s>0?0.21:-0.203); box(RL,LH[0],SH[1],s>0?0.194:-0.2,s>0?0.2:-0.194); }
+  for(const m of [-1,1]){ box(RL,m>0?0.762:-0.768,m>0?0.768:-0.762,-0.2,0.2); for(const s of [-1,1]) box('#3a3a3a',m>0?0.72:-0.775,m>0?0.775:-0.72,s>0?0.13:-0.2,s>0?0.2:-0.13); box('#2a2a2a',m>0?0.775:-0.84,m>0?0.84:-0.775,-0.04,0.04); }
+  for(const [x0,x1,w] of [[LH[0],LH[1],0.142],[SH[0],SH[1],0.128]]){ box(b,x0,x1,-w,w,alco?0.06:0.02); box(hi,x0+0.01,x1-0.01,-w*0.6,-w*0.2); box(lo,x0+0.01,x1-0.01,w*0.55,w); }
+  const fan=(x,r)=>{ dt('#141414',x,0,r+0.007); dt('#26282a',x,0,r); box('#b9bdc1',x-r*0.9,x+r*0.9,-0.003,0.003); box('#b9bdc1',x-0.003,x+0.003,-r*0.9,r*0.9); };
+  if(alco) fan(LH[0]+0.11,0.06); else { fan(LH[0]+0.07,0.05); fan(LH[0]+0.19,0.05); }
+  if(k==='gp9'){ box(b,-0.52,-0.32,-0.11,0.11,0.01); fan(-0.42,0.045); }
+  for(const x of alco?[-0.3]:[-0.12,-0.2]) dt('#101010',x,0,alco?0.028:0.018);
+  for(let i=0;i<5;i++) box('rgba(0,0,0,0.22)',LH[0]+0.3+i*0.12,LH[0]+0.36+i*0.12,-0.1,0.1);
+  box(b,CB[0],CB[1],-0.2,0.2,0.01); box(R,CB[0]-0.015,CB[1]+0.015,-0.21,0.21,0.02); box('rgba(255,255,255,0.16)',CB[0],CB[1],-0.12,-0.04);
+  dt('#3a3a3a',(CB[0]+CB[1])/2+0.05,0,0.016); dt('#b89a3a',SH[1]-0.04,0.06,0.016);
+  for(const [x,d] of [[SH[1],1],[LH[0],-1]]) dt('#fff3c4',x-d*0.012,0,0.022);
+}
+for(const id of ['gp7','gp9','rs3']) HERIT_2D[id]=(part,box,dt,poly,L)=>usHood2D(id,part,box,dt,poly,L);
+/* the stainless streamliner from above: the fluted roof, the red stripe showing at the edges, the rounded shovel nose
+   with its windscreens, grille and headlight, the bellows at the back */
+HERIT_2D.streamliner=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.body, R=L.roof||'#b9bdc1', RD=L.stripe||'#b5202a', hi='rgba(255,255,255,0.18)', lo='rgba(0,0,0,0.16)';
+  poly(b,US2D_ROUND(-0.79,0.86,0.2,0.17)); for(const s of [-1,1]) box(RD,-0.79,0.7,s>0?0.194:-0.2,s>0?0.2:-0.194);
+  box(R,-0.77,0.55,-0.15,0.15,0.05); box(hi,-0.76,0.52,-0.08,-0.02); box(lo,-0.76,0.52,0.09,0.15);
+  for(let i=0;i<6;i++) box('rgba(0,0,0,0.12)',-0.76,0.5,-0.12+i*0.048,-0.115+i*0.048);
+  box('#1c2731',0.66,0.76,-0.16,0.16,0.04); box('#2e3134',0.82,0.86,-0.1,0.1,0.02); dt('#fff6cf',0.8,0,0.024);
+  box('#26282a',0.1,0.3,-0.06,0.06); box('#141414',-0.8,-0.79,-0.15,0.15);
+};
 /* Class 800 from above: the dark roof with the pantograph, the long nose with its raked windscreen and yellow tip, the gold
    line showing along the sides, the bellows at the back */
 HERIT_2D.c800=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.body, R=L.roof||'#2a2d2f', GL=L.stripe||'#c9a14a', Y=L.ends||'#f2c230', PAN='#8a8e92';
@@ -7845,12 +7940,12 @@ HERIT_2D.c68=(part,box,dt,poly,L)=>{ if(part==='tender') return; const b=L.body,
   for(const z of [-0.09,0.09]){ dt('#141414',-0.45,z,0.075); dt('#2c2e32',-0.45,z,0.058); box('#8a8e94',-0.452,-0.448,z-0.055,z+0.055); }   /* two radiator fans */
   box('#101010',0.3,0.34,-0.03,0.03);   /* exhaust */
 };
-function heritage2Dx(t,kind,len,L,fill,dot,F){
+function heritage2Dx(t,kind,len,L,fill,dot,F,pc){
   const k=len/0.78, two=kind==='engF'||kind==='engR', o=kind==='engF'?-0.44:kind==='engR'?0.44:0, X=x=>(x+o)*k, Y=z=>z*k;
   const box=(c,x0,x1,z0,z1,r=0)=>fill(c,X(x0),Y(z0),(x1-x0)*k,(z1-z0)*k,r*k), dt=(c,x,z,r)=>{ if(r>0) dot(c,X(x),Y(z),r*k); };
   const poly=(c,pts)=>{ ctx.fillStyle=c; ctx.beginPath(); pts.forEach(([x,z],i)=>i?ctx.lineTo(X(x),Y(z)):ctx.moveTo(X(x),Y(z))); ctx.closePath(); ctx.fill(); };
   ctx.save(); if(two){ ctx.beginPath(); if(kind==='engF') ctx.rect(X(0),-len,k,2*len); else ctx.rect(X(-1),-len,k,2*len); ctx.clip(); }
-  try{ F(kind==='tender'?'tender':'engine',box,dt,poly,L); } finally{ ctx.restore(); }
+  try{ F(kind==='tender'?'tender':pc?'pc':'engine',box,dt,poly,L); } finally{ ctx.restore(); }   /* (pc: a far car pcF / pcR, 28 Nov 2026: the FT's B unit) */
 }
 /* Heritage diesel and electric engines from above (21 Nov 2026, Heritage step 2b), in the hero model's measurements as
    heritage2D: u runs along one half (engF: hero x = u, engR: hero x = -u), each half reaching a little into the gap. */
@@ -7951,8 +8046,8 @@ const HER2D={
     if(m>0){ bx('#555b5f',-0.045,0.045,-0.04,0.04); d('#cfc3a8',0,-0.025,0.01); d('#cfc3a8',0,0.025,0.01); }
   },
 };
-function heritage2D(t,kind,len,L,fill,dot){
-  const F=HERIT_2D[t.type]; if(F) return heritage2Dx(t,kind,len,L,fill,dot,F);
+function heritage2D(t,kind,len,L,fill,dot,pc){
+  const F=HERIT_2D[t.type]; if(F) return heritage2Dx(t,kind,len,L,fill,dot,F,pc);
   const k=len/0.78, o=kind==='engF'?-0.44:kind==='engR'?0.44:0, X=x=>(x+o)*k, Y=z=>z*k;
   const box=(c,x0,x1,z0,z1,r=0)=>fill(c,X(x0),Y(z0),(x1-x0)*k,(z1-z0)*k,r*k);
   if(HER2D[t.type]){ HER2D[t.type](kind,L,box,(c,x,z,r)=>dot(c,X(x),Y(z),r*k)); return; }
@@ -8016,7 +8111,7 @@ function drawCar2D(t,kind,i,len,wid){
       fill('#b3262b',hl-len*0.03,-hw,len*0.03,wid);                                                                                       // buffer beam
       break; }
     case 'engF': case 'engR': case 'engT': heritage2D(t,kind,len,L,fill,dot); break;
-    case 'pcF': case 'pcR': heritage2D(t,kind==='pcF'?'engF':'engR',len,L,fill,dot); break;   /* the Sud-Est train's far power car (faces back) */
+    case 'pcF': case 'pcR': heritage2D(t,kind==='pcF'?'engF':'engR',len,L,fill,dot,L.bUnit); break;   /* the Sud-Est train's far power car (faces back) */
     case 'tender': case 'tender2':
       if(ty.heritage||HERIT_2D[t.type]){ heritage2D(t,kind,len,L,fill,dot); break; }   /* (and a store engine with its own picture: the Britannia) */
       fill(L.body,-hl,-hw,len,wid,wid*0.12);
@@ -8066,6 +8161,7 @@ function drawCar2D(t,kind,i,len,wid){
       ctx.fillStyle='rgba(0,0,0,0.18)'; for(let k=0;k<3;k++) ctx.fillRect(-hl+len*(0.18+k*0.3),-hw*0.3,len*0.05,wid*0.3);   // roof vents
       fill('#1a1a1a',hl-len*0.03,-hw*0.35,len*0.04,wid*0.35);
       if(L.autoCab&&i===t.cars-1){ fill(hi,-hl,-hw*0.78,len*0.07,wid*0.78); fill('#26303a',-hl,-hw*0.6,len*0.03,wid*0.6); fill('#ece6d6',-hl-len*0.012,-wid*0.06,len*0.03,wid*0.12); }   /* an auto-coach's driving end: windows, a lamp */
+      else if(L.obsEnd&&i===t.cars-1){ fill(lo,-hl-len*0.11,-hw*0.8,len*0.13,wid*0.8,len*0.055); fill(L.roof2||L.roof||'#6a6a6a',-hl-len*0.08,-hw*0.45,len*0.1,wid*0.45,len*0.04); }   /* the streamliner's rounded observation end (28 Nov 2026) */
       else fill('#1a1a1a',-hl-len*0.01,-hw*0.35,len*0.04,wid*0.35);   // gangways
       break; }
     case 'open': {
@@ -9620,6 +9716,14 @@ ENGINE_SKUS.sentinel={sku:'trainmasters.engine.sentinel',added:'2026-11-28'};   
 ENGINE_SKUS.c14={sku:'trainmasters.engine.c14',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Class 14 Teddy Bear (28 Nov 2026, pack Little engines II): soon until its store items exist */
 ENGINE_SKUS.fairlie={sku:'trainmasters.engine.fairlie',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Fairlie Double Engine (28 Nov 2026, pack Little engines II): soon until its store items exist */
 ENGINE_SKUS.planet={sku:'trainmasters.engine.planet',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Planet 2-2-0 (28 Nov 2026, pack Little engines II): soon until its store items exist */
+ENGINE_SKUS.alcopa={sku:'trainmasters.engine.alcopa',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Alco PA (28 Nov 2026, pack American diesel classics): soon until its store items exist */
+ENGINE_SKUS.gp9={sku:'trainmasters.engine.gp9',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* EMD GP9 (28 Nov 2026, pack American diesel classics): soon until its store items exist */
+ENGINE_SKUS.e8={sku:'trainmasters.engine.e8',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* EMD E8 (28 Nov 2026, pack American diesel classics): soon until its store items exist */
+ENGINE_SKUS.streamliner={sku:'trainmasters.engine.streamliner',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Stainless Streamliner (1934) (28 Nov 2026, pack American diesel classics): soon until its store items exist */
+ENGINE_SKUS.emdft={sku:'trainmasters.engine.emdft',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* EMD FT (28 Nov 2026, pack American diesel classics): soon until its store items exist */
+ENGINE_SKUS.gp7={sku:'trainmasters.engine.gp7',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* EMD GP7 (28 Nov 2026, pack American diesel classics): soon until its store items exist */
+ENGINE_SKUS.sharknose={sku:'trainmasters.engine.sharknose',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Baldwin Sharknose (28 Nov 2026, pack American diesel classics): soon until its store items exist */
+ENGINE_SKUS.rs3={sku:'trainmasters.engine.rs3',added:'2026-11-28'};   /* on sale 2026-11-28 (Amazon item Approved, Play product active; New for 14 days) */   /* Alco RS-3 (28 Nov 2026, pack American diesel classics): soon until its store items exist */
 ENGINE_SKUS.c800={sku:'trainmasters.engine.c800'};   /* Class 800 (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.saint={sku:'trainmasters.engine.saint'};   /* GWR Saint (24 Nov 2026): soon until its store item exists */
 ENGINE_SKUS.k4={sku:'trainmasters.engine.k4'};   /* American K4 Pacific (24 Nov 2026): soon until its store item exists */
@@ -9700,6 +9804,10 @@ const ENGINE_PACKS=[
      (hidden everywhere) until its store items and its engines' exist */
   {id:'little2',   name:'Little engines II',               blurb:'Seven more small, charming engines, from a geared steam shunter and a double-ended Fairlie to the Planet of 1830',
     types:['std2mt','j94','railmotor','sentinel','c14','fairlie','planet'], added:'2026-11-28'},
+  /* American diesel classics (backlog E3 pack P8, 28 Nov 2026): eight North American diesels, built whole and released
+     together; soon (hidden everywhere) until its store items and its engines' exist */
+  {id:'usdiesel',  name:'American diesel classics',        blurb:'Eight classic American diesels, from the stainless streamliner of 1934 and the first road switchers to the long-nosed Alco PA',
+    types:['alcopa','gp9','e8','streamliner','emdft','gp7','sharknose','rs3'], added:'2026-11-28'},
 ];
 function packSku(p){ return 'trainmasters.pack.'+p.id; }
 function packById(id){ return ENGINE_PACKS.find(p=>p.id===id)||null; }
@@ -13451,6 +13559,51 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     bx(-0.335,-0.215,0.32,0,0.28,0.2,body); up(-0.275,0.5,0,0.058,0.1,DM);
     for(const d of [-1,1]) bx(d*0.375-0.014,d*0.375+0.014,0.14,0,0.075,0.44,WOOD);
     wh(HERO_SPEC.planet.dx,HERO_SPEC.planet.rD,WHL); wh([HERO_SPEC.planet.small[0][0]],HERO_SPEC.planet.small[0][1],WHL); };
+  /* American diesel classics far away (28 Nov 2026, pack American diesel classics): each one's main shapes in a few
+     boxes. The cab units: the carbody with its bands and windows, the roof, the nose in two steps with its windscreens,
+     bands and headlight, the pilot, the bogies' wheels; the FT's cabless B unit (K.pc: a far car pcF / pcR) the same body
+     to both ends with a gangway at each */
+  function heroFarUSCab(K,k){ const {bx,cx,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#2a3a48'), ROOF=C(L.roof||'#5a5e62'), N=C(L.ends||L.body), LENS=C('#fff6cf'), GRL=C('#303336');
+    const S1=C(L.stripe||'#e9b92e'), S2=C(L.stripe2||L.stripe||'#e9b92e'), BD=C(L.band||L.body);
+    const F={emdft:{nb:0.3,tip:0.82,ws:0.69,bands:[[0.296,0.31,S1],[0.334,0.362,S1]],ports:[-0.56,-0.33,-0.1,0.13]},
+      e8:{nb:0.3,tip:0.83,ws:0.665,bands:[[0.2,0.338,BD],[0.338,0.35,S1]],ports:[-0.52,-0.36,-0.2]},
+      alcopa:{nb:0.22,tip:0.868,ws:0.555,bands:[[0.302,0.344,S1]],ports:[-0.5,0.14]},
+      sharknose:{nb:0.3,tip:0.87,ws:0.64,bands:[[0.262,0.278,S2],[0.296,0.312,S1],[0.33,0.346,S2]],ports:[-0.5,-0.24,0.02]}}[k];
+    const pc=!!K.pc, xf=pc?0.79:F.nb, a1a=k==='e8'||k==='alcopa';
+    bx(-0.79,xf,0.38,0,0.36,0.41,body); bx(-0.77,pc?0.77:F.nb+0.08,0.585,0,0.05,0.36,ROOF);
+    for(const [a,b,c] of F.bands) bx(-0.79,pc?0.79:F.tip-0.03,(a+b)/2,0,b-a,0.416,c);
+    for(const s of [-1,1]){ for(const x of F.ports) bx(x-0.03,x+0.03,0.47,s*0.206,0.055,0.004,WIN); bx(-0.75,-0.45,0.51,s*0.206,0.05,0.004,GRL); }
+    if(pc){ for(const m of [-1,1]){ bx(m>0?0.79:-0.794,m>0?0.794:-0.79,0.37,0,0.3,0.18,BLK); bx(m*0.5-0.16,m*0.5+0.16,0.13,0,0.05,0.44,DK); } }
+    else { bx(F.nb,F.tip-0.06,0.32,0,0.24,0.41,N); bx(F.tip-0.06,F.tip,0.31,0,0.2,0.3,N); bx(F.nb,F.ws,0.5,0,0.12,0.41,N); bx(F.nb,F.ws-0.05,0.585,0,0.05,0.36,ROOF);
+      if(k==='alcopa') bx(F.ws,F.tip-0.06,0.45,0,0.03,0.39,N);
+      bx(F.ws-0.04,F.ws+0.006,0.505,0,0.05,0.385,WIN); cx(F.tip-0.004,F.tip+0.012,k==='e8'?0.36:0.4,0,0.03,LENS,6);
+      bx(F.tip-0.02,F.tip+0.05,0.12,0,0.1,0.34,DK); bx(-0.8,-0.79,0.37,0,0.3,0.18,BLK); }
+    bx(a1a?-0.19:-0.23,a1a?0.19:0.23,0.12,0,0.085,0.34,DK);
+    if(a1a){ wh([0.635,0.265,-0.265,-0.635],0.074,DK); wh([0.45,-0.45],0.064,DK); } else wh([0.605,0.395,-0.395,-0.605],0.074,DK); };
+  for(const id of ['emdft','e8','alcopa','sharknose']) HERO_FAR[id]=K=>heroFarUSCab(K,id);
+  /* the road switchers far away: the deck and its frame line, the long hood, the cab and its windows, the short hood,
+     the radiator grilles, stacks, handrails, headlights, pilots and the bogies' wheels */
+  function heroFarUSHood(K,k){ const {bx,cx,up,wh,C,body,L}=K, DK=C('#2b2b2b'), BLK=C('#141414'), WIN=C('#2a3a48'), LN=C(L.lining||'#e8e4d6'), RAIL=C(L.rail||'#d9b23a'), ROOF=C(L.roof||L.body), LENS=C('#fff3c4'), GRL=C('#26282a'), alco=k==='rs3';
+    const LH=alco?[-0.735,0.27]:[-0.735,0.235], CB=alco?[0.27,0.47]:[0.235,0.45], SH=alco?[0.47,0.725]:[0.45,0.735], HT=0.505, HS=alco?0.462:0.475;
+    bx(-0.775,0.775,0.194,0,0.012,0.42,DK); bx(-0.775,0.775,0.172,0,0.044,0.414,body); bx(-0.775,0.775,0.172,0,0.012,0.42,LN);
+    bx(LH[0],LH[1],(0.2+HT)/2,0,HT-0.2,0.284,body); bx(SH[0],SH[1],(0.2+HS)/2,0,HS-0.2,0.256,body); bx(CB[0],CB[1],0.39,0,0.38,0.4,body); bx(CB[0]-0.015,CB[1]+0.015,0.584,0,0.012,0.42,ROOF);
+    bx(CB[1],CB[1]+0.004,0.522,0,0.085,0.34,WIN); bx(CB[0]-0.004,CB[0],0.54,0,0.058,0.34,WIN);
+    for(const s of [-1,1]){ bx(CB[0]+0.02,CB[1]-0.02,0.5,s*0.201,0.08,0.004,WIN); bx(LH[0]+0.02,LH[0]+0.2,alco?0.35:0.465,s*0.143,alco?0.22:0.05,0.004,GRL);
+      bx(LH[0],CB[0],0.31,s*0.198,0.008,0.008,RAIL); bx(CB[1],SH[1],0.31,s*0.198,0.008,0.008,RAIL); }
+    up(alco?-0.3:-0.16,HT,0,alco?0.028:0.02,0.025,BLK); if(k==='gp9') bx(-0.52,-0.32,HT+0.014,0,0.028,0.22,body);
+    for(const m of [-1,1]){ const x=m>0?SH[1]:LH[0], h=m>0?HS:HT; cx(m>0?x:x-0.012,m>0?x+0.012:x,h-0.04,0,0.022,LENS,6); bx(m>0?0.775:-0.82,m>0?0.82:-0.775,0.13,0,0.06,0.2,DK); }
+    bx(-0.22,0.22,0.115,0,0.075,0.32,BLK);
+    wh([0.575,0.365,-0.365,-0.575],0.068,DK); }
+  for(const id of ['gp7','gp9','rs3']) HERO_FAR[id]=K=>heroFarUSHood(K,id);
+  /* the stainless streamliner far away: the fluted body down over the bogies, the red stripe, the shovel nose in two
+     steps with its windscreens, grille and headlight, the windows, the roof, the wheels */
+  HERO_FAR.streamliner=(K)=>{ const {bx,cx,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#2a3a48'), RED=C(L.stripe||'#b5202a'), ROOF=C(L.roof||'#b9bdc1'), GRL=C('#2e3134'), LENS=C('#fff6cf');
+    bx(-0.79,0.35,0.3525,0,0.395,0.4,body); bx(-0.77,0.33,0.585,0,0.06,0.36,ROOF); bx(-0.79,0.85,0.363,0,0.022,0.404,RED);
+    bx(0.35,0.76,0.36,0,0.41,0.4,body); bx(0.76,0.86,0.3,0,0.27,0.32,body); bx(0.35,0.6,0.585,0,0.06,0.36,ROOF); bx(0.62,0.74,0.5,0,0.055,0.37,WIN);
+    bx(0.858,0.864,0.272,0,0.11,0.18,GRL); cx(0.84,0.86,0.415,0,0.03,LENS,6);
+    for(const s of [-1,1]) for(const x of [-0.6,-0.45,-0.3,0.47,0.55]) bx(x-0.028,x+0.028,0.47,s*0.201,0.045,0.004,WIN);
+    bx(-0.8,-0.79,0.37,0,0.32,0.3,BLK);
+    wh([0.6,0.4,-0.4,-0.6],0.07,DK); };
   /* Class 800 far away: the dark green body with its gold line and window band, the long nose with its raked windscreen
      and yellow front, the pantograph, the skirt, the bogies */
   HERO_FAR.c800=(K)=>{ const {bx,up,tp,wh,C,body,L}=K, DK=C('#202020'), BLK=C('#141414'), WIN=C('#1a242c'), GLD=C(L.stripe||'#c9a14a'), YEL=C(L.ends||'#f2c230'), ROOF=C(L.roof||'#2a2d2f'), GRY=C('#3a3d40'), PAN=C('#9a9ea2');
@@ -13937,10 +14090,10 @@ void main(){ gl_FragColor=texture2D(map,vUv);
       for(const s of [-1,1]) cx(...X(d*0.81,d*0.86),0.165,s*0.135,0.025,DK,6); }
     bx(0.24,0.7,0.13,0,0.06,0.46,BLK); bx(-0.7,-0.24,0.13,0,0.06,0.46,BLK); bx(-0.2,0.2,0.105,0,0.08,0.34,BLK);
     wh([0.6,0.34,-0.34,-0.6],0.074,DK); };
-  function heroFarSteam(G,t,kind){
+  function heroFarSteam(G,t,kind,pc){   /* (pc: a far car pcF / pcR, 28 Nov 2026: the FT's B unit draws itself without a cab) */
     const L=liveryOf(t), C=h=>new THREE.Color(h), half=kind==='engF'?1:kind==='engR'?-1:0, o=half>0?-0.44:half<0?0.44:0;
     const keep=x=>!half||(half>0?x>=0:x<0), cut=(a,b)=>half>0?[Math.max(a,0),b]:half<0?[a,Math.min(b,0)]:[a,b];
-    const K={L,C,body:C(L.body),
+    const K={L,C,body:C(L.body),pc:!!pc,
       bx:(x0,x1,y,z,sy,sz,col)=>{ const [a,b]=cut(x0,x1); if(b-a>1e-4) G.box((a+b)/2+o,y,z,b-a,sy,sz,0,col); },
       cx:(x0,x1,y,z,r,col,seg=12)=>{ const [a,b]=cut(x0,x1); if(b-a>1e-4) G.cyl((a+b)/2+o,y,z,r,b-a,'x',col,seg); },
       tp:(x0,x1,y0,w0,h0,w1,h1,lift,col)=>{ if(keep((x0+x1)/2)) G.taper(x0+o,x1+o,y0,w0,h0,w1,h1,lift,col); },
@@ -13955,7 +14108,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     const body=C(L.body||'#555');
     if(HERO_FAR[t.type]&&(kind==='engF'||kind==='engR'||kind==='engT'||kind==='tender')){ heroFarSteam(G,t,kind); return; }
     const gp=(CAR_LEN*0.03+CAR_GAP)/TRAIN_K;   /* the gap between two carriages, in these units */
-    if(kind==='pcF'||kind==='pcR'){ heroFarSteam(G,t,kind==='pcF'?'engF':'engR');   /* the Sud-Est train's far power car: the front one's far model, turned round */
+    if(kind==='pcF'||kind==='pcR'){ heroFarSteam(G,t,kind==='pcF'?'engF':'engR',true);   /* the Sud-Est train's far power car: the front one's far model, turned round */
       if(kind==='pcR'&&L.artic){ bogie(G,-hl-gp/2); G.box(-hl-gp/2,0.37,0,gp+0.02,0.34,W*0.78,0,BLACK); }   /* the last trailer's own bogie and bellows, under the join */
       return; }
     switch(kind){
@@ -14106,11 +14259,13 @@ void main(){ gl_FragColor=texture2D(map,vUv);
           break; }
         if(kind==='coach'&&L.artic){   /* articulated trailers (the Sud-Est train): one bogie under each join, carried here under the
             front join, with the rubber bellows across it; a low white line, the orange window band, many small windows */
-          G.box(0,0.27,0,len,0.2,W*0.95,0,lo); for(const s of [-1,1]) G.box(0,L.lineHi?0.49:0.315,s*W*0.477,len,0.014,0.006,0,C(L.coachLine||'#f2f1ec'));
+          G.box(0,0.27,0,len,0.2,W*0.95,0,lo); for(const s of [-1,1]) G.box(0,L.lineY||(L.lineHi?0.49:0.315),s*W*0.477,len,0.014,0.006,0,C(L.coachLine||'#f2f1ec'));
+          if(L.flutes) for(const s of [-1,1]) for(let k=0;k<5;k++) G.box(0,0.2+k*0.024,s*W*0.477,len,0.005,0.004,0,lo.clone().multiplyScalar(0.8));   /* (the stainless streamliner's, 28 Nov 2026: fluted sides) */
           G.box(0,0.435,0,len,0.15,W*0.95,0,hi);
           for(let k=0;k<7;k++) for(const s of [-1,1]) G.box(-hl+0.07+k*0.11,0.425,s*W*0.478,0.075,0.048,0.01,0,WIN);
           G.box(0,0.515,0,len,0.01,W*0.95,0,roof); G.arc(0,0.52,0,len,W*0.95,0.05,0.02,roof,8);   /* a low rounded roof */
           G.box(hl+gp/2,0.35,0,gp+0.02,0.32,W*0.78,0,BLACK); bogie(G,hl+gp/2);
+          if(L.obsEnd&&i===t.cars-1){ G.taper(-hl,-hl-0.13,0.17,W*0.93,0.34,W*0.48,0.26,0.02,lo); G.taper(-hl,-hl-0.1,0.39,W*0.95,0.08,W*0.62,0.06,0.01,WIN); G.taper(-hl,-hl-0.12,0.5,W*0.94,0.03,W*0.5,0.02,-0.01,roof); bogie(G,-hl+0.13); }   /* (the stainless streamliner's last trailer, 28 Nov 2026: the rounded observation end with its windows wrapping round, and its own bogie) */
           break; }
         if(kind==='coach'&&L.sleek){   /* the Japanese bullet train's trailers (24 Nov 2026): smooth white sides down to a skirt over the
             bogies, a broad blue stripe under the row of small windows and a thin line below it, a smooth rounded roof, covered gangways */
@@ -14198,7 +14353,7 @@ void main(){ gl_FragColor=texture2D(map,vUv);
      rotation, as before. V3.batchOff builds the old separate meshes instead (tests/smooth3d.py compares pictures). */
   function carMesh(t,kind,i){
     const tints=S.batch?wagonTints(t,kind,i):null;
-    const variant = (tints ? 'tint' : (kind==='open'||kind==='tankw'||kind==='flat') ? (t.id*7+i)%15 : 0)+(kind==='coach'&&i===t.cars-1&&liveryOf(t).autoCab?'cab':'');   /* (an auto-coach's driving end) */
+    const variant = (tints ? 'tint' : (kind==='open'||kind==='tankw'||kind==='flat') ? (t.id*7+i)%15 : 0)+(kind==='coach'&&i===t.cars-1&&liveryOf(t).autoCab?'cab':'')+(kind==='coach'&&i===t.cars-1&&liveryOf(t).obsEnd?'obs':'');   /* (and the streamliner's observation end, 28 Nov 2026) */   /* (an auto-coach's driving end) */
     const key=`${t.type}|${kind}|${variant}|${liveryKey(t)}`;
     if(!carGeoCache.has(key)){
       const G=new Geo(); G.sep=true; G.tint=!!tints; buildCarGeo(G,t,kind,i);
@@ -14715,6 +14870,27 @@ void main(){ gl_FragColor=texture2D(map,vUv);
        nothing outside but the wheels); one carriage place and a four-wheeled tender */
     planet:{rD:0.1, dx:[-0.16], main:0, small:[[0.2,0.062,'e'],[0.17,0.06,'t'],[-0.17,0.06,'t']], places:1, gear:'hidden',
       wz:0.19, rc:0.03, yc:0.15, lcr:0.2, build:(L,sp)=>heroPlanet(L,sp), tris:e=>({engine:heroTris(e.eng), tender:heroTris(e.ten), wheels:2*heroTris(e.drvR)+6*heroTris(e.whlR)})},
+    /* American diesel classics (28 Nov 2026). The cab units: two carriage places on two four-wheeled bogies (the FT and
+       the Sharknose, 40" wheels) or on two six-wheeled A1A bogies with an unpowered middle axle (the E8 and the PA, 36"
+       middle wheels), the bogies set as the Class 31's */
+    emdft:{rD:0.074, bog:0.5, wb:0.105, ax:[-0.105,0.105], wz:0.19, cars:2, build:(L,sp)=>heroUSCab(L,sp,'emdft'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    sharknose:{rD:0.074, bog:0.5, wb:0.11, ax:[-0.11,0.11], wz:0.19, cars:2, build:(L,sp)=>heroUSCab(L,sp,'sharknose'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    e8:{rD:0.074, axR:[0.074,0.064,0.074], bog:0.45, wb:0.185, ax:[-0.185,0,0.185], wz:0.19, cars:2, build:(L,sp)=>heroUSCab(L,sp,'e8'), pose:(t,CP,o)=>heroPoseA1A(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)+4*heroTris(e.midR)})},
+    alcopa:{rD:0.074, axR:[0.074,0.064,0.074], bog:0.45, wb:0.185, ax:[-0.185,0,0.185], wz:0.19, cars:2, build:(L,sp)=>heroUSCab(L,sp,'alcopa'), pose:(t,CP,o)=>heroPoseA1A(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)+4*heroTris(e.midR)})},
+    /* the road switchers: two carriage places on two four-wheeled bogies, 40" wheels on a 9 ft wheelbase */
+    gp7:{rD:0.068, bog:0.47, wb:0.105, ax:[-0.105,0.105], wz:0.19, cars:2, build:(L,sp)=>heroUSHood(L,sp,'gp7'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    gp9:{rD:0.068, bog:0.47, wb:0.105, ax:[-0.105,0.105], wz:0.19, cars:2, build:(L,sp)=>heroUSHood(L,sp,'gp9'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    rs3:{rD:0.068, bog:0.46, wb:0.11, ax:[-0.11,0.11], wz:0.19, cars:2, build:(L,sp)=>heroUSHood(L,sp,'rs3'), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
+    /* the stainless streamliner's power car: two carriage places on two four-wheeled bogies, 36" wheels */
+    streamliner:{rD:0.068, bog:0.5, wb:0.1, ax:[-0.1,0.1], wz:0.19, cars:2, build:(L,sp)=>heroStainless(L,sp), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
+      tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
     /* Class 800 (24 Nov 2026): its driving car in two carriage places on two four-wheeled bogies, 0.84 m wheels */
     c800:{rD:0.068, bog:0.5, wb:0.13, ax:[-0.13,0.13], wz:0.19, cars:2, build:(L,sp)=>heroC800(L,sp), pose:(t,CP,o)=>heroPoseBogies(t,CP,o),
       tris:e=>({engine:heroTris(e.eng), bogies:2*heroTris(e.bog), wheels:8*heroTris(e.drvR)})},
@@ -25033,6 +25209,232 @@ void main(){ gl_FragColor=texture2D(map,vUv);
     B(0,0.12,0,0.46,0.085,0.34,DK); both(s=>{ LZ(0,0.12,s*0.1702,0.46,0.004,s,SILd); G.cyl(0.0,0.155,s*0.15,0.018,0.4,'x',UF,8); });
     return {eng:G, ...heroBoBo(sp)};
   }
+  /* ---- American diesel classics (28 Nov 2026, pack American diesel classics; each sold on its own as
+     trainmasters.engine.<k>). The streamlined cab units, in two carriage places on two bogies: a carbody with straight
+     sides and a curved roof, a nose at the front, a flat back with its gangway diaphragm. k chooses the engine (O below:
+     the nose in side view and plan, P: [y, front x, half width, corner radius, how far the middle of the front bulges];
+     the windscreen band W0-W1; the coloured bands along the sides and round the nose):
+       emdft (1939): the F-unit's rounded bulldog nose, its headlight in the nose door, four portholes along the sides with
+         small louvres high up between them, no roof headlight; dark green with yellow bands that run round the nose;
+       e8 (1949): the passenger unit, longer, its bulldog nose raked further back, a big headlight low in the nose and a
+         second one under the windscreens, square windows and a long grille band high on the sides, radiator fans at both
+         ends of the roof for its two engines, on two six-wheeled A1A bogies; blue over grey with a yellow line;
+       alcopa (1946): the long nose, flat-topped and square-sided with rounded corners, sloping gently up to the windscreens
+         set far back, its headlight high on the front over a grille, long grilles high along the sides, on A1A bogies;
+         maroon with gold bands;
+       sharknose (1949): the pointed shark nose, a vertical crease up its middle, sloping steeply back to the windscreens,
+         twin headlights at the top of the crease, three portholes; black with orange and yellow stripes.
+     Each has its pilot, coupler, marker lights, horns, roof fans and exhaust stacks; no name, herald or numbers. ---- */
+  function heroUSCab(L,sp,k){
+    const C=h=>new THREE.Color(h), BODY=C(L.body), NOSE=C(L.ends||L.body), STR=C(L.stripe||'#e9b92e'), STR2=C(L.stripe2||L.stripe||'#e9b92e'), BAND=C(L.band||L.body), ROOF=C(L.roof||'#5a5e62'),
+      BLK=C('#141414'), DK=C('#232323'), UF=C('#262728'), STEEL=C('#c9cdd1'), WIN=C('#2a3a48'), RUB=C('#0c0c0c'), LENS=C('#fff6cf'), GRL=C('#303336'), TAIL=C('#c0392b'), GREY=C('#8a9096'),
+      mix=(c,d,f)=>c.clone().lerp(d,f), SLAT=mix(BODY,GREY,0.35), SEAM=mix(mix(BODY,BLK,0.4),GREY,0.12), ROOFDK=mix(ROOF,BLK,0.4), PIL=mix(NOSE,BLK,0.25), HORN=C('#3a3a3a');
+    const G=new Geo(), {B,LZ,LX,LY,rod3,coneX,discX,discY}=heroKit(G), both=f=>{ f(1); f(-1); };
+    const discZ=(x,y,z,r,s,col,seg=10)=>{ for(let i=0;i<seg;i++){ const a0=i/seg*TAU, a1=(i+1)/seg*TAU; G.tri([x,y,z],[x+Math.cos(a0)*r,y+Math.sin(a0)*r,z],[x+Math.cos(a1)*r,y+Math.sin(a1)*r,z],col,[0,0,s]); } };
+    const W=0.205, yc=0.56, XB=-0.79, ROOFP=[[0.59,0.19],[0.612,0.155],[0.625,0.1]];
+    const O={
+      emdft:{nb:0.3, W0:0.486, W1:0.538, bands:[[0.296,0.31,STR],[0.334,0.362,STR]],
+        P:[[0.2,0.806,W,0.1,0],[0.26,0.818,W,0.12,0],[0.34,0.82,W,0.13,0],[0.4,0.81,W,0.14,0],[0.44,0.787,W,0.14,0],[0.474,0.745,W,0.13,0],[0.486,0.712,W,0.125,0],[0.538,0.676,W,0.11,0],[yc,0.648,W,0.1,0],[0.59,0.61,0.19,0.09,0],[0.612,0.565,0.155,0.075,0],[0.625,0.52,0.1,0.06,0]],
+        cab:[0.552,0.48], door:0.41, ports:[-0.56,-0.33,-0.1,0.13], grilles:[[-0.75,-0.63],[-0.49,-0.4],[-0.26,-0.17],[-0.03,0.06]], fans:[-0.72,-0.62,-0.52,-0.42], stacks:[-0.26,-0.18], horn:0.42},
+      e8:{nb:0.3, W0:0.478, W1:0.535, bands:[[0.2,0.338,BAND],[0.338,0.35,STR],[0.455,0.462,STR]],
+        P:[[0.2,0.818,W,0.11,0],[0.26,0.83,W,0.13,0],[0.33,0.83,W,0.14,0],[0.39,0.814,W,0.15,0],[0.43,0.785,W,0.15,0],[0.462,0.748,W,0.14,0],[0.478,0.722,W,0.135,0],[0.535,0.655,W,0.115,0],[yc,0.622,W,0.105,0],[0.59,0.58,0.19,0.095,0],[0.612,0.535,0.155,0.08,0],[0.625,0.49,0.1,0.06,0]],
+        cab:[0.5,0.425], door:0.355, wy:0.455, wins:[-0.52,-0.36,-0.2], grilles:[[-0.76,-0.6],[-0.1,0.28]], fans:[-0.72,-0.62,0.18,0.28], stacks:[-0.38,-0.3,-0.06,0.02], horn:0.4, upper:true},
+      alcopa:{nb:0.22, W0:0.494, W1:0.548, bands:[[0.302,0.344,STR],[0.438,0.45,STR]],
+        P:[[0.2,0.848,W,0.07,0.004],[0.26,0.862,W,0.08,0.004],[0.33,0.868,W,0.085,0.004],[0.39,0.864,W,0.085,0.004],[0.416,0.852,W,0.085,0.003],[0.434,0.826,W,0.08,0.002],[0.45,0.77,W,0.075,0],[0.468,0.69,W,0.075,0],[0.484,0.6,W,0.075,0],[0.494,0.566,W,0.075,0],[0.548,0.548,W,0.075,0],[yc,0.536,W,0.075,0],[0.59,0.505,0.19,0.07,0],[0.612,0.47,0.155,0.06,0],[0.625,0.43,0.1,0.05,0]],
+        cab:[0.47,0.39], door:0.315, wy:0.455, wins:[-0.5,0.14], grilles:[[-0.77,-0.56],[-0.44,-0.04],[0.06,0.26]], fans:[-0.7,-0.6], stacks:[-0.2], horn:0.35, grille:true},
+      sharknose:{nb:0.3, W0:0.49, W1:0.545, zs:[1,0.03,-0.03,-1], bands:[[0.262,0.278,STR2],[0.296,0.312,STR],[0.33,0.346,STR2]],
+        P:[[0.2,0.77,W,0.05,0.11],[0.26,0.755,W,0.05,0.105],[0.33,0.73,W,0.05,0.095],[0.39,0.705,W,0.05,0.085],[0.44,0.68,W,0.05,0.075],[0.49,0.655,W,0.05,0.06],[0.545,0.625,W,0.05,0.045],[yc,0.61,W,0.05,0.04],[0.59,0.575,0.19,0.05,0.03],[0.612,0.54,0.155,0.05,0.018],[0.625,0.5,0.1,0.04,0.008]],
+        cab:[0.5,0.425], door:0.355, ports:[-0.5,-0.24,0.02], grilles:[[-0.76,-0.6],[-0.4,-0.3],[-0.15,-0.05]], fans:[-0.72,-0.62], stacks:[-0.28,-0.2], horn:0.42, twin:true},
+    }[k];
+    const bandAt=y=>{ for(const [a,b,c] of O.bands) if(y>a&&y<b) return c; return null; }, colAt=(y,nose)=>bandAt(y)||(nose?NOSE:BODY);
+    const lerpP=y=>{ const P=O.P; let i=0; while(i<P.length-2&&P[i+1][0]<y) i++; const a=P[i], b=P[i+1], u=clamp((y-a[0])/(b[0]-a[0]),0,1); return a.map((v,j)=>j===0?y:v+(b[j]-v)*u); };
+    const edges=O.bands.flatMap(([a,b])=>[a,b]);
+    /* the carbody behind the nose: straight sides, the roof curving over, the flat back; the bands along the sides */
+    const ys=[...new Set([0.2,...edges.filter(y=>y>0.2&&y<yc),yc].map(v=>+v.toFixed(4)))].sort((a,b)=>a-b);
+    heroShell(G,[...ys.map(y=>({y,f:O.nb,b:XB,w:W,r:0.02})),...ROOFP.map(([y,w])=>({y,f:O.nb,b:XB,w,r:0.02}))],(x,y,z,p)=>p==='top'||y>yc?ROOF:colAt(y,false),{nS:8,nC:2,zs:[1,0.5,0,-0.5,-1]});
+    /* the nose: its slices, with more at the edges of the bands and the windscreens so each quad keeps one colour */
+    const lv=[...new Set([...O.P.map(p=>p[0]),...edges,O.W0-0.012,O.W1+0.01].map(v=>+v.toFixed(4)))].filter(y=>y>=0.2&&y<=0.625).sort((a,b)=>a-b);
+    heroShell(G,lv.map(y=>{ const [,f,w,r,bf]=lerpP(y); return {y,f,b:O.nb,w,r,bf}; }),(x,y,z,p,kk)=>{
+      if(p==='s'||p==='b'||p==='cb') return y<yc?colAt(y,false):ROOF;
+      if(y<O.W0-0.012) return colAt(y,true);
+      if(y<O.W0||(y>O.W1&&y<O.W1+0.01)) return RUB;
+      if(y<=O.W1){ if(p==='f') return Math.abs(z)<0.01?RUB:WIN; return kk<=1||kk>=4?RUB:WIN; }   /* the windscreens, a post between them, round the corners onto the cab sides */
+      return y<yc?NOSE:ROOF;
+    },{nS:4,nC:3,zs:O.zs||[1,0.6,0.25,0.04,-0.04,-0.25,-0.6,-1]});
+    /* where the nose's surface is at (y, z), and which way it faces */
+    const nx=(y,z)=>{ const [,f,w,r,bf]=lerpP(y), zw=w-r, q=Math.abs(z)-zw;
+      if(q<=0){ const u=z/zw, n=[1,0,-2*bf*u/zw], l=Math.hypot(n[0],n[2]); return {x:f+bf*(1-u*u),n:[n[0]/l,0,n[2]/l]}; }
+      const sn=Math.min(1,q/r), cs=Math.sqrt(1-sn*sn); return {x:f-r+cs*r,n:[cs,0,Math.sign(z)*sn]}; };
+    /* the headlights: one big lamp in the nose (the E8 a second under its windscreens; the PA high on its front over a
+       grille; the Sharknose two at the top of its crease); marker lights either side; the nose door seam */
+    const lamp=(y,z,r)=>{ const q=nx(y,z); G.cyl(q.x-0.006,y,z,r+0.006,0.02,'x',PIL,12); discX(q.x+0.0045,y,z,r+0.004,1,STEEL,12); discX(q.x+0.0055,y,z,r,1,LENS,12); };
+    if(k==='emdft') lamp(0.4,0,0.036);
+    if(k==='e8'){ lamp(0.36,0,0.036); lamp(0.43,0,0.024); }
+    if(k==='alcopa'){ lamp(0.398,0,0.03); const xg=Math.max(nx(0.215,0).x,nx(0.29,0).x);
+      LX(xg+0.0015,0.252,0,0.17,0.075,1,DK); for(let i=0;i<6;i++) LX(xg+0.0025,0.222+i*0.012,0,0.15,0.005,1,BLK); }   /* the grille under the headlight */
+    if(k==='sharknose') both(s=>lamp(0.455,s*0.022,0.016));
+    both(s=>{ const y=k==='alcopa'?0.4:0.44, z=s*(k==='alcopa'?0.15:0.1), q=nx(y,z); G.cyl(q.x-0.004,y,z,0.011,0.012,'x',DK,8); discX(q.x+0.003,y,z,0.008,1,C('#ffd9a0'),8); });
+    if(k!=='sharknose') for(const z of [-0.055,0.055]){ const y=0.29; LX(nx(y,z).x+0.0012,y,z,0.003,0.11,1,SEAM); }
+    /* the pilot (a curved plate under the nose), its steps, the knuckle coupler and air hoses */
+    { const xf=lerpP(0.2)[1], x0=xf-0.022, x1=xf+0.055+(k==='sharknose'?0.03:0);
+      const slab=(a,b,c,d,t,col)=>{ const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]], v=[d[0]-a[0],d[1]-a[1],d[2]-a[2]], n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]], l=Math.hypot(n[0],n[1],n[2])||1, o=n.map(q=>q/l*t); G.hexa([a,b,c,d].map(p=>[p[0]-o[0],p[1]-o[1],p[2]-o[2]]).concat([a,b,c,d]),col); };   /* (a plate with a back to it: seen from under a bridge too) */
+      both(s=>{ slab([x0,0.19,0],[x0,0.19,s*0.2],[x1,0.05,s*0.17],[x1,0.05,0],0.006,PIL); });
+      B(x0-0.003,0.175,0,0.006,0.03,0.4,DK);
+      for(let i=0;i<3;i++) B(x0+0.025+i*0.02,0.15-i*0.04,0,0.006,0.006,0.34-i*0.03,DK);
+      B(x1,0.13,0,0.05,0.035,0.04,DK); B(x1+0.03,0.13,0,0.024,0.05,0.05,BLK); both(s=>rod3([x1-0.01,0.1,s*0.07],[x1+0.01,0.06,s*0.08],0.01,BLK)); }
+    /* the back: the gangway diaphragm, the end door, handrails, tail lights, the coupler */
+    LX(XB-0.0015,0.37,0,0.2,0.32,-1,RUB); LX(XB-0.0025,0.37,0,0.16,0.29,-1,DK); LX(XB-0.0035,0.42,0,0.08,0.1,-1,WIN);
+    both(s=>{ rod3([XB-0.005,0.24,s*0.17],[XB-0.005,0.5,s*0.17],0.006,STEEL); G.cyl(XB-0.005,0.54,s*0.15,0.01,0.012,'x',DK,8); discX(XB-0.0115,0.54,s*0.15,0.007,-1,TAIL,8); });
+    B(XB-0.01,0.16,0,0.03,0.07,0.4,DK); B(XB-0.04,0.13,0,0.05,0.035,0.04,DK); B(XB-0.07,0.13,0,0.024,0.05,0.05,BLK);
+    /* the sides: the cab side windows, the crew door behind them, portholes or square windows, the grille band high up,
+       seams and the fluted lower edge */
+    both(s=>{ const z=s*(W+0.0012), z2=s*(W+0.0022), z3=s*(W+0.0026);
+      for(const x of O.cab){ LZ(x,0.5,z,0.07,0.06,s,RUB); LZ(x,0.501,z2,0.062,0.052,s,WIN); }
+      for(const x of [O.door-0.025,O.door+0.025]) LZ(x,0.36,z,0.003,0.36,s,SEAM); LZ(O.door,0.54,z,0.053,0.003,s,SEAM);
+      rod3([O.door-0.035,0.23,s*(W+0.012)],[O.door-0.035,0.5,s*(W+0.012)],0.006,STEEL); rod3([O.door+0.035,0.23,s*(W+0.012)],[O.door+0.035,0.5,s*(W+0.012)],0.006,STEEL);
+      for(let q=0;q<3;q++) B(O.door,0.17-q*0.035,s*0.198,0.05,0.005,0.03,DK);
+      for(const x of O.ports||[]){ discZ(x,0.47,z,0.038,s,RUB,12); discZ(x,0.47,z2,0.03,s,WIN,12); discZ(x+0.008,0.478,z3,0.008,s,C('#5d7184'),6); }
+      for(const x of O.wins||[]){ const y=O.wy||0.47; LZ(x,y,z,0.07,0.064,s,RUB); LZ(x,y,z2,0.058,0.052,s,WIN); LZ(x+0.012,y+0.012,z3,0.016,0.012,s,C('#5d7184')); }
+      for(const [x0,x1] of O.grilles){ const xc=(x0+x1)/2, h=k==='e8'||k==='alcopa'?0.05:0.06, y=k==='e8'||k==='alcopa'?0.525:0.505; LZ(xc,y,z,x1-x0,h,s,GRL); for(let i=0;i<(k==='e8'||k==='alcopa'?4:5);i++) LZ(xc,y-h/2+0.008+i*0.0115,z2,x1-x0-0.006,0.004,s,SLAT); }
+      for(const x of [-0.62,-0.2,0.2]) if(x<O.door-0.06) LZ(x,0.3,z,0.0025,0.18,s,SEAM);
+      for(let i=0;i<3;i++) LZ((XB+O.nb)/2,0.214+i*0.011,z3,O.nb-XB-0.02,0.003,s,SEAM); });
+    /* the roof: the radiator fans, the exhaust stacks, the horn on the cab roof */
+    const yt=0.625;
+    for(const x of O.fans){ discY(x,yt+0.002,0,0.04,0.046,RUB,10); discY(x,yt+0.0025,0,0,0.04,GRL,10); for(const a of [0,Math.PI/2]) LY(x,yt+0.003,0,Math.abs(Math.cos(a))*0.078+0.004,Math.abs(Math.sin(a))*0.078+0.004,STEEL); }
+    for(const x of O.stacks) G.cyl(x,yt+0.008,0,k==='alcopa'?0.024:0.016,0.024,'y',DK,8);
+    G.cyl(O.horn,yt+0.002,0,0.012,0.014,'y',DK,6); for(const [dz,l] of [[-0.03,0.05],[0,0.07],[0.03,0.04]]) coneX(O.horn+l,O.horn,yt+0.016,dz,0.012,0.005,HORN,6);
+    /* underframe: the solebar and the floor under the nose (closing its shell from below), the fuel tank between the
+       bogies, air reservoirs */
+    B((XB+O.nb)/2,0.19,0,O.nb-XB+0.1,0.024,0.4,UF);
+    { const [,f,w,r]=lerpP(0.2); B((O.nb+f-r)/2,0.19,0,f-r-O.nb,0.024,0.4,UF); B(f-r/2-0.005,0.19,0,r-0.01,0.024,2*(w-r)+0.6*r,UF); }
+    B(0,0.12,0,sp.axR?0.3:0.46,0.085,0.34,DK); both(s=>{ LZ(0,0.12,s*0.1702,sp.axR?0.3:0.46,0.004,s,SEAM); G.cyl(0,0.155,s*0.15,0.018,sp.axR?0.28:0.36,'x',UF,8); });
+    return {eng:G, ...(sp.axR?heroA1A(sp):heroBoBo(sp))};
+  }
+  /* ---- American road switchers (28 Nov 2026, pack American diesel classics): the hood units, two carriage places on two
+     four-wheeled bogies. A long deck with walkways all round and handrails on stanchions; the long hood behind the cab
+     (its doors, louvres, radiator grilles and fans at the far end, the exhaust stacks), the cab with its windows all
+     round and an overhanging roof, the short hood ahead of it; headlights and number boards on both hood ends, steps and
+     a pilot at each corner, the bell and horn, the fuel tank between the bogies. k chooses the engine:
+       gp7 (1949): the first Geep: louvres along the top of every long-hood door; blue with a white frame line;
+       gp9 (1954): fewer louvres, a dynamic brake blister with its fan on the middle of the long hood; black with yellow;
+       rs3 (1950): the Alco: hoods with well rounded tops, the cab set a little further forward, tall radiator shutters
+         down the sides at the far end, one fan, a single big exhaust stack, one headlight on each hood end; deep red with
+         a cream line. ---- */
+  function heroUSHood(L,sp,k){
+    const C=h=>new THREE.Color(h), BODY=C(L.body), LN=C(L.lining||'#e8e4d6'), RAIL=C(L.rail||'#d9b23a'), ROOF=C(L.roof||L.body),
+      BLK=C('#141414'), DK=C('#232323'), UF=C('#1e1f1f'), STEEL=C('#b9bdc1'), WIN=C('#2a3a48'), RUB=C('#0c0c0c'), LENS=C('#fff3c4'), GRL=C('#26282a'), GREY=C('#8a9096'), HORN=C('#3a3a3a'),
+      mix=(c,d,f)=>c.clone().lerp(d,f), SLAT=mix(BODY,GREY,0.3), SEAM=mix(mix(BODY,BLK,0.4),GREY,0.12), DECK=C('#2b2b2b'), NB=C('#e9e6dc');
+    const G=new Geo(), {B,LZ,LX,LY,rod3,coneX,discX,discY}=heroKit(G), both=f=>{ f(1); f(-1); };
+    const alco=k==='rs3', D=0.2, XE=0.775;   /* deck top, deck ends */
+    const slab=(a,b,c,d,t,col)=>{ const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]], v=[d[0]-a[0],d[1]-a[1],d[2]-a[2]], n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]], l=Math.hypot(n[0],n[1],n[2])||1, o=n.map(q=>q/l*t); G.hexa([a,b,c,d].map(p=>[p[0]-o[0],p[1]-o[1],p[2]-o[2]]).concat([a,b,c,d]),col); };
+    const LH=alco?[-0.735,0.27]:[-0.735,0.235], CB=alco?[0.27,0.47]:[0.235,0.45], SH=alco?[0.47,0.725]:[0.45,0.735];   /* long hood, cab, short hood (x from, to) */
+    const WL=0.142, WS=0.128, HT=0.505, HS=alco?0.462:0.475, CW=0.2, CT=0.578, R=alco?0.05:0.022;   /* half widths, tops */
+    /* the deck: its plate, the side sills (with the frame line), the end platforms */
+    B(0,D-0.006,0,2*XE,0.012,0.42,DECK); both(s=>{ B(0,0.172,s*0.207,2*XE,0.044,0.008,BODY); LZ(0,0.172,s*0.2115,2*XE-0.02,0.012,s,LN); });
+    B(0,0.155,0,2*XE-0.04,0.03,0.36,UF);
+    /* the long hood and the short hood: straight sides, rounded top edges (the Alco's well rounded) */
+    const hood=(x0,x1,w,h,yb)=>heroShell(G,[[yb,w,0.012],[h-R*0.9,w,0.012],[h-R*0.35,w-R*0.28,0.012],[h,w-R,0.012]].map(([y,ww,r])=>({y,f:x1,b:x0,w:ww,r})),
+      ()=>BODY,{nS:6,nC:2,zs:[1,0.5,0,-0.5,-1]});
+    hood(LH[0],LH[1]+0.01,WL,HT,D); hood(SH[0]-0.01,SH[1],WS,HS,D);   /* (their inner ends 1 cm inside the cab: no corner shared with it) */
+    /* the cab: square, its roof overhanging a little all round; windows front, back and sides */
+    heroShell(G,[[D,CW,0.01],[CT-0.01,CW,0.01],[CT,CW,0.01]].map(([y,w,r])=>({y,f:CB[1],b:CB[0],w,r})),()=>BODY,{nS:3,nC:2,zs:[1,0.5,0,-0.5,-1]});
+    B((CB[0]+CB[1])/2,CT+0.006,0,CB[1]-CB[0]+0.03,0.012,2*CW+0.02,ROOF); B((CB[0]+CB[1])/2,CT+0.016,0,CB[1]-CB[0]-0.02,0.008,2*CW-0.06,ROOF);
+    both(s=>{ /* front and back windows over the hoods, side windows (one sliding, its frame), the cab doors' grab irons */
+      for(const [x,d,y,h] of [[CB[1],1,0.522,0.085],[CB[0],-1,0.54,0.058]]){ LX(x+d*0.0015,y,s*0.12,0.1,h,d,RUB); LX(x+d*0.0025,y+0.002,s*0.12,0.088,h-0.013,d,WIN); }
+      const z=s*(CW+0.0012), z2=s*(CW+0.0024), cm=(CB[0]+CB[1])/2;
+      LZ(cm+0.045,0.5,z,0.075,0.08,s,RUB); LZ(cm+0.045,0.502,z2,0.066,0.07,s,WIN); LZ(cm-0.045,0.5,z,0.075,0.08,s,RUB); LZ(cm-0.045,0.502,z2,0.066,0.07,s,WIN); LZ(cm,0.5,z2,0.004,0.08,s,RUB);
+      LZ(cm,0.448,z,CB[1]-CB[0]-0.02,0.003,s,SEAM); });
+    /* the long hood's sides: door seams, louvres (the GP7 on every door, the GP9 on a few), the radiator grilles at the far
+       end (the RS-3: tall shutters); the short hood's doors */
+    both(s=>{ const z=s*(WL+0.0012), z2=s*(WL+0.0024), n=8, dx=(LH[1]-LH[0]-0.02)/n;
+      for(let i=0;i<=n;i++) LZ(LH[0]+0.01+i*dx,0.34,z,0.0025,0.26,s,SEAM);
+      for(let i=0;i<n;i++){ const x=LH[0]+0.01+(i+0.5)*dx; if(i<2) continue; if(k==='gp9'&&!(i===2||i===5||i===n-1)) continue;
+        LZ(x,0.44,z,dx*0.7,0.05,s,GRL); for(let q=0;q<4;q++) LZ(x,0.423+q*0.0115,z2,dx*0.66,0.004,s,SLAT); }
+      if(alco){ LZ(LH[0]+0.1,0.35,z,0.15,0.22,s,GRL); for(let q=0;q<13;q++) LZ(LH[0]+0.1+(q-6)*0.0115,0.35,z2,0.004,0.21,s,SLAT); }   /* the radiator shutters */
+      else { LZ(LH[0]+0.11,0.465,z,0.17,0.05,s,GRL); for(let q=0;q<4;q++) LZ(LH[0]+0.11,0.448+q*0.0115,z2,0.164,0.004,s,SLAT); }   /* the radiator grilles high up */
+      for(const x of [SH[0]+0.07,SH[0]+0.17]) LZ(x,0.33,s*(WS+0.0012),0.0025,0.22,s,SEAM);
+      LZ((SH[0]+SH[1])/2,0.42,s*(WS+0.0024),0.1,0.03,s,GRL); });
+    /* the long hood's top: the radiator fans at the far end (the Alco one big one), the exhaust stacks, the GP9's dynamic
+       brake blister with its fan, lifting rings */
+    const yt=HT+0.001, fan=(x,r)=>{ discY(x,yt+0.002,0,r,r+0.007,RUB,12); discY(x,yt+0.0025,0,0,r,GRL,12); for(const a of [0,Math.PI/2]) LY(x,yt+0.003,0,Math.abs(Math.cos(a))*2*r+0.004,Math.abs(Math.sin(a))*2*r+0.004,STEEL); };
+    if(alco) fan(LH[0]+0.11,0.06); else { fan(LH[0]+0.07,0.05); fan(LH[0]+0.19,0.05); }
+    for(const x of alco?[-0.3]:[-0.12,-0.2]) { G.cyl(x,yt+0.01,0,alco?0.028:0.018,0.024,'y',DK,8); discY(x,yt+0.0225,0,0,alco?0.022:0.013,BLK,8); }
+    if(k==='gp9'){ B(-0.42,yt+0.014,0,0.2,0.028,0.22,BODY); LY(-0.42,yt+0.0285,0,0.18,0.2,mix(BODY,GREY,0.15)); discY(-0.42,yt+0.029,0,0.045,0.052,RUB,10); discY(-0.42,yt+0.0295,0,0,0.045,GRL,10);
+      both(s=>{ LZ(-0.42,yt+0.014,s*0.1112,0.18,0.02,s,GRL); }); }
+    /* the hood ends: headlights (GP: two in one housing, the Alco one) with number boards either side, the bell, the horn
+       on the cab roof */
+    for(const [x,d,h] of [[SH[1],1,HS],[LH[0],-1,HT]]){
+      if(alco){ G.cyl(x+d*0.008,h-0.06,0,0.026,0.016,'x',DK,10); discX(x+d*0.0165,h-0.06,0,0.02,d,LENS,10); }
+      else { B(x+d*0.008,h-0.035,0,0.016,0.04,0.075,DK); for(const z of [-0.018,0.018]) discX(x+d*0.0165,h-0.035,z,0.014,d,LENS,10);
+        both(s=>{ B(x+d*0.006,h-0.035,s*0.075,0.012,0.03,0.05,DK); LX(x+d*0.0125,h-0.035,s*0.075,0.04,0.02,d,NB); }); }
+      if(k==='gp9') for(const s of [-1,1]) LX(x+d*0.0013,0.31,s*0.06,0.035,0.11,d,LN);   /* yellow stripes on the ends */
+    }
+    G.cyl(SH[1]-0.04,HS+0.016,0.06,0.016,0.03,'y',C('#b89a3a'),8);   /* the bell */
+    G.cyl((CB[0]+CB[1])/2,CT+0.022,0,0.01,0.014,'y',DK,6); for(const [dz,l] of [[-0.03,0.05],[0,0.07],[0.03,0.04]]) coneX((CB[0]+CB[1])/2+l,(CB[0]+CB[1])/2,CT+0.034,dz,0.011,0.005,HORN,6);
+    /* handrails along the walkways on stanchions, across the ends; the steps and the pilot at each corner */
+    both(s=>{ const z=s*0.198;
+      for(const [x0,x1] of [[LH[0]-0.01,CB[0]],[CB[1],SH[1]+0.01]]){ rod3([x0,0.31,z],[x1,0.31,z],0.006,RAIL); for(let x=x0;x<=x1+1e-4;x+=(x1-x0)/Math.max(1,Math.round((x1-x0)/0.12))) B(x,0.255,z,0.006,0.11,0.006,RAIL); } });
+    both(m=>{ const X=x=>m*x;
+      rod3([X(XE-0.01),0.31,-0.198],[X(XE-0.01),0.31,0.198],0.006,RAIL); for(const z of [-0.198,-0.07,0.07,0.198]) B(X(XE-0.01),0.255,z,0.006,0.11,0.006,RAIL);
+      both(s=>{ for(let q=0;q<3;q++) B(X(XE-0.045),0.155-q*0.04,s*0.17,0.06,0.006,0.06,DK); B(X(XE-0.045),0.11,s*0.2,0.06,0.1,0.004,DK); });
+      B(X(XE+0.004),0.16,0,0.012,0.05,0.42,BODY); LX(X(XE+0.0105),0.16,0,0.4,0.012,m,LN);   /* end sill with the frame line */
+      both(s=>slab([X(XE+0.005),0.135,0],[X(XE+0.005),0.135,s*0.11],[X(XE+0.04),0.05,s*0.1],[X(XE+0.04),0.05,0],0.006,DK));   /* the pilot */
+      B(X(XE+0.03),0.13,0,0.05,0.035,0.04,DK); B(X(XE+0.06),0.13,0,0.024,0.05,0.05,BLK); both(s=>rod3([X(XE+0.02),0.1,s*0.07],[X(XE+0.04),0.06,s*0.08],0.01,BLK)); });
+    /* the fuel tank and air reservoirs between the bogies */
+    B(0,0.115,0,0.44,0.075,0.32,BLK); both(s=>{ for(const x of [-0.15,0,0.15]) LZ(x,0.115,s*0.1602,0.008,0.075,s,UF); G.cyl(0,0.148,s*0.14,0.016,0.5,'x',UF,8); });
+    return {eng:G, ...heroBoBo(sp)};
+  }
+  /* ---- Stainless streamliner (1934; 28 Nov 2026, pack American diesel classics, sold on its own as
+     trainmasters.engine.streamliner): the power car of the first diesel streamlined train, in two carriage places on two
+     four-wheeled bogies, its trailers articulated behind it (coach, L.artic). The rounded shovel nose leaning forward,
+     the windscreens in its slope, a big grille low on the front with the headlight above it, a skirt down over the
+     bogies; fluted stainless sides, the red stripe along them and round the nose; a few small windows and the baggage
+     door; the flat back with its bellows. No name, no numbers. ---- */
+  function heroStainless(L,sp){   /* (not heroStreamliner: that is the streamlined Duchess's) */
+    const C=h=>new THREE.Color(h), SS=C(L.body), RED=C(L.stripe||'#b5202a'), ROOF=C(L.roof||'#b9bdc1'),
+      BLK=C('#141414'), DK=C('#232323'), UF=C('#262728'), STEEL=C('#dfe2e5'), WIN=C('#2a3a48'), RUB=C('#0c0c0c'), LENS=C('#fff6cf'), GRL=C('#2e3134'),
+      FLUTE=SS.clone().multiplyScalar(0.8), SEAM=SS.clone().multiplyScalar(0.66), SSd=SS.clone().multiplyScalar(0.88);
+    const G=new Geo(), {B,LZ,LX,LY,rod3,coneX,discX,discY}=heroKit(G), both=f=>{ f(1); f(-1); };
+    const W=0.2, yc=0.55, XB=-0.79, NB=0.35, Y0=0.155, S0=0.352, S1=0.374, W0=0.44, W1=0.495;
+    /* the body: a skirt down to Y0, straight sides, the roof rounded over */
+    const RP=[[0.585,0.185],[0.608,0.15],[0.622,0.1]];
+    heroShell(G,[...[Y0,0.2,S0,S1,yc].map(y=>({y,f:NB,b:XB,w:W,r:0.03})),...RP.map(([y,w])=>({y,f:NB,b:XB,w,r:0.03}))],(x,y,z,p)=>p==='top'||y>yc?ROOF:y>S0&&y<S1?RED:SS,{nS:8,nC:2,zs:[1,0.5,0,-0.5,-1]});
+    /* the shovel nose: rounded in plan, leaning forward, the windscreens in its slope */
+    const GY=[0.215,0.2294,0.2438,0.2581,0.2725,0.2869,0.3012,0.3156,0.33];   /* the grille's bars, alternately dark and bright */
+    const Pb=[[Y0,0.8,W,0.15,0.03],[0.2,0.83,W,0.16,0.03],[0.27,0.856,W,0.17,0.03],[S0,0.862,W,0.175,0.03],[S1,0.858,W,0.175,0.03],[0.405,0.838,W,0.175,0.03],[W0-0.01,0.808,W,0.175,0.025],[W0,0.798,W,0.172,0.025],[W1,0.738,W,0.16,0.02],[W1+0.01,0.724,W,0.155,0.02],[yc,0.66,W,0.15,0.015],[0.585,0.575,0.185,0.135,0.01],[0.608,0.5,0.15,0.11,0.006],[0.622,0.43,0.1,0.07,0.002]];
+    const at=y=>{ let i=0; while(i<Pb.length-2&&Pb[i+1][0]<y) i++; const a=Pb[i], b=Pb[i+1], u=clamp((y-a[0])/(b[0]-a[0]),0,1); return a.map((v,j)=>j===0?y:v+(b[j]-v)*u); };
+    const P=[...new Set([...Pb.map(p=>p[0]),...GY])].sort((a,b)=>a-b).map(at);
+    heroShell(G,P.map(([y,f,w,r,bf])=>({y,f,b:NB,w,r,bf})),(x,y,z,p,kk)=>{
+      if(p==='s'||p==='b'||p==='cb') return y>yc?ROOF:y>S0&&y<S1?RED:SS;
+      if(y>S0&&y<S1) return RED;
+      if(y>GY[0]&&y<GY[GY.length-1]&&(p==='f'||(p==='cf'&&(kk===2||kk===3)))){ let i=0; while(GY[i+1]<y) i++; return i%2?STEEL:GRL; }
+      if(y>W0-0.01&&y<W0||y>W1&&y<W1+0.01) return RUB;
+      if(y>W0&&y<W1){ if(p==='f') return Math.abs(z)<0.012?RUB:WIN; return kk===2||kk===3?WIN:RUB; }
+      return y>yc+0.003?ROOF:SS;
+    },{nS:4,nC:3,zs:[1,0.62,0.28,0.04,-0.04,-0.28,-0.62,-1]});
+    const nx=y=>{ let i=0; while(i<P.length-2&&P[i+1][0]<y) i++; const a=P[i], b=P[i+1], u=clamp((y-a[0])/(b[0]-a[0]),0,1); return a[1]+(b[1]-a[1])*u+a[4]; };
+    /* the grille low on the front (horizontal bars), the headlight above the stripe, marker lights, the coupler hatch */
+    G.cyl(nx(0.398)-0.004,0.398,0,0.03,0.02,'x',SSd,12); discX(nx(0.398)+0.007,0.398,0,0.03,1,STEEL,12); discX(nx(0.398)+0.008,0.398,0,0.023,1,LENS,12);
+    both(s=>{ G.cyl(nx(0.41)-0.06,0.41,s*0.13,0.009,0.01,'x',DK,8); discX(nx(0.41)-0.054,0.41,s*0.13,0.007,1,C('#ffd9a0'),8); });
+    B(nx(Y0)+0.01,0.13,0,0.03,0.05,0.18,DK); B(nx(Y0)+0.035,0.13,0,0.03,0.04,0.04,BLK);
+    /* the back: the bellows to the first trailer, handrails */
+    LX(XB-0.0015,0.37,0,0.3,0.36,-1,RUB); for(let i=0;i<5;i++) LX(XB-0.003,0.22+i*0.075,0,0.31,0.008,-1,DK);
+    /* the sides: the flutes along the lower half, the stripe's fine edges, the cab side window, the baggage door, small
+       windows, seams, the skirt's cut-outs over the bogies' wheels */
+    both(s=>{ const z=s*(W+0.0012), z2=s*(W+0.0022);
+      for(let i=0;i<8;i++) LZ((XB+NB)/2+0.05,0.21+i*0.017,z,NB-XB+0.06,0.004,s,FLUTE);
+      LZ(0.55,0.495,z,0.07,0.05,s,RUB); LZ(0.55,0.496,z2,0.062,0.042,s,WIN);
+      LZ(0.46,0.48,z,0.05,0.05,s,RUB); LZ(0.46,0.481,z2,0.042,0.042,s,WIN);
+      for(const x of [0.38,0.42]) LZ(x,0.35,z2,0.003,0.36,s,SEAM);
+      for(const [x0,x1] of [[-0.1,0.1]]){ for(const x of [x0,x1]) LZ(x,0.37,z2,0.003,0.34,s,SEAM); LZ((x0+x1)/2,0.54,z2,x1-x0,0.003,s,SEAM); LZ((x0+x1)/2,0.47,z2,0.04,0.04,s,WIN); }   /* the baggage door */
+      for(const x of [-0.6,-0.45,-0.3]){ LZ(x,0.47,z,0.06,0.05,s,RUB); LZ(x,0.471,z2,0.052,0.042,s,WIN); }
+      for(const x of [-0.5,0.5]) LZ(x,0.175,z2,0.22,0.04,s,DK); });
+    /* the roof: a low fairing over the engine's radiator, the exhaust, the horn */
+    B(0.2,0.626,0,0.26,0.012,0.16,ROOF); for(let i=0;i<6;i++) LY(0.12+i*0.032,0.6325,0,0.012,0.13,GRL);
+    G.cyl(0.05,0.63,0,0.014,0.02,'y',DK,8); coneX(0.6,0.56,0.62,0,0.014,0.006,C('#3a3a3a'),6);
+    B(0,0.17,0,1.5,0.02,0.36,UF);
+    return {eng:G, ...heroBoBo(sp)};
+  }
   /* ---- Scandinavian bulldog diesel (1954; sold on its own as trainmasters.engine.nohab): the Swedish-built licence copy
      of the American streamliner, here the double-cab kind: a rounded "bulldog" nose at each end of a long body, each with
      its big headlight, the windscreens set back above it and a pilot plate below; square windows and a band of grilles
@@ -26781,6 +27183,14 @@ const SHED_HISTORY={
   c14:'British Railways built fifty-six of these little diesels at Swindon in 1964 for short goods trips and colliery lines in South Wales. Sadly that work was vanishing fast, and within a few years most were sold to quarries, steelworks and collieries, where they worked for many more years. Their friendly looks earned them the nickname "Teddy Bears".',
   fairlie:'In 1869 the little Welsh slate railway at Porthmadog put this double engine to work and amazed engineers from all over the world: two boilers, two chimneys and two swivelling power bogies, so a powerful engine could still run round the line\'s very sharp curves. Engines of the same kind are still built and run there today.',
   planet:'Built in 1830 by Robert Stephenson for the new Liverpool and Manchester Railway, the Planet improved on the famous Rocket: its cylinders lay level and inside the frames, under the smokebox, and drove a cranked axle. That neat, steady layout became the pattern for many early engines in Britain and abroad, and a working copy runs today in Manchester.',
+  alcopa:'The American Locomotive Company had built steam engines for a hundred years when, in 1946, it brought out this passenger diesel, and many people still think it the most handsome diesel ever made, with its long nose stretching far ahead of the cab. About two hundred and fifty were built until 1953 to haul famous expresses across the country. Its big engine was strong but sometimes sent up a cloud of smoke as the driver opened up. A few were rescued from Mexico years later and lovingly restored.',
+  gp9:'Railroads liked the GP7 so much that its maker improved it in 1954 with a stronger engine and fewer louvres, and the GP9 became the best-selling road switcher of its time: more than four thousand were built for America and Canada. With walkways round its hoods and a cab that saw both ways, it could pull a fast goods train, shunt a yard or haul a local passenger train. They were so tough and simple that many are still working today, more than sixty years on.',
+  e8:'From 1949 the E8 hauled America’s famous long-distance expresses, the trains with sleeping cars and dining cars that ran overnight between the great cities. Each one had two engines in its long body, so if one failed the train could still get home, and three or four were often coupled together for the heaviest trains. About four hundred and fifty were built. Many worked on into the 1970s, and a few still haul special trains, polished and proud.',
+  streamliner:'In 1934 a new kind of train rolled out of a works in Philadelphia: three short cars of shining stainless steel, joined over shared bogies and pulled by a small diesel engine instead of steam. On a spring day it raced a thousand miles from Denver to Chicago without stopping, from dawn to dusk, touching 112 mph, and crowds lined the tracks to watch it pass. It starred at a world’s fair and in a film, and it changed how trains were built. The original is kept in a museum in Chicago.',
+  emdft:'In 1939 a set of four new diesel units in green and yellow set off on a tour of America’s railroads. Over eleven months it hauled heavy goods trains over steep mountain lines for 83,000 miles, through deserts and snow, and beat steam engines everywhere it went. Railroad bosses who had laughed at diesels now ordered them, and over a thousand FT units were built in the war years. The tour is remembered as the moment the steam engine’s days began to end.',
+  gp7:'Before 1949 American diesels were either streamlined cab units for long runs or small switchers for yards. The GP7, nicknamed the "Geep" after "general purpose", did both: the engine sat under a narrow hood with walkways round it, so it was easy to mend, and the crew could see both ways from the cab. Railroads found they needed only one kind of engine for almost every job, and more than two thousand seven hundred were built. Many are still at work.',
+  sharknose:'Baldwin, one of the oldest engine builders in America, styled its new cab units of 1949 after the famous shark-nosed steam engines of a great eastern railroad, with a long pointed nose and a sharp crease. Their slow, heavy engines pulled hard from a stand, and they were well liked on heavy coal and goods trains. Only a few hundred were built before Baldwin stopped making engines in 1956, which makes the few survivors all the more treasured.',
+  rs3:'The Alco RS-3 of 1950 was the American Locomotive Company’s answer to the Geeps: a road switcher with walkways round rounded hoods, built for branch lines, yards and short goods trains. Over thirteen hundred were made for America, Canada and Mexico. Crews knew them by the deep, uneven beat of their four-stroke engines and the puff of smoke when they opened up. Many worked into the 1980s, and some still run on heritage lines today.',
   c800:'Built from 2014, many of them in a new factory in the north-east of England to a Japanese design, these trains took over the fast services from London to the West Country, Wales, Yorkshire and Scotland from 2017. Each one can run from the overhead wires or, where there are none, from diesel engines under its floors, changing over on the move. Hundreds of their cars now run on Britain\'s main lines.',
   saint:'In 1902 the Great Western built a bold new express engine with two big outside cylinders, a tapered boiler and long-travel valves, ideas gathered from America and France. Over seventy followed, many named after saints, ladies of legend and the heroes of famous novels. They ran the fastest expresses to the West Country and South Wales, and in 1924 one was rebuilt with smaller wheels to become the very first Hall.',
   nohab:'In 1954 a Swedish engine works began building diesels under licence from America, with the same rounded "bulldog" nose as the famous streamliners but on six-wheeled bogies for lighter European track. Denmark, Norway, Belgium, Luxembourg and Hungary bought them too. They were so well built that many ran for fifty years, and they are still loved across Scandinavia.',
@@ -27059,7 +27469,7 @@ const Shed={
       box.innerHTML=R.map((it,i)=>{ if(it.heading) return `<div class="${it.sec?'shsec':'shnote'}">${it.label}</div>`;
         const c=it.cost?(it.owned?`<span class="pc owned">Owned</span>`:it.real?`<span class="pc real"><span class="rmi">🛍️</span><span class="pv">${web?'Fire TV':it.cost}${/\d/.test(it.cost)?'<span class="rmt">real money</span>':''}</span></span>`:`<span class="pc">${it.cost}</span>`):'';
         const mine=it.type&&this.tab===0&&trains.some(t=>t.type===it.type)?'<span class="mine" title="In your fleet">🚂</span>':'';
-        return `<button type="button" tabindex="-1" role="option" class="shrow${it.disabled&&!it.owned&&it.type?' dim':''}${it.type?'':' extra'}" data-row="${i}"><span class="rn">${mine}${it.label}</span>${c}</button>`; }).join(''); }
+        return `<button type="button" tabindex="-1" role="option" class="shrow${it.disabled&&!it.owned&&it.type?' dim':''}${it.type?'':' extra'}" data-row="${i}"><span class="rn">${mine}${String(it.label).replace(NEW_TAG,'')}</span>${String(it.label).includes(NEW_TAG)?NEW_TAG:''}${c}</button>`; }).join(''); }
     box.querySelectorAll('.shrow').forEach(b=>{ const i=+b.dataset.row; b.classList.toggle('on',i===this.sel); b.classList.toggle('sel',i===this.sel&&this.zone==='list'); });
     const s=box.querySelector('.shrow.on'); if(s) try{ s.scrollIntoView({block:'nearest'}); }catch(_){} },
   renderCard(){ this._card(); const C=this.ui().querySelector('.shcard'), key=this.tab+'|'+this.sel;   /* another engine: its card from the top; the remote on a button: that button in view */
